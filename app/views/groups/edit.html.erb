@@ -1,0 +1,31 @@
+<div class="container mt-4">
+  <h1>グループ編集</h1>
+
+  <%= form_with(model: @group, local: true) do |f| %>
+    <% if @group.errors.any? %>
+      <div class="alert alert-danger">
+        <h4><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h4>
+        <ul>
+          <% @group.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :name, 'グループ名' %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :description, '説明' %>
+      <%= f.text_area :description, class: 'form-control', rows: 5 %>
+    </div>
+
+    <div class="actions mt-4">
+      <%= f.submit '更新', class: 'btn btn-primary' %>
+      <%= link_to 'キャンセル', group_path(@group), class: 'btn btn-secondary' %>
+    </div>
+  <% end %>
+</div>

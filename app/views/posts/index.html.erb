@@ -1,0 +1,78 @@
+<%# ***** posts/index.html.erb - 投稿一覧ページ ***** %>
+<%# ***** 【このページの役割】 ***** %>
+<%# ***** すべての公開済み投稿を一覧表示する ***** %>
+<%# ***** ログイン中のユーザーには編集・削除ボタンも表示 ***** %>
+
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>投稿一覧</h2>
+      
+      <%# ***** Bootstrap のテーブルで一覧表示 ***** %>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>ユーザー</th>
+            <th>タイトル</th>
+            <th>本文</th>
+            <th>ステータス</th>
+            <th>タグ</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%# ***** @postsの各投稿をループ処理 ***** %>
+          <% @posts.each do |post| %>
+            <tr>
+              <%# ***** ユーザー名をクリックするとユーザー詳細ページへ ***** %>
+              <td><%= link_to post.user.email, user_path(post.user) %></td>
+              
+              <%# ***** タイトルをクリックすると投稿詳細ページへ ***** %>
+              <td><%= link_to post.title, post_path(post) %></td>
+              
+              <%# ***** 本文は50文字まで表示（長い場合は「...」で省略） ***** %>
+              <td><%= truncate(post.body, length: 50) %></td>
+              
+              <%# ***** ステータスをバッジで表示 ***** %>
+              <td>
+                <% if post.published? %>
+                  <span class="badge badge-success">公開</span>
+                <% else %>
+                  <span class="badge badge-secondary">下書き</span>
+                <% end %>
+              </td>
+              
+              <%# ***** タグがあれば表示（クリックでタグ検索） ***** %>
+              <td>
+                <% if post.respond_to?(:tags) %>
+                  <% post.tags.each do |tag| %>
+                    <span class="badge badge-info"><%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %></span>
+                  <% end %>
+                <% end %>
+              </td>
+              
+              <%# ***** 操作ボタン（表示・編集・削除） ***** %>
+              <td>
+                <% if user_signed_in? %>
+                  <%# ***** 「表示」ボタンは誰でも表示 ***** %>
+                  <%= link_to "表示", post_path(post), class: "btn btn-sm btn-info" %>
+                  
+                  <%# ***** 「編集」「削除」は投稿者本人または管理者のみ ***** %>
+                  <% if current_user == post.user || current_user.admin? %>
+                    <%= link_to "編集", edit_post_path(post), class: "btn btn-sm btn-warning" %>
+                    <%= link_to "削除", post_path(post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-danger" %>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      
+      <%# ***** ログイン中のユーザーには「新規作成」ボタンを表示 ***** %>
+      <% if user_signed_in? %>
+        <%= link_to "新規作成", new_post_path, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div>

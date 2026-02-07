@@ -1,16 +1,142 @@
+<%# ***** layouts/application.html.erb - アプリ全体のレイアウト ***** %>
+<%# ***** 【このファイルの役割】 ***** %>
+<%# ***** すべてのページで共通のヘッダー・フッター・ナビゲーションを定義 ***** %>
+<%# ***** Bootstrap 4 と Font Awesome を使用したレスポンシブデザイン ***** %>
+
 <!DOCTYPE html>
 <html>
   <head>
-    <title>StockNote</title>
+    <title>Community App</title>
+    <%# ***** スマホ対応のためのviewport設定 ***** %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%# ***** セキュリティ設定（CSRF対策） ***** %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# ***** スタイルシート読み込み ***** %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%# ***** JavaScript読み込み ***** %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%# ***** Font Awesome（アイコン）とBootstrap（CSSフレームワーク）をCDNから読み込み ***** %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   </head>
 
   <body>
-    <%= yield %>
+    <%# ***** ヘッダー：ナビゲーションバー ***** %>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <%# ***** サイトロゴ（クリックでトップページへ） ***** %>
+          <%= link_to "Community App", root_path, class: "navbar-brand" %>
+          
+          <%# ***** スマホ用ハンバーガーメニューボタン ***** %>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <%# ***** ナビゲーションメニュー ***** %>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <%# ***** ログイン中の場合 ***** %>
+              <% if user_signed_in? %>
+                <li class="nav-item">
+                  <%= link_to posts_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-home"></i> Home
+                  <% end %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to users_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-users"></i> Users
+                  <% end %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to groups_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-users-cog"></i> Groups
+                  <% end %>
+                </li>
+                <%# ***** 管理者のみ表示される管理画面リンク ***** %>
+                <% if current_user.admin? %>
+                  <li class="nav-item">
+                    <%= link_to admin_users_path, class: "nav-link text-light" do %>
+                      <i class="fas fa-cogs"></i> Admin
+                    <% end %>
+                  </li>
+                <% end %>
+                <li class="nav-item">
+                  <%= link_to destroy_user_session_path, method: :delete, class: "nav-link text-light" do %>
+                    <i class="fas fa-sign-out-alt"></i> Log out
+                  <% end %>
+                </li>
+              <%# ***** ログインしていない場合 ***** %>
+              <% else %>
+                <li class="nav-item">
+                  <%= link_to posts_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-home"></i> Home
+                  <% end %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to users_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-users"></i> Users
+                  <% end %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to new_user_registration_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-user-plus"></i> Sign up
+                  <% end %>
+                </li>
+                <li class="nav-item">
+                  <%= link_to new_user_session_path, class: "nav-link text-light" do %>
+                    <i class="fas fa-sign-in-alt"></i> Log in
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    
+    <%# ***** メインコンテンツエリア ***** %>
+    <main>
+      <div class="container mt-4">
+        <%# ***** 成功メッセージ表示（notice） ***** %>
+        <% if notice %>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= notice %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <% end %>
+        <%# ***** エラーメッセージ表示（alert） ***** %>
+        <% if alert %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <%= alert %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <% end %>
+      </div>
+      <%# ***** 各ページのコンテンツがここに表示される ***** %>
+      <%= yield %>
+    </main>
+    
+    <%# ***** フッター ***** %>
+    <footer class="border-top mt-5 pt-5">
+      <div class="container mb-5">
+        <div class="row">
+          <div class="mx-auto">
+            <p class="text-center">© 2026 Community App. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <%# ***** jQuery と Bootstrap の JavaScript を CDN から読み込み ***** %>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

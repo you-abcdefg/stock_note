@@ -1,0 +1,53 @@
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>タグ検索: <strong><%= params[:tag] %></strong></h2>
+      <% if @tag && @posts.any? %>
+        <p class="text-muted"><%= @posts.count %> 件の投稿が見つかりました。</p>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ユーザー</th>
+              <th>タイトル</th>
+              <th>本文</th>
+              <th>ステータス</th>
+              <th>タグ</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @posts.each do |post| %>
+              <tr>
+                <td><%= link_to post.user.email, user_path(post.user) %></td>
+                <td><%= link_to post.title, post_path(post) %></td>
+                <td><%= truncate(post.body, length: 50) %></td>
+                <td>
+                  <% if post.published? %>
+                    <span class="badge badge-success">公開</span>
+                  <% else %>
+                    <span class="badge badge-secondary">下書き</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% if post.respond_to?(:tags) %>
+                    <% post.tags.each do |tag| %>
+                      <span class="badge badge-info">
+                        <%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %>
+                      </span>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to "表示", post_path(post), class: "btn btn-sm btn-info" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted">このタグの投稿は見つかりません。</p>
+      <% end %>
+      <%= link_to "投稿一覧へ戻る", posts_path, class: "btn btn-outline-secondary mt-3" %>
+    </div>
+  </div>
+</div>

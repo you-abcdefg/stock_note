@@ -1,0 +1,58 @@
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"><%= @user.name.presence || @user.email %></h4>
+          <p class="text-muted mb-2"><%= @user.email %></p>
+          <% if @user.admin? %>
+            <span class="badge badge-danger">管理者</span>
+          <% elsif @user.guest? %>
+            <span class="badge badge-warning">ゲスト</span>
+          <% else %>
+            <span class="badge badge-secondary">一般</span>
+          <% end %>
+        </div>
+      </div>
+      <div class="card mt-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <span>投稿数</span>
+            <strong><%= @user.posts.count %></strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <h5 class="mb-3">投稿一覧</h5>
+      <% if @posts.any? %>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>タイトル</th>
+              <th>ステータス</th>
+              <th>作成日</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @posts.each do |post| %>
+              <tr>
+                <td><%= link_to post.title, post_path(post) %></td>
+                <td>
+                  <% if post.published? %>
+                    <span class="badge badge-success">公開</span>
+                  <% else %>
+                    <span class="badge badge-secondary">下書き</span>
+                  <% end %>
+                </td>
+                <td><%= post.created_at.strftime("%Y/%m/%d") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted">投稿がありません。</p>
+      <% end %>
+    </div>
+  </div>
+</div>

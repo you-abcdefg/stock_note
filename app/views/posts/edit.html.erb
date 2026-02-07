@@ -1,0 +1,44 @@
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>投稿を編集</h2>
+      <%= form_with(model: @post, local: true) do |form| %>
+        <% if @post.errors.any? %>
+          <div class="alert alert-danger">
+            <h4><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h4>
+            <ul>
+              <% @post.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group mb-3">
+          <%= form.label :title %>
+          <%= form.text_field :title, class: "form-control" %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :body, "本文" %>
+          <%= form.text_area :body, rows: 10, class: "form-control" %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :tag_list, "タグ（カンマ区切り）" %>
+          <%= form.text_field :tag_list, class: "form-control" %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :status %>
+          <%= form.select :status, { "下書き": :draft, "公開": :published }, {}, class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= form.submit "更新", class: "btn btn-primary" %>
+          <%= link_to "キャンセル", @post, class: "btn btn-outline-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

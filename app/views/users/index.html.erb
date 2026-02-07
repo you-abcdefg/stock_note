@@ -1,0 +1,44 @@
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>ユーザー一覧</h2>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>ユーザー</th>
+            <th>メールアドレス</th>
+            <th>ロール</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td><strong><%= link_to user.email, user_path(user) %></strong></td>
+              <td><%= user.email %></td>
+              <td>
+                <% if user.admin? %>
+                  <span class="badge badge-danger">管理者</span>
+                <% elsif user.guest? %>
+                  <span class="badge badge-secondary">ゲスト</span>
+                <% else %>
+                  <span class="badge badge-primary">一般</span>
+                <% end %>
+              </td>
+              <td>
+                <% if user_signed_in? && current_user.admin? %>
+                  <%= link_to "詳細", user_path(user), class: "btn btn-sm btn-info" %>
+                  <% unless current_user == user %>
+                    <%= link_to "削除", user_path(user), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-danger" %>
+                  <% end %>
+                <% else %>
+                  <%= link_to "詳細", user_path(user), class: "btn btn-sm btn-info" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

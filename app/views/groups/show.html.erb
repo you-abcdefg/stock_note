@@ -1,0 +1,69 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h1><%= @group.name %></h1>
+      <p class="lead"><%= @group.description %></p>
+
+      <div class="mb-3">
+        <span class="badge badge-info">投稿数: <%= @group.posts.count %>件</span>
+        <span class="badge badge-success">メンバー: <%= @group.users.count %>人</span>
+      </div>
+
+      <% if current_user&.admin? %>
+        <div class="mb-4">
+          <%= link_to '編集', edit_group_path(@group), class: 'btn btn-warning' %>
+          <%= link_to '削除', group_path(@group), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
+        </div>
+      <% end %>
+
+      <h3 class="mt-4">このグループの投稿</h3>
+      <% if @group.posts.published.any? %>
+        <% @group.posts.published.order(created_at: :desc).each do |post| %>
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= link_to post.title, post_path(post) %>
+              </h5>
+              <p class="card-text"><%= truncate(post.body, length: 150) %></p>
+              <div class="d-flex justify-content-between">
+                <small class="text-muted">
+                  投稿者: <%= link_to post.user.name, user_path(post.user) %>
+                </small>
+                <small class="text-muted">
+                  <%= post.created_at.strftime('%Y年%m月%d日') %>
+                </small>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-muted">まだ投稿がありません。</p>
+      <% end %>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>メンバー一覧</h5>
+        </div>
+        <div class="card-body">
+          <% if @group.users.any? %>
+            <ul class="list-unstyled">
+              <% @group.users.each do |user| %>
+                <li class="mb-2">
+                  <%= link_to user.name, user_path(user) %>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted">メンバーはまだいません。</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to '戻る', groups_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

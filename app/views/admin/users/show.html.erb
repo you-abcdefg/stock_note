@@ -1,0 +1,67 @@
+<div class="container mt-4">
+  <h1>ユーザー詳細</h1>
+
+  <div class="card">
+    <div class="card-body">
+      <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9"><%= @user.id %></dd>
+
+        <dt class="col-sm-3">名前</dt>
+        <dd class="col-sm-9"><%= @user.name %></dd>
+
+        <dt class="col-sm-3">メールアドレス</dt>
+        <dd class="col-sm-9"><%= @user.email %></dd>
+
+        <dt class="col-sm-3">権限</dt>
+        <dd class="col-sm-9">
+          <span class="badge badge-<%= @user.admin? ? 'danger' : @user.general? ? 'primary' : 'secondary' %>">
+            <%= I18n.t("enums.user.role.#{@user.role}") %>
+          </span>
+        </dd>
+
+        <dt class="col-sm-3">作成日</dt>
+        <dd class="col-sm-9"><%= @user.created_at.strftime('%Y年%m月%d日 %H:%M') %></dd>
+
+        <dt class="col-sm-3">更新日</dt>
+        <dd class="col-sm-9"><%= @user.updated_at.strftime('%Y年%m月%d日 %H:%M') %></dd>
+      </dl>
+    </div>
+  </div>
+
+  <h3 class="mt-4">投稿一覧（<%= @user.posts.count %>件）</h3>
+  <% if @user.posts.any? %>
+    <ul class="list-group">
+      <% @user.posts.order(created_at: :desc).limit(10).each do |post| %>
+        <li class="list-group-item">
+          <%= link_to post.title, post_path(post) %>
+          <small class="text-muted">（<%= post.created_at.strftime('%Y/%m/%d') %>）</small>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-muted">投稿はありません。</p>
+  <% end %>
+
+  <h3 class="mt-4">コメント一覧（<%= @user.comments.count %>件）</h3>
+  <% if @user.comments.any? %>
+    <ul class="list-group">
+      <% @user.comments.order(created_at: :desc).limit(10).each do |comment| %>
+        <li class="list-group-item">
+          <%= truncate(comment.body, length: 100) %>
+          <small class="text-muted">（<%= comment.created_at.strftime('%Y/%m/%d') %>）</small>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-muted">コメントはありません。</p>
+  <% end %>
+
+  <div class="mt-4">
+    <%= link_to '編集', edit_admin_user_path(@user), class: 'btn btn-warning' %>
+    <%= link_to '戻る', admin_users_path, class: 'btn btn-secondary' %>
+    <% unless @user == current_user %>
+      <%= link_to '削除', admin_user_path(@user), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
+    <% end %>
+  </div>
+</div>

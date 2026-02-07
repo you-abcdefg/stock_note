@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <h1>ユーザー編集</h1>
+
+  <%= form_with(model: @user, url: admin_user_path(@user), local: true) do |f| %>
+    <% if @user.errors.any? %>
+      <div class="alert alert-danger">
+        <h4><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h4>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :name, '名前' %>
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :email, 'メールアドレス' %>
+      <%= f.email_field :email, class: 'form-control' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :role, '権限' %>
+      <%= f.select :role, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, {}, class: 'form-control' %>
+      <small class="form-text text-muted">
+        管理者: すべての機能にアクセス可能 / 一般: 通常ユーザー / ゲスト: 閲覧のみ
+      </small>
+    </div>
+
+    <div class="actions mt-4">
+      <%= f.submit '更新', class: 'btn btn-primary' %>
+      <%= link_to 'キャンセル', admin_user_path(@user), class: 'btn btn-secondary' %>
+    </div>
+  <% end %>
+</div>

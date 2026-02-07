@@ -1,0 +1,77 @@
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h3 class="card-title"><%= @post.title %></h3>
+          <div class="mb-2 text-muted">
+            投稿者: <%= link_to (@post.user.name.presence || @post.user.email), user_path(@post.user) %>
+          </div>
+          <div class="mb-2">
+            <% if @post.published? %>
+              <span class="badge badge-success">公開</span>
+            <% else %>
+              <span class="badge badge-secondary">下書き</span>
+            <% end %>
+          </div>
+          <div class="mb-3">
+            <%= simple_format(@post.body) %>
+          </div>
+          <% if @post.respond_to?(:tags) && @post.tags.any? %>
+            <div class="mb-3">
+              <% @post.tags.each do |tag| %>
+                <span class="badge badge-info">
+                  <%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+          <div class="d-flex gap-2">
+            <%= link_to "一覧へ戻る", posts_path, class: "btn btn-outline-secondary btn-sm" %>
+            <% if user_signed_in? && (current_user == @post.user || current_user.admin?) %>
+              <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-warning" %>
+              <%= link_to "削除", post_path(@post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-danger" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">コメント</h5>
+          <% if @post.comments.any? %>
+            <ul class="list-group list-group-flush">
+              <% @post.comments.each do |comment| %>
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
+                    <strong><%= comment.user&.name.presence || comment.user&.email %></strong>
+                    <span class="text-muted"><%= comment.created_at.strftime("%Y/%m/%d") %></span>
+                  </div>
+                  <div><%= simple_format(comment.body) %></div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted">コメントはまだありません。</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">投稿情報</h6>
+          <div class="d-flex justify-content-between">
+            <span>作成日</span>
+            <strong><%= @post.created_at.strftime("%Y/%m/%d") %></strong>
+          </div>
+          <div class="d-flex justify-content-between mt-2">
+            <span>更新日</span>
+            <strong><%= @post.updated_at.strftime("%Y/%m/%d") %></strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
