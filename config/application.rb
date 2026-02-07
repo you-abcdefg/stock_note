@@ -6,7 +6,7 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module TempAdvancedCommunity
+module StockNote
   class Application < Rails::Application
     config.time_zone = 'Tokyo' # 日本時間に設定
     config.i18n.default_locale = :ja # 日本語をデフォルトに設定
