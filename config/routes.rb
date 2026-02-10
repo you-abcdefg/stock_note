@@ -34,7 +34,9 @@ Rails.application.routes.draw do
   end
 
   # ユーザー
-  resources :users, only: [:index, :show] do
+  get 'mypage', to: 'users#mypage'
+
+  resources :users, only: [:index, :show, :edit, :update, :destroy] do
     collection do
       get 'search' # ユーザー検索
     end
