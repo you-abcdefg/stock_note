@@ -1,0 +1,10 @@
+=> [[[31m[1;31m"[0m[31mid[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mINTEGER[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31memail[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mvarchar[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mencrypted_password[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mvarchar[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mreset_password_token[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mvarchar[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mreset_password_sent_at[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mdatetime[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mremember_created_at[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mdatetime[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mcreated_at[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mdatetime(6)[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mupdated_at[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mdatetime(6)[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mname[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mvarchar[1;31m"[0m[31m[0m],
+ [[31m[1;31m"[0m[31mrole[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mINTEGER[1;31m"[0m[31m[0m]]

@@ -1,0 +1,72 @@
+<%# ***** users/search.html.erb - ユーザー検索結果ページ ***** %>
+<%# ***** 【このページの役割】 ***** %>
+<%# ***** ユーザーのキーワード検索結果を表示する ***** %>
+<%# ***** Ransackで複数条件での検索に対応 ***** %>
+
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="mb-4">ユーザーを検索</h2>
+
+      <%# ***** 検索フォーム ***** %>
+      <div class="card mb-4">
+        <div class="card-body">
+          <%= search_form_for @q, url: search_users_path, local: true do |f| %>
+            <div class="form-group">
+              <label for="q_name_cont">ユーザー名で検索</label>
+              <%= f.search_field :name_cont, class: 'form-control', placeholder: 'ユーザー名キーワード', id: 'q_name_cont' %>
+            </div>
+
+            <div class="form-group">
+              <label for="q_email_cont">メールアドレスで検索</label>
+              <%= f.search_field :email_cont, class: 'form-control', placeholder: 'メールアドレス', id: 'q_email_cont' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.submit '検索', class: 'btn btn-primary' %>
+              <%= link_to 'リセット', search_users_path, class: 'btn btn-secondary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# ***** 検索結果 ***** %>
+      <% if @users.any? %>
+        <div class="alert alert-info" role="alert">
+          検索結果: <%= @users.count %>件
+        </div>
+
+        <div class="row">
+          <% @users.each do |user| %>
+            <div class="col-md-6 mb-3">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= link_to(user.name.presence || '未設定', user_path(user)) %>
+                  </h5>
+                  <p class="card-text text-muted">
+                    <small><%= user.email %></small>
+                  </p>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <%= link_to 'プロフィール', user_path(user), class: 'btn btn-info' %>
+                    <% if user_signed_in? && current_user == user %>
+                      <%= link_to '編集', edit_user_path(user), class: 'btn btn-warning' %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="alert alert-warning" role="alert">
+          検索条件に一致するユーザーが見つかりませんでした。
+        </div>
+      <% end %>
+
+      <div class="mt-3">
+        <%= link_to 'ユーザー一覧に戻る', users_path, class: 'btn btn-secondary' %>
+      </div>
+    </div>
+  </div>
+</div>

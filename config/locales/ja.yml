@@ -7,7 +7,43 @@
 # ============================================
 
 ja:
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: "を入力してください"
+      taken: "はすでに存在します"
+      not_saved:
+        one: "1件のエラーが発生したため、保存できませんでした。"
+        other: "%{count}件のエラーが発生したため、保存できませんでした。"
+  activerecord:
+    attributes:
+      user:
+        name: "名前"
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認）"
+        current_password: "現在のパスワード"
+        remember_me: "ログイン情報を記憶する"
+    errors:
+      models:
+        user:
+          attributes:
+            name:
+              blank: "を入力してください"
+            email:
+              taken: "はすでに存在します"
   devise:
+    sessions:
+      new:
+        sign_in: "ログイン"
+    registrations:
+      new:
+        sign_up: "新規登録"
+    shared:
+      links:
+        sign_in: "ログイン"
+        sign_up: "新規登録"
+        forgot_your_password: "パスワードをお忘れですか？"
     failure:
       # ログインが必要なページにアクセスした際のメッセージ
       unauthenticated: "ログインしてください。"

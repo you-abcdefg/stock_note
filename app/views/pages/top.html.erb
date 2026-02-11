@@ -1,0 +1,90 @@
+<%# ***** pages/top.html.erb - トップページ ***** %>
+<%# ***** 【このファイルの役割】 ***** %>
+<%# ***** アプリケーションのメインランディングページを表示 ***** %>
+<%# ***** ユーザーを主要機能へガイドするリンクを配置 ***** %>
+
+<div class="container mt-5">
+  <div class="jumbotron bg-light">
+    <%# ***** ウェルカムメッセージ ***** %>
+    <h1 class="display-4">Stock Note へようこそ</h1>
+    <p class="lead">株式投資の知識やアイデアを共有するコミュニティプラットフォーム</p>
+    <hr class="my-4">
+    <p>Stock Noteは、投資家同士が情報や視点を共有し、学び合うためのプラットフォームです。</p>
+    
+    <%# ***** ボタン配置 ***** %>
+    <div class="mt-4">
+      <% if user_signed_in? %>
+        <%# ***** ログイン済みユーザー向けボタン ***** %>
+        <p>投稿や討論に参加してみましょう：</p>
+        <div class="btn-group mt-3" role="group">
+          <%= link_to '投稿一覧を見る', posts_path, class: 'btn btn-primary btn-lg' %>
+          <%= link_to 'グループを探す', groups_path, class: 'btn btn-info btn-lg' %>
+          <%= link_to 'ユーザーを検索', users_path, class: 'btn btn-success btn-lg' %>
+          <%= link_to '新規投稿を作成', new_post_path, class: 'btn btn-warning btn-lg' %>
+        </div>
+      <% else %>
+        <%# ***** 未ログインユーザー向けボタン ***** %>
+        <p>まずはログインして、コミュニティに参加しましょう：</p>
+        <div class="btn-group mt-3" role="group">
+          <%= link_to '新規登録', new_user_registration_path, class: 'btn btn-primary btn-lg' %>
+          <%= link_to 'ログイン', new_user_session_path, class: 'btn btn-secondary btn-lg' %>
+          <%= link_to 'ゲストログイン', guest_sign_in_path, method: :post, class: 'btn btn-info btn-lg' %>
+          <%= link_to '投稿一覧を見る', posts_path, class: 'btn btn-light btn-lg' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ***** 機能説明セクション ***** %>
+  <div class="row mt-5">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="fas fa-comments"></i> 投稿を共有</h5>
+        </div>
+        <div class="card-body">
+          <p>株式投資に関するアイデアや分析、レポートを投稿して、他のユーザーと知識を共有できます。</p>
+          <p class="text-muted">タグを使ってカテゴリ分けし、検索も簡単です。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="fas fa-users-cog"></i> グループで討論</h5>
+        </div>
+        <div class="card-body">
+          <p>特定のテーマやセクターについて興味を持つユーザー同士でグループを作り、深い討論ができます。</p>
+          <p class="text-muted">グループメンバー限定でコンテンツを共有することも可能です。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="fas fa-star"></i> コンテンツを評価</h5>
+        </div>
+        <div class="card-body">
+          <p>有用な投稿には「いいね」をして評価できます。</p>
+          <p class="text-muted">人気のある投稿や分析をすぐに見つけられます。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header bg-warning text-white">
+          <h5 class="mb-0"><i class="fas fa-search"></i> 知識を探索</h5>
+        </div>
+        <div class="card-body">
+          <p>タグや検索機能を使って、興味のある投稿やユーザーを見つけられます。</p>
+          <p class="text-muted">投資のトレンドや重要な情報を逃しません。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

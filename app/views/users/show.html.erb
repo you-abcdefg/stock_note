@@ -1,58 +1,137 @@
-<div class="container px-5 px-sm-0 mt-4">
+<div class="container mt-5">
   <div class="row">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title"><%= @user.name.presence || @user.email %></h4>
-          <p class="text-muted mb-2"><%= @user.email %></p>
-          <% if @user.admin? %>
-            <span class="badge badge-danger">管理者</span>
-          <% elsif @user.guest? %>
-            <span class="badge badge-warning">ゲスト</span>
+    <!-- ===== プロフィール情報 ===== -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <!-- ユーザーアバター -->
+          <div class="mb-3">
+            <i class="fas fa-user-circle fa-5x text-primary"></i>
+          </div>
+
+          <!-- ユーザー情報 -->
+          <h3 class="card-title"><%= @user.name %></h3>
+          <p class="text-muted"><%= @user.email %></p>
+
+          <!-- ロール表示 -->
+          <div class="mb-3">
+            <% if @user.admin? %>
+              <span class="badge badge-danger">管理者</span>
+            <% elsif @user.guest? %>
+              <span class="badge badge-secondary">ゲスト</span>
+            <% else %>
+              <span class="badge badge-primary">一般ユーザー</span>
+            <% end %>
+          </div>
+
+          <!-- 登録日時 -->
+          <p class="text-muted small">
+            登録日時: <%= @user.created_at.strftime("%Y年%m月%d日") %>
+          </p>
+
+          <!-- アクションボタン（本人のみ表示） -->
+          <% if current_user == @user %>
+            <div class="btn-group d-flex gap-2 mt-4" role="group">
+              <%= link_to "編集", edit_user_path(@user), class: "btn btn-primary btn-sm flex-grow-1" %>
+              <%= link_to "ユーザー一覧", users_path, class: "btn btn-outline-secondary btn-sm flex-grow-1" %>
+            </div>
           <% else %>
-            <span class="badge badge-secondary">一般</span>
+            <div class="btn-group d-flex gap-2 mt-4" role="group">
+              <%= link_to "ユーザー一覧", users_path, class: "btn btn-outline-secondary btn-sm flex-grow-1" %>
+            </div>
           <% end %>
         </div>
       </div>
-      <div class="card mt-3">
+    </div>
+
+    <!-- ===== 投稿一覧 ===== -->
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">
+            <i class="fas fa-file-alt"></i> 
+            <% if current_user == @user %>
+              マイ投稿
+            <% else %>
+              投稿一覧
+            <% end %>
+            <span class="badge badge-light ml-2"><%= @posts.count %></span>
+          </h5>
+          <% if current_user == @user %>
+            <%= link_to "新規投稿", new_post_path, class: "btn btn-sm btn-outline-light" %>
+          <% end %>
+        </div>
+
         <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <span>投稿数</span>
-            <strong><%= @user.posts.count %></strong>
-          </div>
+          <% if @posts.any? %>
+            <div class="row">
+              <% @posts.each do |post| %>
+                <div class="col-12 mb-3">
+                  <div class="card border-left-primary shadow-sm">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1">
+                          <h5 class="card-title mb-1">
+                            <%= link_to post.title, post_path(post), class: "text-decoration-none" %>
+                          </h5>
+                          <!-- ステータスバッジ -->
+                          <% if post.status == "published" %>
+                            <span class="badge badge-success">公開</span>
+                          <% elsif post.status == "draft" %>
+                            <span class="badge badge-warning">下書き</span>
+                          <% end %>
+                        </div>
+                        <!-- 本人の場合は編集・削除ボタンを表示 -->
+                        <% if current_user == @user %>
+                          <div class="ml-3">
+                            <%= link_to post_path(post), class: "btn btn-sm btn-outline-primary" do %>
+                              <i class="fas fa-eye"></i>
+                            <% end %>
+                            <%= link_to edit_post_path(post), class: "btn btn-sm btn-outline-secondary" do %>
+                              <i class="fas fa-edit"></i>
+                            <% end %>
+                            <%= link_to post_path(post), method: :delete, data: { confirm: "削除しますか？" }, class: "btn btn-sm btn-outline-danger" do %>
+                              <i class="fas fa-trash"></i>
+                            <% end %>
+                          </div>
+                        <% end %>
+                      </div>
+                      <p class="card-text text-muted small mb-2">
+                        <%= truncate(strip_tags(post.body), length: 150) %>
+                      </p>
+                      <small class="text-muted">
+                        <i class="fas fa-calendar"></i> 更新: <%= post.updated_at.strftime("%Y年%m月%d日 %H:%M") %>
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="alert alert-info text-center" role="alert">
+              <i class="fas fa-info-circle"></i> 投稿がまだありません。
+              <% if current_user == @user %>
+                <%= link_to "最初の投稿を作成してみましょう", new_post_path, class: "alert-link" %>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
-    <div class="col-md-8">
-      <h5 class="mb-3">投稿一覧</h5>
-      <% if @posts.any? %>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>タイトル</th>
-              <th>ステータス</th>
-              <th>作成日</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @posts.each do |post| %>
-              <tr>
-                <td><%= link_to post.title, post_path(post) %></td>
-                <td>
-                  <% if post.published? %>
-                    <span class="badge badge-success">公開</span>
-                  <% else %>
-                    <span class="badge badge-secondary">下書き</span>
-                  <% end %>
-                </td>
-                <td><%= post.created_at.strftime("%Y/%m/%d") %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      <% else %>
-        <p class="text-muted">投稿がありません。</p>
-      <% end %>
-    </div>
   </div>
 </div>
+
+<style>
+  .card {
+    border: none;
+    border-radius: 8px;
+  }
+
+  .border-left-primary {
+    border-left: 4px solid #007bff !important;
+  }
+
+  .gap-2 {
+    gap: 0.5rem;
+  }
+</style>

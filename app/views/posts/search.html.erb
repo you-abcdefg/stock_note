@@ -1,0 +1,104 @@
+<%# ***** posts/search.html.erb - 投稿検索結果ページ ***** %>
+<%# ***** 【このページの役割】 ***** %>
+<%# ***** 投稿キーワード検索の結果を表示する ***** %>
+<%# ***** Ransackで複数条件での検索に対応 ***** %>
+
+<div class="container px-5 px-sm-0 mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="mb-4">投稿を検索</h2>
+
+      <%# ***** 検索フォーム ***** %>
+      <div class="card mb-4">
+        <div class="card-body">
+          <%= search_form_for @q, url: search_posts_path, local: true do |f| %>
+            <div class="form-group">
+              <label for="q_title_cont">タイトルで検索</label>
+              <%= f.search_field :title_cont, class: 'form-control', placeholder: 'タイトルキーワード', id: 'q_title_cont' %>
+            </div>
+
+            <div class="form-group">
+              <label for="q_body_cont">本文で検索</label>
+              <%= f.search_field :body_cont, class: 'form-control', placeholder: '本文キーワード', id: 'q_body_cont' %>
+            </div>
+
+            <div class="form-group">
+              <label for="q_user_name_cont">投稿者で検索</label>
+              <%= f.search_field :user_name_cont, class: 'form-control', placeholder: 'ユーザー名', id: 'q_user_name_cont' %>
+            </div>
+
+            <div class="form-group">
+              <label for="q_status_eq">ステータス</label>
+              <%= f.select :status_eq, 
+                  [['すべて', ''], ['公開', 'published'], ['下書き', 'draft']], 
+                  { include_blank: false }, 
+                  class: 'form-control',
+                  id: 'q_status_eq' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.submit '検索', class: 'btn btn-primary' %>
+              <%= link_to 'リセット', search_posts_path, class: 'btn btn-secondary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# ***** 検索結果 ***** %>
+      <% if @posts.any? %>
+        <div class="alert alert-info" role="alert">
+          検索結果: <%= @posts.count %>件
+        </div>
+
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ユーザー</th>
+              <th>タイトル</th>
+              <th>ステータス</th>
+              <th>タグ</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @posts.each do |post| %>
+              <tr>
+                <td><%= link_to(post.user.name.presence || '未設定', user_path(post.user)) %></td>
+                <td><%= link_to post.title, post_path(post) %></td>
+                <td>
+                  <% if post.published? %>
+                    <span class="badge badge-success">公開</span>
+                  <% else %>
+                    <span class="badge badge-secondary">下書き</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% post.tags.each do |tag| %>
+                    <%= link_to tag.name, tagged_posts_path(tag.name), class: 'badge badge-info' %>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <%= link_to '詳細', post_path(post), class: 'btn btn-info' %>
+                    <% if user_signed_in? && (current_user == post.user || current_user.admin?) %>
+                      <%= link_to '編集', edit_post_path(post), class: 'btn btn-warning' %>
+                      <%= link_to '削除', post_path(post), method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: 'btn btn-danger' %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="alert alert-warning" role="alert">
+          検索条件に一致する投稿が見つかりませんでした。
+        </div>
+      <% end %>
+
+      <div class="mt-3">
+        <%= link_to '投稿一覧に戻る', posts_path, class: 'btn btn-secondary' %>
+      </div>
+    </div>
+  </div>
+</div>

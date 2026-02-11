@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>ユーザーを追加</h1>
+
+      <%= form_with(model: [:admin, @user], local: true) do |form| %>
+        <% if @user.errors.any? %>
+          <div class="alert alert-danger">
+            <h4><%= pluralize(@user.errors.count, "error") %> エラーが発生しました:</h4>
+            <ul>
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group mb-3">
+          <%= form.label :name, 'ユーザー名' %>
+          <%= form.text_field :name, class: 'form-control', placeholder: 'ユーザー名を入力' %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :email, 'メールアドレス' %>
+          <%= form.email_field :email, class: 'form-control', placeholder: 'メールアドレスを入力' %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :password, 'パスワード' %>
+          <%= form.password_field :password, class: 'form-control', placeholder: 'パスワードを入力' %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :password_confirmation, 'パスワード確認' %>
+          <%= form.password_field :password_confirmation, class: 'form-control', placeholder: 'パスワードを再入力' %>
+        </div>
+
+        <div class="form-group mb-3">
+          <%= form.label :role, '権限' %>
+          <%= form.select :role, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, {}, class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+          <%= form.submit '追加', class: 'btn btn-primary' %>
+          <%= link_to 'キャンセル', admin_users_path, class: 'btn btn-secondary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

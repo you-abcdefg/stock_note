@@ -1,3 +1,30 @@
 // Place all the styles related to the Posts controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.post-body {
+	// post-body：投稿本文エリアのスタイルを定義する
+	// 埋め込み画像は横幅に収める
+	img {
+		max-width: 100%; // 親要素の幅を超えないようにする
+		height: auto; // 元の縦横比を維持する
+		border-radius: 6px; // 角丸を付ける
+		margin: 8px 0; // 上下の余白を付ける
+	}
+
+	// コードブロックの背景と余白
+	pre {
+		background: #0f172a; // 背景色を指定する
+		color: #e2e8f0; // 文字色を指定する
+		padding: 12px 16px; // 内側余白を指定する
+		border-radius: 8px; // 角丸を付ける
+		overflow-x: auto; // 横方向のはみ出しをスクロールさせる
+		font-size: 0.9rem; // 文字サイズを調整する
+	}
+
+	// インラインコードのフォント指定
+	code {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		// font-family：等幅フォントを優先して指定する
+	}
+}

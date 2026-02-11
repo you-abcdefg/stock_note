@@ -17,8 +17,8 @@ class GroupsController < ApplicationController
   # グループ一覧表示（誰でも見れる）
   # =====================================
   def index
-    # 全グループを新しい順に表示
-    @groups = Group.all.order(created_at: :desc)
+    # 全グループを新しい順に表示（ページネーション対応）
+    @groups = Group.all.order(created_at: :desc).page(params[:page]).per(10)
   end
 
   # =====================================

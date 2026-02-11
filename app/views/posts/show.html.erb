@@ -1,77 +1,410 @@
 <div class="container px-5 px-sm-0 mt-4">
+<%# ***** container：レスポンシブコンテナクラス ***** %>
+<%# ***** px-5 px-sm-0：パディング調整（小画面で0、大画面で5） ***** %>
+<%# ***** mt-4：上部マージンを追加 ***** %>
   <div class="row">
+  <%# ***** row：Bootstrapのグリッドシステムを使用する行 ***** %>
     <div class="col-md-8">
+    <%# ***** col-md-8：中画面以上で8列を占めるカラム ***** %>
       <div class="card mb-3">
+      <%# ***** card：Bootstrapのカードコンポーネント ***** %>
+      <%# ***** mb-3：下部マージンを追加 ***** %>
         <div class="card-body">
+        <%# ***** card-body：カードの内容を囲むセクション ***** %>
           <h3 class="card-title"><%= @post.title %></h3>
+          <%# ***** h3：3番目のレベルの見出し ***** %>
+          <%# ***** card-title：カードのタイトルスタイル ***** %>
+          <%# ***** @post.title：投稿のタイトルを表示 ***** %>
           <div class="mb-2 text-muted">
+          <%# ***** div：投稿者情報を囲むセクション ***** %>
+          <%# ***** mb-2：下部マージン ***** %>
+          <%# ***** text-muted：グレー色の文字色 ***** %>
             投稿者: <%= link_to (@post.user.name.presence || @post.user.email), user_path(@post.user) %>
+            <%# ***** link_to：リンクを生成するヘルパー ***** %>
+            <%# ***** @post.user.name.presence：ユーザーネームがあれば表示、なければnil ***** %>
+            <%# ***** @post.user.email：存在しない場合はメールアドレスを表示 ***** %>
+            <%# ***** user_path(@post.user)：ユーザープロフィールページへのパス ***** %>
           </div>
           <div class="mb-2">
+          <%# ***** div：公開状態バッジを囲むセクション ***** %>
+          <%# ***** mb-2：下部マージン ***** %>
             <% if @post.published? %>
+            <%# ***** if：published?メソッドで投稿の公開状態を判定 ***** %>
               <span class="badge badge-success">公開</span>
+              <%# ***** span：バッジを表示するインラインセクション ***** %>
+              <%# ***** badge badge-success：緑色の成功バッジのスタイル ***** %>
             <% else %>
+            <%# ***** else：公開していない場合の分岐 ***** %>
               <span class="badge badge-secondary">下書き</span>
+              <%# ***** badge badge-secondary：グレー色の下書きバッジのスタイル ***** %>
             <% end %>
+            <%# ***** end：if文の終了 ***** %>
           </div>
-          <div class="mb-3">
-            <%= simple_format(@post.body) %>
+          <%# ***** Markdown本文をレンダリング（画像埋め込み・コードブロック対応） ***** %>
+          <%# ***** post-body：本文表示用のスタイルを適用する ***** %>
+          <%# ***** render_post_body：Markdown変換を行うヘルパー ***** %>
+          <%# ***** @post：表示対象の投稿データ ***** %>
+          <div class="mb-3 post-body">
+          <%# ***** div：投稿本文を囲むセクション ***** %>
+          <%# ***** mb-3：下部マージン ***** %>
+          <%# ***** post-body：カスタムスタイルクラス ***** %>
+            <%= render_post_body(@post) %>
+            <%# ***** render_post_body(@post)：Markdown形式の本文をHTMLに変換して表示 ***** %>
           </div>
           <% if @post.respond_to?(:tags) && @post.tags.any? %>
+          <%# ***** if：tagsメソッドが存在し、タグが1つ以上ある場合の条件 ***** %>
+          <%# ***** @post.respond_to?(:tags)：tagsメソッドが定義されているか確認 ***** %>
+          <%# ***** @post.tags.any?：タグが存在するか確認 ***** %>
             <div class="mb-3">
+            <%# ***** div：タグを囲むセクション ***** %>
+            <%# ***** mb-3：下部マージン ***** %>
               <% @post.tags.each do |tag| %>
+              <%# ***** each：タグコレクションをループして各タグを処理 ***** %>
+              <%# ***** tag：ループ内の現在のタグオブジェクト ***** %>
                 <span class="badge badge-info">
+                <%# ***** span：タグバッジを表示するインラインセクション ***** %>
+                <%# ***** badge badge-info：青色の情報バッジのスタイル ***** %>
                   <%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %>
+                  <%# ***** link_to：タグ名へのリンクを生成 ***** %>
+                  <%# ***** tag.name：タグの名前を表示テキストとして使用 ***** %>
+                  <%# ***** tagged_posts_path(tag.name)：そのタグに関連する投稿一覧へのパス ***** %>
+                  <%# ***** class: "text-white"：リンク色を白に設定 ***** %>
                 </span>
               <% end %>
+              <%# ***** end：eachループの終了 ***** %>
             </div>
           <% end %>
+          <%# ***** end：if文の終了 ***** %>
           <div class="d-flex gap-2">
+          <%# ***** div：ボタングループを囲むセクション ***** %>
+          <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+          <%# ***** gap-2：要素間のギャップを設定 ***** %>
             <%= link_to "一覧へ戻る", posts_path, class: "btn btn-outline-secondary btn-sm" %>
+            <%# ***** link_to：リンクを生成するヘルパー ***** %>
+            <%# ***** "一覧へ戻る"：リンクの表示テキスト ***** %>
+            <%# ***** posts_path：投稿一覧へのパス ***** %>
+            <%# ***** class: "btn btn-outline-secondary btn-sm"：ボタンの見た目を指定する ***** %>
             <% if user_signed_in? && (current_user == @post.user || current_user.admin?) %>
+            <%# ***** if：ユーザーがログイン中かつ投稿者または管理者である場合 ***** %>
+            <%# ***** user_signed_in?：ユーザーがログインしているか判定 ***** %>
+            <%# ***** current_user == @post.user：現在のユーザーが投稿者か判定 ***** %>
+            <%# ***** current_user.admin?：現在のユーザーが管理者か判定 ***** %>
               <%= link_to "編集", edit_post_path(@post), class: "btn btn-sm btn-warning" %>
+              <%# ***** link_to：編集ページへのリンクボタン ***** %>
+              <%# ***** "編集"：リンクの表示テキスト ***** %>
+              <%# ***** edit_post_path(@post)：投稿編集ページへのパス ***** %>
+              <%# ***** class: "btn btn-sm btn-warning"：小さい黄色警告ボタンのスタイル ***** %>
               <%= link_to "削除", post_path(@post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-danger" %>
+              <%# ***** link_to：削除アクションへのリンク ***** %>
+              <%# ***** "削除"：リンクの表示テキスト ***** %>
+              <%# ***** post_path(@post)：削除対象の投稿へのパス ***** %>
+              <%# ***** method: :delete：DELETE HTTPメソッドを使用 ***** %>
+              <%# ***** data: { confirm: "..." }：削除前に確認ダイアログを表示 ***** %>
+              <%# ***** class: "btn btn-sm btn-danger"：小さい赤色危険ボタンのスタイル ***** %>
             <% end %>
+            <%# ***** end：if文の終了 ***** %>
           </div>
         </div>
       </div>
 
+      <% if user_signed_in? %>
+      <%# ***** if：ユーザーがログイン中の場合のみコメントフォームを表示 ***** %>
+        <div class="card mb-3">
+        <%# ***** div：コメント追加フォームを囲むカード ***** %>
+        <%# ***** card：Bootstrapのカードコンポーネント ***** %>
+        <%# ***** mb-3：下部マージン ***** %>
+          <div class="card-body">
+          <%# ***** card-body：カードの内容を囲むセクション ***** %>
+            <h5 class="card-title">コメントを追加</h5>
+            <%# ***** h5：5番目のレベルの見出し ***** %>
+            <%# ***** card-title：カードのタイトルスタイル ***** %>
+            <%= form_with(model: [@post, @post.comments.build], local: true) do |f| %>
+            <%# ***** form_with：フォーム生成ヘルパー ***** %>
+            <%# ***** model: [@post, @post.comments.build]：ネストされたコメント新規作成フォーム ***** %>
+            <%# ***** local: true：ターボドライブを無効化してリクエストを通常のHTML送信にする ***** %>
+            <%# ***** |f|：フォームビルダーオブジェクト ***** %>
+              <div class="form-group">
+              <%# ***** div：フォームグループを囲むセクション ***** %>
+              <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+                <%= f.text_area :body, placeholder: 'コメントを入力...', class: 'form-control', rows: 3 %>
+                <%# ***** f.text_area：複数行テキスト入力フィールド ***** %>
+                <%# ***** :body：コメントボディ属性を対象 ***** %>
+                <%# ***** placeholder: 'コメントを入力...'：入力前に表示されるプレースホルダーテキスト ***** %>
+                <%# ***** class: 'form-control'：Bootstrapのフォームコントロールスタイル ***** %>
+                <%# ***** rows: 3：テキストエリアの高さを3行に設定 ***** %>
+              </div>
+              <%= f.submit 'コメントを投稿', class: 'btn btn-primary' %>
+              <%# ***** f.submit：フォーム送信ボタン ***** %>
+              <%# ***** 'コメントを投稿'：ボタンのテキスト ***** %>
+              <%# ***** class: 'btn btn-primary'：青色のプライマリボタンのスタイル ***** %>
+            <% end %>
+            <%# ***** end：form_withブロックの終了 ***** %>
+          </div>
+        </div>
+      <% end %>
+      <%# ***** end：if文の終了 ***** %>
+
       <div class="card">
+      <%# ***** div：コメント一覧を囲むカード ***** %>
+      <%# ***** card：Bootstrapのカードコンポーネント ***** %>
         <div class="card-body">
+        <%# ***** card-body：カードの内容を囲むセクション ***** %>
           <h5 class="card-title">コメント</h5>
+          <%# ***** h5：5番目のレベルの見出し ***** %>
+          <%# ***** card-title：カードのタイトルスタイル ***** %>
           <% if @post.comments.any? %>
+          <%# ***** if：投稿にコメントが存在するか判定 ***** %>
+          <%# ***** @post.comments.any?：1つ以上のコメントが存在するか確認 ***** %>
             <ul class="list-group list-group-flush">
+            <%# ***** ul：順序なしリスト ***** %>
+            <%# ***** list-group list-group-flush：Bootstrapのリストグループスタイル（ボーダー削除） ***** %>
               <% @post.comments.each do |comment| %>
+              <%# ***** each：コメントコレクションをループして各コメントを処理 ***** %>
+              <%# ***** comment：ループ内の現在のコメントオブジェクト ***** %>
                 <li class="list-group-item">
+                <%# ***** li：リストアイテム ***** %>
+                <%# ***** list-group-item：Bootstrapのリストグループアイテムスタイル ***** %>
                   <div class="d-flex justify-content-between">
+                  <%# ***** div：コメントヘッダー（ユーザー名と日付）を囲むセクション ***** %>
+                  <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+                  <%# ***** justify-content-between：要素を両端に配置 ***** %>
                     <strong><%= comment.user&.name.presence || comment.user&.email %></strong>
-                    <span class="text-muted"><%= comment.created_at.strftime("%Y/%m/%d") %></span>
+                    <%# ***** strong：コメント投稿者の名前を太字で表示 ***** %>
+                    <%# ***** comment.user&.name.presence：セーフナビゲーションでユーザー名を取得、存在確認 ***** %>
+                    <%# ***** comment.user&.email：ユーザーが存在しないまたは名前がない場合はメールアドレスを表示 ***** %>
+                    <span class="text-muted"><%= comment.created_at&.strftime("%Y/%m/%d") %></span>
+                    <%# ***** span：コメント投稿日時を表示するインラインセクション ***** %>
+                    <%# ***** text-muted：グレー色の文字色 ***** %>
+                    <%# ***** comment.created_at&.strftime("%Y/%m/%d")：セーフナビゲーションで作成日時を指定形式で表示 ***** %>
                   </div>
                   <div><%= simple_format(comment.body) %></div>
+                  <%# ***** div：コメント本文を囲むセクション ***** %>
+                  <%# ***** simple_format：改行やHTMLタグを保持しながらフォーマット ***** %>
+                  <%# ***** comment.body：コメントの本文内容 ***** %>
+                  <% if user_signed_in? && (current_user == comment.user || current_user.admin?) %>
+                  <%# ***** if：ユーザーがログイン中かつコメント投稿者または管理者である場合 ***** %>
+                  <%# ***** user_signed_in?：ユーザーがログインしているか判定 ***** %>
+                  <%# ***** current_user == comment.user：現在のユーザーがコメント投稿者か判定 ***** %>
+                  <%# ***** current_user.admin?：現在のユーザーが管理者か判定 ***** %>
+                    <div class="mt-2">
+                    <%# ***** div：コメント削除ボタンを囲むセクション ***** %>
+                    <%# ***** mt-2：上部マージンを追加 ***** %>
+                      <% if comment.id.present? %>
+                        <%= link_to 'コメント削除', post_comment_path(@post, comment), method: :delete, data: { confirm: 'コメントを削除しますか？' }, class: 'btn btn-sm btn-danger' %>
+                      <% end %>
+                      <%# ***** link_to：コメント削除アクションへのリンク ***** %>
+                      <%# ***** 'コメント削除'：リンクの表示テキスト ***** %>
+                      <%# ***** post_comment_path(@post, comment)：コメント削除のパス ***** %>
+                      <%# ***** method: :delete：DELETE HTTPメソッドを使用 ***** %>
+                      <%# ***** data: { confirm: '...' }：削除前に確認ダイアログを表示 ***** %>
+                      <%# ***** class: 'btn btn-sm btn-danger'：小さい赤色危険ボタンのスタイル ***** %>
+                    </div>
+                  <% end %>
+                  <%# ***** end：if文の終了 ***** %>
                 </li>
               <% end %>
+              <%# ***** end：eachループの終了 ***** %>
             </ul>
           <% else %>
+          <%# ***** else：コメントが存在しない場合 ***** %>
             <p class="text-muted">コメントはまだありません。</p>
+            <%# ***** p：段落タグ ***** %>
+            <%# ***** text-muted：グレー色の文字色 ***** %>
           <% end %>
+          <%# ***** end：if文の終了 ***** %>
         </div>
       </div>
     </div>
 
     <div class="col-md-4">
+    <%# ***** col-md-4：中画面以上で4列を占めるサイドバーカラム ***** %>
       <div class="card">
+      <%# ***** card：Bootstrapのカードコンポーネント ***** %>
         <div class="card-body">
+        <%# ***** card-body：カードの内容を囲むセクション ***** %>
           <h6 class="card-title">投稿情報</h6>
+          <%# ***** h6：6番目のレベルの見出し（最も小さい見出し） ***** %>
+          <%# ***** card-title：カードのタイトルスタイル ***** %>
           <div class="d-flex justify-content-between">
+          <%# ***** div：投稿情報アイテム（作成日）を囲むセクション ***** %>
+          <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+          <%# ***** justify-content-between：要素を両端に配置 ***** %>
             <span>作成日</span>
+            <%# ***** span：ラベルテキスト ***** %>
             <strong><%= @post.created_at.strftime("%Y/%m/%d") %></strong>
+            <%# ***** strong：作成日時を太字で表示 ***** %>
+            <%# ***** @post.created_at.strftime("%Y/%m/%d")：投稿作成日時を指定形式で表示 ***** %>
           </div>
           <div class="d-flex justify-content-between mt-2">
+          <%# ***** div：投稿情報アイテム（更新日）を囲むセクション ***** %>
+          <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+          <%# ***** justify-content-between：要素を両端に配置 ***** %>
+          <%# ***** mt-2：上部マージンを追加 ***** %>
             <span>更新日</span>
+            <%# ***** span：ラベルテキスト ***** %>
             <strong><%= @post.updated_at.strftime("%Y/%m/%d") %></strong>
+            <%# ***** strong：更新日時を太字で表示 ***** %>
+            <%# ***** @post.updated_at.strftime("%Y/%m/%d")：投稿更新日時を指定形式で表示 ***** %>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <%# ***** /div.row：行要素を閉じる ***** %>
+
+  <script>
+  <%# ***** コードブロックにコピー機能を付与するJavaScript ***** %>
+    const initCodeCopyButtons = () => {
+    <%# ***** initCodeCopyButtons()：投稿詳細のコードコピー初期化 ***** %>
+      const body = document.querySelector('.post-body');
+      <%# ***** post-body：投稿本文のコンテナを取得 ***** %>
+      if (!body) return;
+      <%# ***** if (!body)：本文が存在しない場合は終了 ***** %>
+      if (body.dataset.copyInit === 'true') return;
+      <%# ***** 二重初期化を防止 ***** %>
+      body.dataset.copyInit = 'true';
+      <%# ***** data属性で初期化済みを記録 ***** %>
+
+      const blocks = body.querySelectorAll('pre');
+      <%# ***** pre：コードブロック要素をすべて取得 ***** %>
+      blocks.forEach((block) => {
+      <%# ***** forEach()：各コードブロックに対して処理 ***** %>
+        const wrapper = document.createElement('div');
+        <%# ***** wrapper：コードブロックを包むラッパー要素 ***** %>
+        wrapper.style.position = 'relative';
+        <%# ***** position：ボタン重ね表示の基準にする ***** %>
+
+        const button = document.createElement('button');
+        <%# ***** button：コピー用ボタンを作成 ***** %>
+        button.type = 'button';
+        <%# ***** type="button"：フォーム送信を防止 ***** %>
+        button.className = 'btn btn-sm btn-outline-secondary';
+        <%# ***** className：小さめのグレー枠ボタン ***** %>
+        button.textContent = '全文コピーする';
+        <%# ***** textContent：ボタン表示テキスト ***** %>
+        button.style.position = 'absolute';
+        <%# ***** position：ボタンを重ね配置 ***** %>
+        button.style.top = '6px';
+        <%# ***** top：上端の位置 ***** %>
+        button.style.right = '6px';
+        <%# ***** right：右端の位置 ***** %>
+        button.style.zIndex = '2';
+        <%# ***** zIndex：コードブロックより前面に表示 ***** %>
+
+        const copyToClipboard = (text) => {
+        <%# ***** copyToClipboard()：クリップボードに文字列をコピー ***** %>
+          if (navigator.clipboard && window.isSecureContext) {
+          <%# ***** navigator.clipboard：モダンAPIが使える場合 ***** %>
+            navigator.clipboard.writeText(text);
+            <%# ***** writeText()：文字列をコピー ***** %>
+            return;
+            <%# ***** return：処理終了 ***** %>
+          }
+          const temp = document.createElement('textarea');
+          <%# ***** textarea：フォールバック用の一時要素 ***** %>
+          temp.value = text;
+          <%# ***** value：コピー対象文字列 ***** %>
+          document.body.appendChild(temp);
+          <%# ***** bodyに一時要素を追加 ***** %>
+          temp.select();
+          <%# ***** select()：テキスト選択 ***** %>
+          document.execCommand('copy');
+          <%# ***** execCommand('copy')：旧APIでコピー ***** %>
+          document.body.removeChild(temp);
+          <%# ***** 一時要素を削除 ***** %>
+        };
+
+        button.addEventListener('click', function () {
+        <%# ***** click：クリック時にコピー ***** %>
+          const code = block.textContent || '';
+          <%# ***** textContent：コードブロックの文字列を取得 ***** %>
+          copyToClipboard(code);
+          <%# ***** copyToClipboard()：コピー実行 ***** %>
+        });
+
+        block.parentNode.insertBefore(wrapper, block);
+        <%# ***** insertBefore：ラッパーをコードブロックの直前に挿入 ***** %>
+        wrapper.appendChild(button);
+        <%# ***** appendChild()：ボタンをラッパー内へ追加 ***** %>
+        wrapper.appendChild(block);
+        <%# ***** appendChild()：コードブロックをラッパー内へ移動 ***** %>
+      });
+    };
+    <%# ***** initCodeCopyButtons()：初期化関数を定義 ***** %>
+
+    document.addEventListener('DOMContentLoaded', initCodeCopyButtons);
+    <%# ***** DOMContentLoaded：通常のページ読み込み時に初期化 ***** %>
+    document.addEventListener('turbolinks:load', initCodeCopyButtons);
+    <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
+  </script>
+
+  <style>
+  <%# ***** CSS：投稿表示のスタイルを定義 ***** %>
+    .post-body {
+    <%# ***** .post-body：本文コンテナのスタイル ***** %>
+      line-height: 1.8;
+      <%# ***** line-height：行の高さを広げて読みやすくする ***** %>
+      font-size: 1.1rem;
+      <%# ***** font-size：文字サイズを調整 ***** %>
+    }
+
+    .post-body .media-card {
+    <%# ***** .media-card：本文内の画像カードのスタイル ***** %>
+      border: 1px solid #e9ecef;
+      <%# ***** border：薄いグレー枠線 ***** %>
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      <%# ***** box-shadow：軽いドロップシャドウ ***** %>
+      transition: transform 0.2s, box-shadow 0.2s;
+      <%# ***** transition：ホバー効果をスムーズにするアニメーション ***** %>
+    }
+
+    .post-body .media-card:hover {
+    <%# ***** :hover：ホバー時のスタイル ***** %>
+      transform: translateY(-2px);
+      <%# ***** transform：カードを上に2px移動（浮遊効果） ***** %>
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      <%# ***** box-shadow：より強いドロップシャドウ ***** %>
+    }
+
+    .post-body .code-card {
+    <%# ***** .code-card：本文内のコードカードのスタイル ***** %>
+      border: 1px solid #dee2e6;
+      <%# ***** border：薄いグレー枠線 ***** %>
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      <%# ***** box-shadow：軽いドロップシャドウ ***** %>
+      background-color: #f8f9fa;
+      <%# ***** background-color：薄いグレー背景 ***** %>
+    }
+
+    .post-body pre {
+    <%# ***** pre：コードブロックのスタイル ***** %>
+      background-color: #f5f5f5;
+      <%# ***** background-color：淡いグレー背景 ***** %>
+      color: #000;
+      <%# ***** color：コード文字色を黒に設定 ***** %>
+      border: 1px solid #000;
+      <%# ***** border：外枠を黒に設定 ***** %>
+      border-radius: 4px;
+      <%# ***** border-radius：角丸 ***** %>
+      overflow-x: auto;
+      <%# ***** overflow-x：横スクロール可能 ***** %>
+      padding: 12px;
+      <%# ***** padding：内部スペース ***** %>
+      font-size: 0.9rem;
+      <%# ***** font-size：コードの文字サイズを少し小さく ***** %>
+      line-height: 1.4;
+      <%# ***** line-height：コード行の高さ ***** %>
+    }
+
+    .post-body img {
+    <%# ***** img：本文内の画像のスタイル ***** %>
+      max-width: 100%;
+      <%# ***** max-width：親要素を超えないように制限 ***** %>
+      height: auto;
+      <%# ***** height：アスペクト比を保持 ***** %>
+      border-radius: 4px;
+      <%# ***** border-radius：角丸 ***** %>
+    }
+  </style>
 </div>
+<%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

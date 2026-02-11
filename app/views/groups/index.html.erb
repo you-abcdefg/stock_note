@@ -17,10 +17,15 @@
               <%= truncate(group.description, length: 100) %>
             </p>
             <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">
-                投稿数: <%= group.posts.count %>件 | 
-                メンバー: <%= group.users.count %>人
-              </small>
+              <div>
+                <small class="text-muted">
+                  投稿数: <%= group.posts.count %>件 | 
+                  メンバー: <%= group.users.count %>人
+                </small>
+                <% if user_signed_in? && current_user.group_memberships.exists?(group: group) %>
+                  <span class="badge badge-success">所属中</span>
+                <% end %>
+              </div>
               <div>
                 <%= link_to '詳細', group_path(group), class: 'btn btn-sm btn-info' %>
                 <% if current_user&.admin? %>

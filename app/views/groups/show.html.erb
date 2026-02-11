@@ -9,12 +9,19 @@
         <span class="badge badge-success">メンバー: <%= @group.users.count %>人</span>
       </div>
 
-      <% if current_user&.admin? %>
-        <div class="mb-4">
+      <div class="mb-4">
+        <% if user_signed_in? %>
+          <% if current_user.group_memberships.exists?(group: @group) %>
+            <%= link_to 'グループから退出', leave_group_path(@group), method: :delete, class: 'btn btn-secondary' %>
+          <% else %>
+            <%= link_to 'グループに参加', join_group_path(@group), method: :post, class: 'btn btn-primary' %>
+          <% end %>
+        <% end %>
+        <% if current_user&.admin? %>
           <%= link_to '編集', edit_group_path(@group), class: 'btn btn-warning' %>
           <%= link_to '削除', group_path(@group), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
 
       <h3 class="mt-4">このグループの投稿</h3>
       <% if @group.posts.published.any? %>

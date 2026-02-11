@@ -24,7 +24,7 @@ class User < ApplicationRecord
 
   # Ransack 検索許可設定
   def self.ransackable_attributes(auth_object = nil)
-    ["name", "email", "created_at"]
+    ["name", "email", "role", "created_at"]
   end
 
   def self.ransackable_associations(auth_object = nil)

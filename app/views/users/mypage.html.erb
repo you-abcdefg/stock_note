@@ -1,0 +1,121 @@
+<div class="container mt-5">
+  <div class="row">
+    <!-- ===== プロフィール情報 ===== -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <!-- ユーザーアバター -->
+          <div class="mb-3">
+            <i class="fas fa-user-circle fa-5x text-primary"></i>
+          </div>
+
+          <!-- ユーザー情報 -->
+          <h3 class="card-title"><%= @user.name %></h3>
+          <p class="text-muted"><%= @user.email %></p>
+
+          <!-- ロール表示 -->
+          <div class="mb-3">
+            <% if @user.admin? %>
+              <span class="badge badge-danger">管理者</span>
+            <% elsif @user.guest? %>
+              <span class="badge badge-secondary">ゲスト</span>
+            <% else %>
+              <span class="badge badge-primary">一般ユーザー</span>
+            <% end %>
+          </div>
+
+          <!-- 登録日時 -->
+          <p class="text-muted small">
+            登録日時: <%= @user.created_at.strftime("%Y年%m月%d日") %>
+          </p>
+
+          <!-- アクションボタン -->
+          <div class="btn-group d-flex gap-2 mt-4" role="group">
+            <%= link_to "編集", edit_user_path(@user), class: "btn btn-primary btn-sm flex-grow-1" %>
+            <%= link_to "ユーザー一覧", users_path, class: "btn btn-outline-secondary btn-sm flex-grow-1" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== マイページ投稿一覧 ===== -->
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">
+            <i class="fas fa-file-alt"></i> マイ投稿
+            <span class="badge badge-light ml-2"><%= @posts.count %></span>
+          </h5>
+          <%= link_to "新規投稿", new_post_path, class: "btn btn-sm btn-outline-light" %>
+        </div>
+
+        <div class="card-body">
+          <% if @posts.any? %>
+            <div class="list-group list-group-flush">
+              <% @posts.each do |post| %>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                      <h6 class="mb-0">
+                        <%= link_to post.title, post_path(post), class: "text-decoration-none" %>
+                      </h6>
+                      <!-- ステータスバッジ -->
+                      <% if post.status == "published" %>
+                        <span class="badge badge-success ml-2">公開</span>
+                      <% elsif post.status == "draft" %>
+                        <span class="badge badge-warning ml-2">下書き</span>
+                      <% end %>
+                    </div>
+                    <p class="text-muted small mb-1">
+                      <%= truncate(strip_tags(post.content), length: 100) %>
+                    </p>
+                    <small class="text-muted">
+                      更新: <%= post.updated_at.strftime("%Y年%m月%d日 %H:%M") %>
+                    </small>
+                  </div>
+                  <div class="ml-3">
+                    <%= link_to post_path(post), class: "btn btn-sm btn-outline-primary" do %>
+                      <i class="fas fa-eye"></i>
+                    <% end %>
+                    <%= link_to edit_post_path(post), class: "btn btn-sm btn-outline-secondary" do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+                    <%= link_to post_path(post), method: :delete, data: { confirm: "削除しますか？" }, class: "btn btn-sm btn-outline-danger" do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="alert alert-info text-center" role="alert">
+              <i class="fas fa-info-circle"></i> 投稿がまだありません。
+              <%= link_to "最初の投稿を作成してみましょう", new_post_path, class: "alert-link" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    border: none;
+    border-radius: 8px;
+  }
+
+  .list-group-item {
+    border: none;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 0;
+  }
+
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+
+  .gap-2 {
+    gap: 0.5rem;
+  }
+</style>

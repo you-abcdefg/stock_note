@@ -1,0 +1,198 @@
+<%# ***** pages/about.html.erb - Aboutページ ***** %>
+<%# ***** 【このファイルの役割】 ***** %>
+<%# ***** Stock Note アプリケーションの説明と情報を表示 ***** %>
+
+<div class="container mt-5">
+  <div class="row mb-5">
+    <div class="col-lg-8 offset-lg-2">
+      <h1 class="mb-4">Stock Note について</h1>
+      
+      <%# ***** アプリケーション説明 ***** %>
+      <section class="mb-5">
+        <h3 class="border-bottom pb-3 mb-4">
+          <i class="fas fa-info-circle"></i> Stock Note とは
+        </h3>
+        <p class="lead">Stock Note は、株式投資家向けのコミュニティプラットフォームです。</p>
+        <p>
+          投資家同士が分析レポート、投資アイデア、市場の見方などを自由に共有し、
+          互いに学び合うための場を提供します。個人投資家から機関投資家まで、
+          様々なバックグラウンドを持つユーザーが参加できます。
+        </p>
+      </section>
+
+      <%# ***** コア機能 ***** %>
+      <section class="mb-5">
+        <h3 class="border-bottom pb-3 mb-4">
+          <i class="fas fa-star"></i> コア機能
+        </h3>
+        <div class="list-group">
+          <div class="list-group-item">
+            <h5 class="mb-2">
+              <i class="fas fa-comments text-primary"></i> 投稿機能
+            </h5>
+            <p class="mb-0">
+              テキストベースの投稿で、投資分析、市場トレンド、銘柄情報などを共有できます。
+              各投稿にはタグを付けられ、検索も容易です。
+            </p>
+          </div>
+          <div class="list-group-item">
+            <h5 class="mb-2">
+              <i class="fas fa-users-cog text-info"></i> グループ機能
+            </h5>
+            <p class="mb-0">
+              特定のテーマやセクターについて深く討論するためのグループを作成できます。
+              グループメンバーのみが参加できるコミュニティです。
+            </p>
+          </div>
+          <div class="list-group-item">
+            <h5 class="mb-2">
+              <i class="fas fa-comments-dots text-success"></i> コメント機能
+            </h5>
+            <p class="mb-0">
+              投稿に対してコメントを付け、他のユーザーと意見交換ができます。
+              活発な議論を通じて、知見を深めることができます。
+            </p>
+          </div>
+          <div class="list-group-item">
+            <h5 class="mb-2">
+              <i class="fas fa-heart text-danger"></i> いいね機能
+            </h5>
+            <p class="mb-0">
+              有用な投稿にいいねをつけて評価できます。
+              いいね数が多い投稿は、コミュニティから支持されています。
+            </p>
+          </div>
+          <div class="list-group-item">
+            <h5 class="mb-2">
+              <i class="fas fa-search text-warning"></i> 検索・タグ機能
+            </h5>
+            <p class="mb-0">
+              投稿やユーザーをキーワードやタグで検索できます。
+              興味のあるテーマの投稿を簡単に見つけられます。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <%# ***** ご利用ガイド ***** %>
+      <section class="mb-5">
+        <h3 class="border-bottom pb-3 mb-4">
+          <i class="fas fa-book"></i> ご利用ガイド
+        </h3>
+        <div class="accordion" id="guideAccordion">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  新規登録のステップ
+                </button>
+              </h5>
+            </div>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#guideAccordion">
+              <div class="card-body">
+                <ol>
+                  <li>「新規登録」ボタンをクリック</li>
+                  <li>メールアドレス、ユーザー名、パスワードを入力</li>
+                  <li>メール確認リンクをクリック</li>
+                  <li>登録完了 - すぐに投稿を始められます</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  初めての投稿
+                </button>
+              </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#guideAccordion">
+              <div class="card-body">
+                <ol>
+                  <li>ヘッダーから「新規投稿を作成」をクリック</li>
+                  <li>投稿タイトルと本文を入力</li>
+                  <li>ステータス（公開/非公開）を選択</li>
+                  <li>タグを選択または作成</li>
+                  <li>「投稿する」をクリック</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingThree">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  グループへの参加
+                </button>
+              </h5>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#guideAccordion">
+              <div class="card-body">
+                <ol>
+                  <li>「グループ」メニューから興味のあるグループを探す</li>
+                  <li>グループの詳細ページで「参加」ボタンをクリック</li>
+                  <li>グループの投稿や議論に参加できます</li>
+                  <li>退出する場合は「退出」ボタンをクリック</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <%# ***** 利用規約とポリシー ***** %>
+      <section class="mb-5">
+        <h3 class="border-bottom pb-3 mb-4">
+          <i class="fas fa-gavel"></i> 利用規約とポリシー
+        </h3>
+        <div class="alert alert-info" role="alert">
+          <p class="mb-2"><strong>免責事項：</strong></p>
+          <p class="mb-0">
+            Stock Noteに掲載される投稿やコメントは、ユーザーの個人的な見方であり、
+            金融・投資のアドバイスではありません。投資判断は自己責任で行ってください。
+            当プラットフォームは、ユーザーの投資判断による損失について責任を負いません。
+          </p>
+        </div>
+
+        <div class="alert alert-warning" role="alert">
+          <p class="mb-2"><strong>行為規範：</strong></p>
+          <ul class="mb-0">
+            <li>他のユーザーを尊重する態度で投稿してください</li>
+            <li>根拠のない誹謗中傷や詐欺的な情報の投稿は禁止です</li>
+            <li>著作権を侵害する内容の投稿は禁止です</li>
+            <li>スパム、広告目的の投稿は禁止です</li>
+          </ul>
+        </div>
+      </section>
+
+      <%# ***** サポート ***** %>
+      <section class="mb-5">
+        <h3 class="border-bottom pb-3 mb-4">
+          <i class="fas fa-headset"></i> サポート
+        </h3>
+        <p>
+          Stock Note の使い方について質問や、
+          問題が発生した場合は、管理者にお問い合わせください。
+        </p>
+      </section>
+
+      <%# ***** ボタン ***** %>
+      <div class="text-center mt-5 pt-3 border-top">
+        <p class="mb-3">Stock Note の詳細をご確認いただきました。</p>
+        <% if user_signed_in? %>
+          <div class="btn-group" role="group">
+            <%= link_to 'トップに戻る', root_path, class: 'btn btn-primary' %>
+            <%= link_to '投稿一覧を見る', posts_path, class: 'btn btn-info' %>
+          </div>
+        <% else %>
+          <div class="btn-group" role="group">
+            <%= link_to 'トップに戻る', root_path, class: 'btn btn-primary' %>
+            <%= link_to 'ログイン', new_user_session_path, class: 'btn btn-secondary' %>
+            <%= link_to '新規登録', new_user_registration_path, class: 'btn btn-success' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

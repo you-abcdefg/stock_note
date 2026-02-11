@@ -1,44 +1,808 @@
 <div class="container px-5 px-sm-0 mt-4">
+<%# ***** container：レスポンシブコンテナクラス ***** %>
+<%# ***** px-5 px-sm-0：パディング調整（小画面で0、大画面で5） ***** %>
+<%# ***** mt-4：上部マージンを追加 ***** %>
   <div class="row">
+  <%# ***** row：Bootstrapのグリッドシステムを使用する行 ***** %>
     <div class="col-md-12">
+    <%# ***** col-md-12：全幅を占めるカラム ***** %>
       <h2>投稿を作成</h2>
-      <%= form_with(model: @post, local: true) do |form| %>
+      <%# ***** h2：2番目のレベルの見出し ***** %>
+
+      <%# ***** 画像URLマップをJavaScriptで利用できるようにする ***** %>
+      <script>
+        window.imageUrlMap = {
+          <% @post.images.each do |image| %>
+            '<%= image.filename %>': '<%= url_for(image) %>',
+          <% end %>
+        };
+      </script>
+
+      <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
+      <%# ***** form_with：投稿フォーム生成ヘルパー ***** %>
+      <%# ***** model: @post：Postモデルをフォームに紐づける ***** %>
+      <%# ***** local: true：Turboドライブを無効化して同期通信で送信 ***** %>
+      <%# ***** html: { multipart: true }：ファイルアップロードを有効化 ***** %>
+
         <% if @post.errors.any? %>
+        <%# ***** if：投稿にエラーがある場合の条件 ***** %>
+        <%# ***** @post.errors.any?：1つ以上のエラーが存在するか判定 ***** %>
           <div class="alert alert-danger">
+          <%# ***** div：エラーメッセージを囲む警告アラート ***** %>
+          <%# ***** alert alert-danger：赤色の危険アラートのスタイル ***** %>
             <h4><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h4>
+            <%# ***** h4：4番目のレベルの見出し ***** %>
+            <%# ***** pluralize：数に応じて単数・複数形を使い分ける ***** %>
+            <%# ***** @post.errors.count：エラー数を取得 ***** %>
             <ul>
+            <%# ***** ul：順序なしリスト ***** %>
               <% @post.errors.full_messages.each do |message| %>
+              <%# ***** each：エラーメッセージをループして各メッセージを処理 ***** %>
+              <%# ***** message：ループ内の現在のエラーメッセージ ***** %>
                 <li><%= message %></li>
+                <%# ***** li：リストアイテム ***** %>
+                <%# ***** message：エラーメッセージを表示 ***** %>
               <% end %>
+              <%# ***** end：eachループの終了 ***** %>
             </ul>
           </div>
         <% end %>
+        <%# ***** end：if文の終了 ***** %>
 
         <div class="form-group mb-3">
+        <%# ***** div：タイトル入力フォームグループ ***** %>
+        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+        <%# ***** mb-3：下部マージンを追加 ***** %>
           <%= form.label :title %>
+          <%# ***** form.label：タイトル入力フィールドのラベルを表示 ***** %>
+          <%# ***** :title：ラベル対象属性 ***** %>
           <%= form.text_field :title, class: "form-control" %>
+          <%# ***** form.text_field：単一行テキスト入力フィールド ***** %>
+          <%# ***** :title：投稿タイトル属性を対象 ***** %>
+          <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
 
         <div class="form-group mb-3">
+        <%# ***** div：本文入力フォームグループ ***** %>
+        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+        <%# ***** mb-3：下部マージンを追加 ***** %>
           <%= form.label :body, "本文" %>
-          <%= form.text_area :body, rows: 10, class: "form-control" %>
+          <%# ***** form.label：本文入力フィールドのラベルを表示 ***** %>
+          <%# ***** :body：ラベル対象属性 ***** %>
+          <%# ***** "本文"：ラベルのテキスト ***** %>
+          <div id="body-editor" contenteditable="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;"></div>
+          <%# ***** div contenteditable：テキスト編集可能なdiv（textareaの代わり） ***** %>
+          <%# ***** id="body-editor"：JavaScriptで参照するID ***** %>
+          <%# ***** contenteditable="true"：ユーザーが編集可能に ***** %>
+          <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
+          <%# ***** style: min-height, max-height等：表示を調整 ***** %>
+          <input type="hidden" id="body-hidden" name="post[body]" value="">
+          <%# ***** input hidden：フォーム送信時に本文を格納する隠れたフィールド ***** %>
+          <%# ***** name="post[body]"：Railsフォームパラメータ ***** %>
+          <div class="mt-2">
+          <%# ***** div：本文挿入ボタンを配置する行 ***** %>
+          <%# ***** mt-2：上部マージンを追加 ***** %>
+            <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
+            <%# ***** button：本文中へ画像記法を挿入するボタン ***** %>
+            <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
+            <%# ***** class: "btn btn-sm btn-outline-primary mr-2"：小さめの青枠ボタン + 右マージン ***** %>
+            <%# ***** id="insert-image-button"：JavaScriptで参照するID ***** %>
+              画像を挿入
+              <%# ***** ボタンの表示テキスト ***** %>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="insert-code-button">
+            <%# ***** button：本文中へコードブロック記法を挿入するボタン ***** %>
+            <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
+            <%# ***** class: "btn btn-sm btn-outline-secondary"：小さめのグレー枠ボタン ***** %>
+            <%# ***** id="insert-code-button"：JavaScriptで参照するID ***** %>
+              コードを挿入
+              <%# ***** ボタンの表示テキスト ***** %>
+            </button>
+          </div>
+          <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
+          <style>
+            #body-editor {
+              <%# ***** overflow-y: auto：縦方向のスクロールを許可 ***** %>
+              overflow-y: auto;
+              <%# ***** overflow-x: hidden：横方向のはみ出しを隠す ***** %>
+              overflow-x: hidden;
+              <%# ***** word-break: break-word：単語途中での改行を許可 ***** %>
+              word-break: break-word;
+              <%# ***** word-wrap: break-word：長い単語を折り返す ***** %>
+              word-wrap: break-word;
+              <%# ***** line-height: 1.6：行の高さを広めに設定 ***** %>
+              line-height: 1.6;
+              <%# ***** padding: 10px 12px：内側余白を上下左右に付与 ***** %>
+              padding: 10px 12px;
+              <%# ***** box-sizing: border-box：paddingを幅/高さに含める ***** %>
+              box-sizing: border-box;
+            }
+            <%# ***** .card-spacer：カードとテキストの間隔調整用スペーサー ***** %>
+            #body-editor .card-spacer {
+              <%# ***** display: inline-block：インライン要素として配置 ***** %>
+              display: inline-block;
+              <%# ***** width: 12px：横方向の空白幅 ***** %>
+              width: 12px;
+              <%# ***** height: 1px：高さを最小化 ***** %>
+              height: 1px;
+            }
+            <%# ***** .media-card：画像カードのコンテナ ***** %>
+            #body-editor .media-card {
+              <%# ***** display: inline-flex：インラインでフレックス配置 ***** %>
+              display: inline-flex;
+              <%# ***** margin: 0 12px 8px 0：外側余白を調整 ***** %>
+              margin: 0 12px 8px 0;
+              <%# ***** vertical-align: top：上端揃え ***** %>
+              vertical-align: top;
+              <%# ***** cursor: pointer：ホバー時にポインタ表示 ***** %>
+              cursor: pointer;
+              <%# ***** border: 1px solid #e9ecef：枠線を薄く表示 ***** %>
+              border: 1px solid #e9ecef;
+              <%# ***** border-radius: 3px：角丸 ***** %>
+              border-radius: 3px;
+              <%# ***** background: white：背景色を白に設定 ***** %>
+              background: white;
+              <%# ***** position: relative：絶対配置ボタンの基準 ***** %>
+              position: relative;
+              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
+              transition: all 0.2s;
+              <%# ***** width: 100px：カードの横幅 ***** %>
+              width: 100px;
+              <%# ***** height: 72px：カードの縦幅 ***** %>
+              height: 72px;
+              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              overflow: hidden;
+              <%# ***** top: 0：上方向の位置調整 ***** %>
+              top: 0;
+              <%# ***** font-size: 0：余白文字の影響を防止 ***** %>
+              font-size: 0;
+              <%# ***** align-items: stretch：子要素を高さに合わせる ***** %>
+              align-items: stretch;
+            }
+            <%# ***** .media-card:hover：ホバー時の装飾 ***** %>
+            #body-editor .media-card:hover {
+              <%# ***** border-color: #0d6efd：枠線色を強調 ***** %>
+              border-color: #0d6efd;
+              <%# ***** box-shadow：影を付けて浮き上がり感を出す ***** %>
+              box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            }
+            <%# ***** .media-card img：画像の表示設定 ***** %>
+            #body-editor .media-card img {
+              <%# ***** width: 100%：横幅をカードに合わせる ***** %>
+              width: 100%;
+              <%# ***** height: 100%：縦幅をカードに合わせる ***** %>
+              height: 100%;
+              <%# ***** object-fit: cover：縦横比を保ちトリミング ***** %>
+              object-fit: cover;
+              <%# ***** border-radius: 2px：画像の角丸 ***** %>
+              border-radius: 2px;
+              <%# ***** display: block：余白のないブロック表示 ***** %>
+              display: block;
+            }
+            <%# ***** .media-card .filename：ファイル名表示（現在は非表示） ***** %>
+            #body-editor .media-card .filename {
+              <%# ***** display: none：ファイル名を非表示 ***** %>
+              display: none;
+            }
+            <%# ***** .code-card：コードカードのコンテナ ***** %>
+            #body-editor .code-card {
+              <%# ***** display: block：ブロック要素として配置 ***** %>
+              display: block;
+              <%# ***** margin: 8px 0：上下余白を設定 ***** %>
+              margin: 8px 0;
+              <%# ***** padding: 6px 6px 6px 12px：内側余白を調整 ***** %>
+              padding: 6px 6px 6px 12px;
+              <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
+              background: #f8f9fa;
+              <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
+              border-left: 3px solid #0d6efd;
+              <%# ***** border-radius: 3px：角丸 ***** %>
+              border-radius: 3px;
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              cursor: pointer;
+              <%# ***** position: relative：ボタン配置の基準 ***** %>
+              position: relative;
+              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              overflow: hidden;
+              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
+              transition: all 0.2s;
+              <%# ***** font-size: 0.75rem：文字サイズ ***** %>
+              font-size: 0.75rem;
+            }
+            <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
+            #body-editor .code-card:hover {
+              <%# ***** background: #e7f1ff：背景色を強調 ***** %>
+              background: #e7f1ff;
+              <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
+              border-left-color: #0056b3;
+            }
+            <%# ***** .code-card pre：コード表示のテキスト領域 ***** %>
+            #body-editor .code-card pre {
+              <%# ***** margin: 0：余白をリセット ***** %>
+              margin: 0;
+              <%# ***** font-size: 0.75rem：文字サイズ ***** %>
+              font-size: 0.75rem;
+              <%# ***** line-height: 1.4：行の高さ ***** %>
+              line-height: 1.4;
+              <%# ***** white-space: nowrap：1行表示に固定 ***** %>
+              white-space: nowrap;
+              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              overflow: hidden;
+              <%# ***** text-overflow: ellipsis：省略記号を表示 ***** %>
+              text-overflow: ellipsis;
+            }
+            <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
+            #body-editor .card-delete-btn {
+              <%# ***** position: absolute：カード右上に配置 ***** %>
+              position: absolute;
+              <%# ***** top: 2px：上からの位置 ***** %>
+              top: 2px;
+              <%# ***** right: 2px：右からの位置 ***** %>
+              right: 2px;
+              <%# ***** padding: 1px 3px：内側余白 ***** %>
+              padding: 1px 3px;
+              <%# ***** font-size: 9px：文字サイズ ***** %>
+              font-size: 9px;
+              <%# ***** background: #dc3545：背景色（赤） ***** %>
+              background: #dc3545;
+              <%# ***** color: white：文字色 ***** %>
+              color: white;
+              <%# ***** border: none：枠線なし ***** %>
+              border: none;
+              <%# ***** border-radius: 2px：角丸 ***** %>
+              border-radius: 2px;
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              cursor: pointer;
+              <%# ***** z-index: 10：前面表示 ***** %>
+              z-index: 10;
+            }
+            <%# ***** .media-card .card-delete-btn：画像カードの削除ボタン ***** %>
+            #body-editor .media-card .card-delete-btn {
+              <%# ***** z-index: 20：画像の上に表示 ***** %>
+              z-index: 20;
+              <%# ***** opacity: 0.95：少しだけ透過 ***** %>
+              opacity: 0.95;
+              <%# ***** display: inline-block：ボタンを表示 ***** %>
+              display: inline-block;
+            }
+            <%# ***** .card-delete-btn:hover：削除ボタンのホバー色 ***** %>
+            #body-editor .card-delete-btn:hover {
+              <%# ***** background: #bb2d3b：ホバー時の色 ***** %>
+              background: #bb2d3b;
+            }
+            <%# ***** .code-editor-overlay：コード編集モーダルの背景 ***** %>
+            .code-editor-overlay {
+              <%# ***** position: fixed：画面全体に固定 ***** %>
+              position: fixed;
+              <%# ***** inset: 0：上下左右を0に設定 ***** %>
+              inset: 0;
+              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
+              background: rgba(0, 0, 0, 0.4);
+              <%# ***** display: none：初期状態は非表示 ***** %>
+              display: none;
+              <%# ***** align-items: center：縦中央揃え ***** %>
+              align-items: center;
+              <%# ***** justify-content: center：横中央揃え ***** %>
+              justify-content: center;
+              <%# ***** z-index: 9999：最前面表示 ***** %>
+              z-index: 9999;
+            }
+            <%# ***** .code-editor-overlay.is-open：モーダル表示時 ***** %>
+            .code-editor-overlay.is-open {
+              <%# ***** display: flex：フレックスで表示 ***** %>
+              display: flex;
+            }
+            <%# ***** .code-editor-modal：モーダル本体 ***** %>
+            .code-editor-modal {
+              <%# ***** background: #fff：背景色を白 ***** %>
+              background: #fff;
+              <%# ***** width: min(90vw, 900px)：横幅を制限 ***** %>
+              width: min(90vw, 900px);
+              <%# ***** height: min(70vh, 600px)：高さを制限 ***** %>
+              height: min(70vh, 600px);
+              <%# ***** border-radius: 8px：角丸 ***** %>
+              border-radius: 8px;
+              <%# ***** box-shadow：影を付ける ***** %>
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+              <%# ***** display: flex：縦並びレイアウト ***** %>
+              display: flex;
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              flex-direction: column;
+              <%# ***** padding: 12px：内側余白 ***** %>
+              padding: 12px;
+            }
+            <%# ***** .code-editor-header：モーダルの見出し ***** %>
+            .code-editor-header {
+              <%# ***** font-weight: 600：太字指定 ***** %>
+              font-weight: 600;
+              <%# ***** margin-bottom: 8px：下余白 ***** %>
+              margin-bottom: 8px;
+            }
+            <%# ***** .code-editor-textarea：コード入力欄 ***** %>
+            .code-editor-textarea {
+              <%# ***** flex: 1：高さを埋める ***** %>
+              flex: 1;
+              <%# ***** width: 100%：横幅100% ***** %>
+              width: 100%;
+              <%# ***** resize: none：サイズ変更不可 ***** %>
+              resize: none;
+              <%# ***** font-family：等幅フォントを指定 ***** %>
+              font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+              <%# ***** font-size: 13px：文字サイズ ***** %>
+              font-size: 13px;
+              <%# ***** line-height: 1.5：行の高さ ***** %>
+              line-height: 1.5;
+              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
+              border: 1px solid #dee2e6;
+              <%# ***** border-radius: 6px：角丸 ***** %>
+              border-radius: 6px;
+              <%# ***** padding: 10px：内側余白 ***** %>
+              padding: 10px;
+            }
+            <%# ***** .code-editor-actions：モーダル下部のボタン領域 ***** %>
+            .code-editor-actions {
+              <%# ***** margin-top: 10px：上余白 ***** %>
+              margin-top: 10px;
+              <%# ***** display: flex：横並び ***** %>
+              display: flex;
+              <%# ***** justify-content: flex-end：右寄せ ***** %>
+              justify-content: flex-end;
+              <%# ***** gap: 8px：ボタン間の余白 ***** %>
+              gap: 8px;
+            }
+          </style>
+        </div>
+        <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
+        <%= form.file_field :images, multiple: true, accept: "image/*", style: "display: none;" %>
+        <%# ***** form.file_field：JavaScriptで動作する隠れたファイル選択フィールド ***** %>
+        <%# ***** multiple: true：複数ファイルの選択を許可 ***** %>
+        <%# ***** accept: "image/*"：画像ファイルのみ選択可能に制限 ***** %>
+        <%# ***** style: "display: none;"：ユーザーには表示しない ***** %>
+
+        <div class="form-group mb-3">
+        <%# ***** div：タグ選択フォームグループ ***** %>
+        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+        <%# ***** mb-3：下部マージンを追加 ***** %>
+          <%= form.label :tag_list, "タグ" %>
+          <%# ***** form.label：タグ入力フィールドのラベルを表示 ***** %>
+          <%# ***** :tag_list：ラベル対象属性 ***** %>
+          <%# ***** "タグ"：ラベルのテキスト ***** %>
+          <div class="d-flex align-items-center">
+          <%# ***** div：タグ選択ボタンと選択状況を並べるセクション ***** %>
+          <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+          <%# ***** align-items-center：要素を垂直中央に揃える ***** %>
+            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#tagSelectModal">
+            <%# ***** button：モーダル開閉ボタン ***** %>
+            <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
+            <%# ***** class: "btn btn-outline-primary"：青枠線のプライマリボタンのスタイル ***** %>
+            <%# ***** data-toggle="modal"：Bootstrapモーダル開閉機能を有効化 ***** %>
+            <%# ***** data-target="#tagSelectModal"：開閉対象のモーダルIDを指定 ***** %>
+              タグを選択
+              <%# ***** ボタンの表示テキスト ***** %>
+            </button>
+            <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">
+            <%# ***** button：新規タグ作成ボタン ***** %>
+            <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
+            <%# ***** class: "btn btn-outline-secondary ml-2"：グレー枠線のボタンのスタイル + 左マージン ***** %>
+            <%# ***** id="add-tag-button"：JavaScriptで参照するID ***** %>
+              タグを作成
+              <%# ***** ボタンの表示テキスト ***** %>
+            </button>
+            <span id="selected-tags" class="ml-3 text-muted"></span>
+            <%# ***** span：選択されたタグを表示するセクション ***** %>
+            <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
+            <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
+          </div>
         </div>
 
         <div class="form-group mb-3">
-          <%= form.label :tag_list, "タグ（カンマ区切り）" %>
-          <%= form.text_field :tag_list, class: "form-control" %>
-        </div>
-
-        <div class="form-group mb-3">
+        <%# ***** div：公開状態選択フォームグループ ***** %>
+        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+        <%# ***** mb-3：下部マージンを追加 ***** %>
           <%= form.label :status %>
+          <%# ***** form.label：公開状態選択フィールドのラベルを表示 ***** %>
+          <%# ***** :status：ラベル対象属性 ***** %>
           <%= form.select :status, { "下書き": :draft, "公開": :published }, {}, class: "form-control" %>
+          <%# ***** form.select：ドロップダウン選択フィールド ***** %>
+          <%# ***** :status：公開状態属性を対象 ***** %>
+          <%# ***** { "下書き": :draft, "公開": :published }：選択肢を指定 ***** %>
+          <%# ***** {}：HTMLオプション（プレースホルダーなど） ***** %>
+          <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
 
         <div class="form-group">
+        <%# ***** div：送信・キャンセルボタングループ ***** %>
+        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
           <%= form.submit "投稿", class: "btn btn-primary" %>
+          <%# ***** form.submit：フォーム送信ボタン ***** %>
+          <%# ***** "投稿"：ボタンのテキスト ***** %>
+          <%# ***** class: "btn btn-primary"：青色のプライマリボタンのスタイル ***** %>
           <%= link_to "キャンセル", posts_path, class: "btn btn-outline-secondary" %>
+          <%# ***** link_to：キャンセルリンク ***** %>
+          <%# ***** "キャンセル"：リンクの表示テキスト ***** %>
+          <%# ***** posts_path：投稿一覧へのパス ***** %>
+          <%# ***** class: "btn btn-outline-secondary"：グレー枠線のボタンスタイル ***** %>
         </div>
+
+        <div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
+        <%# ***** div：タグ選択用Bootstrapモーダル ***** %>
+        <%# ***** modal fade：モーダルコンポーネント + フェードアニメーション ***** %>
+        <%# ***** id="tagSelectModal"：モーダルのID ***** %>
+        <%# ***** tabindex="-1"：タブオーダーから除外 ***** %>
+        <%# ***** role="dialog"：アクセシビリティロール ***** %>
+        <%# ***** aria-labelledby="tagSelectModalLabel"：ラベルIDの指定 ***** %>
+        <%# ***** aria-hidden="true"：初期状態では隠す ***** %>
+          <div class="modal-dialog" role="document">
+          <%# ***** div：モーダルダイアログコンテナ ***** %>
+          <%# ***** modal-dialog：モーダルダイアログのスタイル ***** %>
+          <%# ***** role="document"：アクセシビリティロール ***** %>
+            <div class="modal-content">
+            <%# ***** div：モーダルコンテンツを囲むセクション ***** %>
+            <%# ***** modal-content：モーダルコンテンツのスタイル ***** %>
+              <div class="modal-header">
+              <%# ***** div：モーダルヘッダー ***** %>
+              <%# ***** modal-header：モーダルヘッダーのスタイル ***** %>
+                <h5 class="modal-title" id="tagSelectModalLabel">タグ選択</h5>
+                <%# ***** h5：5番目のレベルの見出し ***** %>
+                <%# ***** modal-title：モーダルタイトルのスタイル ***** %>
+                <%# ***** id="tagSelectModalLabel"：モーダルのラベルID ***** %>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <%# ***** button：モーダル閉じるボタン ***** %>
+                <%# ***** type="button"：ボタンの種類を指定 ***** %>
+                <%# ***** class="close"：Bootstrapの閉じるボタンスタイル ***** %>
+                <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
+                <%# ***** aria-label="Close"：スクリーンリーダー用ラベル ***** %>
+                  <span aria-hidden="true">&times;</span>
+                  <%# ***** span：バツ記号（HTML実体参照） ***** %>
+                  <%# ***** aria-hidden="true"：スクリーンリーダーから隠す ***** %>
+                  <%# ***** &times；：× 記号のHTML実体参照 ***** %>
+                </button>
+              </div>
+              <div class="modal-body">
+              <%# ***** div：モーダルボディ（コンテンツ） ***** %>
+              <%# ***** modal-body：モーダルボディのスタイル ***** %>
+                <% if @available_tags.any? %>
+                <%# ***** if：利用可能なタグが存在するか判定 ***** %>
+                <%# ***** @available_tags.any?：1つ以上のタグが存在するか確認 ***** %>
+                  <div class="d-flex flex-wrap" id="tag-checkboxes">
+                  <%# ***** div：タグチェックボックスを囲むセクション ***** %>
+                  <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+                  <%# ***** flex-wrap：要素が複数行に折り返されるように設定 ***** %>
+                  <%# ***** id="tag-checkboxes"：JavaScriptで参照するID ***** %>
+                    <% @available_tags.each do |tag| %>
+                    <%# ***** each：利用可能なタグをループして各タグを処理 ***** %>
+                    <%# ***** tag：ループ内の現在のタグオブジェクト ***** %>
+                      <div class="custom-control custom-checkbox mr-3 mb-2">
+                      <%# ***** div：カスタムチェックボックスを囲むセクション ***** %>
+                      <%# ***** custom-control custom-checkbox：Bootstrapのカスタムチェックボックススタイル ***** %>
+                      <%# ***** mr-3 mb-2：右マージン + 下部マージン ***** %>
+                        <%= form.check_box :tag_list, { multiple: true, class: "custom-control-input", id: "tag_#{tag.id}" }, tag.name, nil %>
+                        <%# ***** form.check_box：チェックボックス入力フィールド ***** %>
+                        <%# ***** :tag_list：タグリスト属性を対象 ***** %>
+                        <%# ***** { multiple: true, class: "custom-control-input", id: "tag_#{tag.id}" }：複数選択可 + スタイル + ID ***** %>
+                        <%# ***** tag.name, nil：チェック時の値 / チェック外時の値 ***** %>
+                        <%= form.label :tag_list, tag.name, class: "custom-control-label", for: "tag_#{tag.id}" %>
+                        <%# ***** form.label：チェックボックスのラベル ***** %>
+                        <%# ***** :tag_list：ラベル対象属性 ***** %>
+                        <%# ***** tag.name：ラベルのテキスト ***** %>
+                        <%# ***** class: "custom-control-label"：Bootstrapのカスタムラベルスタイル ***** %>
+                        <%# ***** for: "tag_#{tag.id}"：関連付けるチェックボックスのID ***** %>
+                      </div>
+                    <% end %>
+                    <%# ***** end：eachループの終了 ***** %>
+                  </div>
+                <% else %>
+                <%# ***** else：利用可能なタグが存在しない場合 ***** %>
+                  <div class="d-flex flex-wrap" id="tag-checkboxes"></div>
+                  <%# ***** div：（空の）タグチェックボックスコンテナ ***** %>
+                  <%# ***** d-flex flex-wrap：Flexboxレイアウト + 折り返し ***** %>
+                  <%# ***** id="tag-checkboxes"：JavaScriptで参照するID ***** %>
+                  <p class="text-muted">登録済みのタグがありません。</p>
+                  <%# ***** p：段落タグ ***** %>
+                  <%# ***** text-muted：グレー色の文字色 ***** %>
+                <% end %>
+                <%# ***** end：if文の終了 ***** %>
+              </div>
+              <div class="modal-footer">
+              <%# ***** div：モーダルフッター ***** %>
+              <%# ***** modal-footer：モーダルフッターのスタイル ***** %>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                <%# ***** button：モーダルを閉じるボタン ***** %>
+                <%# ***** type="button"：ボタンの種類を指定 ***** %>
+                <%# ***** class: "btn btn-secondary"：グレー色のセカンダリボタンのスタイル ***** %>
+                <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        <%# ***** タグ選択・作成のJavaScriptロジック ***** %>
+          const initPostForm = () => {
+          <%# ***** initPostForm()：投稿フォーム用の初期化処理 ***** %>
+            const bodyEditor = document.getElementById('body-editor');
+            <%# ***** bodyEditor：本文contenteditable領域を取得 ***** %>
+            const bodyHidden = document.getElementById('body-hidden');
+            <%# ***** bodyHidden：本文の隠しフィールドを取得 ***** %>
+            if (!bodyEditor || bodyEditor.dataset.insertBindings === 'true') return;
+            <%# ***** 既に初期化済みの場合は二重登録を防止 ***** %>
+            bodyEditor.dataset.insertBindings = 'true';
+            <%# ***** data属性で初期化済みフラグを保存 ***** %>
+            const insertImageButton = document.getElementById('insert-image-button');
+            <%# ***** insertImageButton：画像挿入ボタンを取得 ***** %>
+            const insertCodeButton = document.getElementById('insert-code-button');
+            <%# ***** insertCodeButton：コード挿入ボタンを取得 ***** %>
+            const imageInput = document.getElementById('post_images');
+            <%# ***** imageInput：画像アップロード入力を取得 ***** %>
+            const selectedTags = document.getElementById('selected-tags');
+            <%# ***** selectedTags：選択済みタグを表示する要素を取得 ***** %>
+            const checkboxContainer = document.getElementById('tag-checkboxes');
+            <%# ***** checkboxContainer：チェックボックスを囲むコンテナを取得 ***** %>
+            const getCheckboxes = () => checkboxContainer.querySelectorAll('input[type="checkbox"]');
+            <%# ***** getCheckboxes()：コンテナ内のすべてのチェックボックスを取得する関数 ***** %>
+
+            const imageObjectsContainer = document.getElementById('image-objects');
+            <%# ***** imageObjectsContainer：画像オブジェクト表示エリアを取得 ***** %>
+            const codeObjectsContainer = document.getElementById('code-objects');
+            <%# ***** codeObjectsContainer：コードオブジェクト表示エリアを取得 ***** %>
+            const imageCountSpan = document.getElementById('image-count');
+            <%# ***** imageCountSpan：画像数表示エリアを取得 ***** %>
+            const codeCountSpan = document.getElementById('code-count');
+            <%# ***** codeCountSpan：コード数表示エリアを取得 ***** %>
+            const noImagesMessage = document.getElementById('no-images-message');
+            <%# ***** noImagesMessage：画像がない場合のメッセージを取得 ***** %>
+            const noCodeMessage = document.getElementById('no-code-message');
+            <%# ***** noCodeMessage：コードがない場合のメッセージを取得 ***** %>
+
+            const codeTemplate = "\n```ruby\n\n```\n";
+            <%# ***** codeTemplate：コードブロックのテンプレート文字列 ***** %>
+
+            const resolveImageUrl = (filename) => {
+            <%# ***** resolveImageUrl()：サムネイル表示用の画像URLを解決 ***** %>
+              if (window.localImageUrlMap && window.localImageUrlMap.has(filename)) {
+                return window.localImageUrlMap.get(filename);
+              }
+              if (window.imageUrlMap && window.imageUrlMap[filename]) {
+                return window.imageUrlMap[filename];
+              }
+              return null;
+            };
+
+            const hasContentEditable = !!bodyEditor;
+            <%# ***** hasContentEditable：contenteditableの有無を判定 ***** %>
+
+            const setBodyText = (text) => {
+            <%# ***** setBodyText()：本文を更新して同期イベントを発火 ***** %>
+              if (bodyEditor) {
+              <%# ***** if：contenteditable本文欄が存在する場合 ***** %>
+                bodyEditor.textContent = text;
+                <%# ***** textContent：本文を差し替え ***** %>
+                bodyEditor.dispatchEvent(new Event('input'));
+                <%# ***** dispatchEvent()：入力イベントを発火して同期処理を走らせる ***** %>
+                return;
+                <%# ***** return：contenteditable側の更新で終了 ***** %>
+              }
+              if (bodyHidden) {
+              <%# ***** if：隠しフィールド本文が存在する場合 ***** %>
+                bodyHidden.value = text;
+                <%# ***** value：隠しフィールドの本文を更新 ***** %>
+                bodyHidden.dispatchEvent(new Event('input'));
+                <%# ***** dispatchEvent()：入力イベントを発火して同期処理を走らせる ***** %>
+              }
+            };
+
+            const insertAtCursor = (text) => {
+            <%# ***** insertAtCursor()：カーソル位置に文字列を挿入する関数 ***** %>
+              if (!bodyHidden) return;
+              <%# ***** if (!bodyHidden)：本文欄が存在しない場合は終了 ***** %>
+              const start = bodyHidden.selectionStart || 0;
+              <%# ***** selectionStart：カーソル開始位置を取得 ***** %>
+              const end = bodyHidden.selectionEnd || 0;
+              <%# ***** selectionEnd：カーソル終了位置を取得 ***** %>
+              const before = bodyHidden.value.slice(0, start);
+              <%# ***** slice(0, start)：カーソルより前の文字列を取得 ***** %>
+              const after = bodyHidden.value.slice(end);
+              <%# ***** slice(end)：カーソルより後の文字列を取得 ***** %>
+              bodyHidden.value = `${before}${text}${after}`;
+              <%# ***** テンプレートリテラルで本文を再構成 ***** %>
+              bodyHidden.dispatchEvent(new Event('input'));
+            };
+
+            const updateMediaDisplay = () => {
+            <%# ***** updateMediaDisplay()：メディアオブジェクトの表示を更新 ***** %>
+              <%# ***** 新規投稿ではメディア管理UIを使わないため処理なし ***** %>
+            };
+
+            if (insertImageButton && !hasContentEditable) {
+            <%# ***** if：画像挿入ボタンが存在する場合 ***** %>
+              insertImageButton.addEventListener('click', function () {
+              <%# ***** addEventListener：クリック時の処理を登録 ***** %>
+                if (!imageInput) return;
+                <%# ***** if (!imageInput)：画像入力が存在しない場合は終了 ***** %>
+                imageInput.click();
+                <%# ***** click()：ファイル選択ダイアログを開く ***** %>
+              });
+            }
+
+            const allFiles = [];
+            <%# ***** allFiles：すべての選択済み画像ファイルを保持する配列 ***** %>
+
+            if (imageInput && !hasContentEditable) {
+            <%# ***** if：画像入力が存在する場合 ***** %>
+              imageInput.addEventListener('change', function () {
+              <%# ***** change：ファイル選択時の処理 ***** %>
+                if (!imageInput.files || imageInput.files.length === 0) return;
+                <%# ***** if：未選択なら終了 ***** %>
+                const newFiles = Array.from(imageInput.files);
+                <%# ***** newFiles：今回選択したファイルのみを取得 ***** %>
+                newFiles.forEach((file) => {
+                <%# ***** forEach()：新規選択の各ファイルを処理 ***** %>
+                  if (!allFiles.find((f) => f.name === file.name && f.size === file.size)) {
+                  <%# ***** find()：同じ名前かつサイズのファイルがすでに存在するか確認 ***** %>
+                    allFiles.push(file);
+                    <%# ***** push()：新規ファイルを配列に追加（フォーム送信用） ***** %>
+                  }
+                });
+                const dt = new DataTransfer();
+                <%# ***** DataTransfer：ファイルリストを作成するAPI ***** %>
+                allFiles.forEach((file) => {
+                <%# ***** forEach()：累積ファイルをDataTransferに追加 ***** %>
+                  dt.items.add(file);
+                  <%# ***** items.add()：ファイルを追加 ***** %>
+                });
+                imageInput.files = dt.files;
+                <%# ***** files = dt.files：ファイル入力に累積ファイルを設定（フォーム送信用） ***** %>
+                const lines = newFiles.map((file) => `![説明](image:${file.name})`);
+                <%# ***** map()：今回選択したファイル名からMarkdown記法を生成 ***** %>
+                insertAtCursor(lines.join("\n"));
+                <%# ***** join("\n")：改行区切りで本文へ挿入 ***** %>
+                updateMediaDisplay();
+                <%# ***** updateMediaDisplay()：メディア表示を更新 ***** %>
+              });
+            }
+
+            <%# ***** コード挿入ボタンはcontenteditable版でposts_editor.jsに自動処理されます ***** %>
+
+            if (bodyEditor) {
+            <%# ***** if：本文欄が存在する場合 ***** %>
+              bodyEditor.addEventListener('input', updateMediaDisplay);
+              <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
+            }
+
+            if (bodyHidden) {
+            <%# ***** if：本文隠しフィールドが存在する場合 ***** %>
+              bodyHidden.addEventListener('input', updateMediaDisplay);
+              <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
+            }
+
+            const updateSelected = () => {
+            <%# ***** updateSelected()：選択されたタグの表示を更新する関数 ***** %>
+              const names = Array.from(getCheckboxes())
+              <%# ***** Array.from()：NodeListを配列に変換 ***** %>
+              <%# ***** getCheckboxes()：チェックボックスのNodeListを取得 ***** %>
+                .filter((cb) => cb.checked)
+                <%# ***** .filter()：チェック状態のものだけを抽出 ***** %>
+                <%# ***** (cb) => cb.checked：チェックボックスがチェック済みか判定 ***** %>
+                .map((cb) => cb.value);
+                <%# ***** .map()：値を取り出す処理 ***** %>
+                <%# ***** (cb) => cb.value：チェックボックスの値を取得 ***** %>
+              selectedTags.textContent = names.length ? names.join(', ') : '未選択';
+              <%# ***** textContent：要素のテキストを設定 ***** %>
+              <%# ***** names.join(', ')：取得した値をカンマ区切りで結合 ***** %>
+              <%# ***** names.length ? ... : '未選択'：三項演算子で条件分岐 ***** %>
+            };
+
+            const bindCheckboxEvents = () => {
+            <%# ***** bindCheckboxEvents()：各チェックボックスにイベントリスナーを登録する関数 ***** %>
+              getCheckboxes().forEach((cb) => cb.addEventListener('change', updateSelected));
+              <%# ***** forEach()：各チェックボックスに対してループ処理 ***** %>
+              <%# ***** addEventListener()：イベントリスナーを登録 ***** %>
+              <%# ***** 'change'：チェック状態変化時に発火するイベント ***** %>
+              <%# ***** updateSelected：イベント発火時に実行する関数 ***** %>
+            };
+
+            document.getElementById('add-tag-button').addEventListener('click', function () {
+            <%# ***** add-tag-button：新規タグ作成ボタンのクリックイベント ***** %>
+            <%# ***** addEventListener()：イベントリスナーを登録 ***** %>
+            <%# ***** 'click'：クリック時に発火するイベント ***** %>
+              const name = prompt('作成するタグ名を入力してください');
+              <%# ***** prompt()：ユーザーに入力を促すダイアログ表示 ***** %>
+              <%# ***** name：ユーザーが入力した値（キャンセル時はnull） ***** %>
+              if (!name) return;
+              <%# ***** if (!name)：入力がない（またはキャンセル）場合は関数を抜ける ***** %>
+
+              const trimmed = name.trim();
+              <%# ***** .trim()：文字列の前後の空白を削除 ***** %>
+              <%# ***** trimmed：トリミング後のタグ名 ***** %>
+              if (!trimmed) return;
+              <%# ***** if (!trimmed)：空文字列の場合は関数を抜ける ***** %>
+
+              const existing = Array.from(getCheckboxes()).find((cb) => cb.value === trimmed);
+              <%# ***** find()：条件に合致する最初の要素を取得 ***** %>
+              <%# ***** (cb) => cb.value === trimmed：値が入力したタグ名と一致するか判定 ***** %>
+              <%# ***** existing：一致するチェックボックス（存在すればオブジェクト、無ければundefined） ***** %>
+              if (existing) {
+              <%# ***** if (existing)：同名のタグが既に存在する場合 ***** %>
+                existing.checked = true;
+                <%# ***** .checked = true：該当するチェックボックスをチェック状態に設定 ***** %>
+                updateSelected();
+                <%# ***** updateSelected()：表示を更新 ***** %>
+                return;
+                <%# ***** return：関数を終了 ***** %>
+              }
+
+              const id = `tag_new_${Date.now()}`;
+              <%# ***** テンプレートリテラル：新規タグ用のユニークなID生成 ***** %>
+              <%# ***** Date.now()：現在時刻をミリ秒単位で取得（IDを一意にするため） ***** %>
+              const wrapper = document.createElement('div');
+              <%# ***** createElement()：新しいHTML要素を作成 ***** %>
+              <%# ***** 'div'：作成する要素の名前 ***** %>
+              <%# ***** wrapper：作成した要素への参照 ***** %>
+              wrapper.className = 'custom-control custom-checkbox mr-3 mb-2';
+              <%# ***** className：要素のクラス属性を設定 ***** %>
+
+              const checkbox = document.createElement('input');
+              <%# ***** createElement()：input要素を作成 ***** %>
+              <%# ***** checkbox：作成した要素への参照 ***** %>
+              checkbox.type = 'checkbox';
+              <%# ***** .type = 'checkbox'：入力タイプをチェックボックスに設定 ***** %>
+              checkbox.name = 'post[tag_list][]';
+              <%# ***** .name：フォーム送信時の属性名を設定 ***** %>
+              checkbox.value = trimmed;
+              <%# ***** .value：チェックボックスの値をタグ名に設定 ***** %>
+              checkbox.id = id;
+              <%# ***** .id：要素のIDを設定 ***** %>
+              checkbox.className = 'custom-control-input';
+              <%# ***** .className：要素のクラス属性を設定 ***** %>
+              checkbox.checked = true;
+              <%# ***** .checked = true：デフォルトでチェック済みに設定 ***** %>
+
+              const label = document.createElement('label');
+              <%# ***** createElement()：label要素を作成 ***** %>
+              <%# ***** label：作成した要素への参照 ***** %>
+              label.className = 'custom-control-label';
+              <%# ***** .className：要素のクラス属性を設定 ***** %>
+              label.setAttribute('for', id);
+              <%# ***** setAttribute()：HTML属性を設定 ***** %>
+              <%# ***** 'for'：設定する属性名 ***** %>
+              <%# ***** id：属性の値（関連チェックボックスのID） ***** %>
+              label.textContent = trimmed;
+              <%# ***** .textContent：ラベルのテキストを設定 ***** %>
+
+              wrapper.appendChild(checkbox);
+              <%# ***** appendChild()：子要素を追加 ***** %>
+              <%# ***** checkbox：追加する要素 ***** %>
+              wrapper.appendChild(label);
+              <%# ***** appendChild()：別の子要素を追加 ***** %>
+              <%# ***** label：追加する要素 ***** %>
+              checkboxContainer.appendChild(wrapper);
+              <%# ***** checkboxContainer.appendChild()：コンテナに新しい行を追加 ***** %>
+              <%# ***** wrapper：追加する要素 ***** %>
+
+              checkbox.addEventListener('change', updateSelected);
+              <%# ***** addEventListener()：新規チェックボックスにイベントリスナーを登録 ***** %>
+              <%# ***** 'change'：チェック状態変化時に発火するイベント ***** %>
+              <%# ***** updateSelected：イベント発火時に実行する関数 ***** %>
+              updateSelected();
+              <%# ***** updateSelected()：表示を更新 ***** %>
+            });
+
+            bindCheckboxEvents();
+            <%# ***** bindCheckboxEvents()：初期化時にすべてのチェックボックスにイベントを登録 ***** %>
+            updateSelected();
+            <%# ***** updateSelected()：初期表示状態を設定 ***** %>
+            updateMediaDisplay();
+            <%# ***** updateMediaDisplay()：初期表示を更新 ***** %>
+          };
+
+          document.addEventListener('DOMContentLoaded', initPostForm);
+          <%# ***** DOMContentLoaded：通常のページ読み込み時に初期化 ***** %>
+          document.addEventListener('turbolinks:load', initPostForm);
+          <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
+        </script>
       <% end %>
+      <%# ***** end：form_withブロックの終了 ***** %>
     </div>
   </div>
 </div>
+<%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

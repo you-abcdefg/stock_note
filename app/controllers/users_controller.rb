@@ -46,6 +46,20 @@ class UsersController < ApplicationController
   end
 
   # =====================================
+  # マイページ（現在のユーザープロフィール）
+  # =====================================
+  def mypage
+    # ログインしているかチェック
+    redirect_to root_path, alert: 'ログインしてください。' unless current_user
+    
+    # 現在のユーザーを設定
+    @user = current_user
+    
+    # ユーザーの投稿一覧を新しい順で取得
+    @posts = @user.posts.order(created_at: :desc)
+  end
+
+  # =====================================
   # ユーザー検索（Ransack使用）
   # =====================================
   def search
