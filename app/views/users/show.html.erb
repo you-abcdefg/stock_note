@@ -35,6 +35,15 @@
               <%= link_to "編集", edit_user_path(@user), class: "btn btn-primary btn-sm flex-grow-1" %>
               <%= link_to "ユーザー一覧", users_path, class: "btn btn-outline-secondary btn-sm flex-grow-1" %>
             </div>
+
+            <%# 退会ボタン %>
+            <% if @user.guest? %>
+              <button class="btn btn-outline-danger btn-sm w-100 mt-3" disabled>退会（ゲストは不可）</button>
+            <% else %>
+              <%= link_to "退会", user_registration_path, method: :delete,
+                          data: { confirm: "本当に退会しますか？この操作は取り消せません。" },
+                          class: "btn btn-outline-danger btn-sm w-100 mt-3" %>
+            <% end %>
           <% else %>
             <div class="btn-group d-flex gap-2 mt-4" role="group">
               <%= link_to "ユーザー一覧", users_path, class: "btn btn-outline-secondary btn-sm flex-grow-1" %>

@@ -7,8 +7,9 @@
 # ============================================
 
 class UsersController < ApplicationController
-  # show、destroyの前にユーザーを取得
-  before_action :set_user, only: [:show, :destroy]
+  # show、destroy、edit、updateの前にユーザーを取得
+  before_action :set_user, only: [:show, :destroy, :edit, :update]
+  before_action :authorize_user, only: [:edit, :update]
 
   # =====================================
   # ユーザー一覧表示（誰でも見れる）
@@ -46,6 +47,23 @@ class UsersController < ApplicationController
   end
 
   # =====================================
+  # ユーザー編集（本人または管理者のみ）
+  # =====================================
+  def edit
+  end
+
+  # =====================================
+  # ユーザー更新（本人または管理者のみ）
+  # =====================================
+  def update
+    if @user.update(user_params)
+      redirect_to user_path(@user), notice: 'プロフィールを更新しました。'
+    else
+      render :edit
+    end
+  end
+
+  # =====================================
   # マイページ（現在のユーザープロフィール）
   # =====================================
   def mypage
@@ -77,5 +95,17 @@ class UsersController < ApplicationController
   def set_user
     # URLのidから対象ユーザーを取得
     @user = User.find(params[:id])
+  end
+
+  # 編集権限の確認
+  def authorize_user
+    return if current_user && (current_user.admin? || current_user == @user)
+
+    redirect_to root_path, alert: '権限がありません。'
+  end
+
+  # 更新用パラメータ
+  def user_params
+    params.require(:user).permit(:name, :email)
   end
 end
