@@ -1,4 +1,4 @@
-class CreatePosts < ActiveRecord::Migration[7.0]
+class CreatePosts < ActiveRecord::Migration[6.1]
 # ●目的：postsテーブル作成マイグレーションを定義する
 # CreatePosts
 #   マイグレーション用のクラス名
