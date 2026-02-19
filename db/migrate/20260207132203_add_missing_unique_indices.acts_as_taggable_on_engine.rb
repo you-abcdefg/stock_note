@@ -26,7 +26,7 @@ class AddMissingUniqueIndices < ActiveRecord::Migration[6.0]
     # ●目的：マイグレーションを適用し、DB構造を変更する
     # rails db:migrate 実行時に呼ばれる
 
-    add_index ActsAsTaggableOn.tags_table, :name, unique: true
+# add_index ActsAsTaggableOn.tags_table, :name, unique: true
     # ●目的：tags.name の重複を防ぐユニーク索引を追加する
     # 対象テーブル：ActsAsTaggableOn.tags_table
 
@@ -48,7 +48,7 @@ class AddMissingUniqueIndices < ActiveRecord::Migration[6.0]
     # ●目的：マイグレーションを取り消し、DB構造を元に戻す
     # rails db:rollback 実行時に呼ばれる
 
-    remove_index ActsAsTaggableOn.tags_table, :name
+i# remove_index ActsAsTaggableOn.tags_table, :name
     # ●目的：タグ名ユニーク索引を削除する
     # 対象テーブル：ActsAsTaggableOn.tags_table
 
