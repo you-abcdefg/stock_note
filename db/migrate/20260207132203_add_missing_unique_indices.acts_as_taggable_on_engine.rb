@@ -29,7 +29,7 @@ class AddMissingUniqueIndices < ActiveRecord::Migration[6.0]
 # add_index ActsAsTaggableOn.tags_table, :name, unique: true
     # ●目的：tags.name の重複を防ぐユニーク索引を追加する
     # 対象テーブル：ActsAsTaggableOn.tags_table
-
+    remove_foreign_key ActsAsTaggableOn.taggings_table, :tags
     remove_index ActsAsTaggableOn.taggings_table, :tag_id if index_exists?(ActsAsTaggableOn.taggings_table, :tag_id)
     # ●目的：旧tag_id索引が存在すれば削除する
     # 対象テーブル：ActsAsTaggableOn.taggings_table
