@@ -1,9 +1,12 @@
+class Admin::CommentsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_admin
 
   def index
     @q = Comment.ransack(params[:q])
-    @comments = @q.result(distinct: true).includes(:user, :post).page(params[:page])
+    @comments = @q.result(distinct: true)
+                  .includes(:user, :post)
+                  .page(params[:page])
   end
 
   def destroy
@@ -20,3 +23,4 @@
   def check_admin
     redirect_to root_path, alert: '権限がありません。' unless current_user&.admin?
   end
+end
