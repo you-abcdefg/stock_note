@@ -43,10 +43,10 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 plugin :tmp_restart
 
 # デプロイ用の設定
-bind "unix://#{Rails.root}/tmp/sockets/puma.sock"
+bind "unix://#{Dir.pwd}/tmp/sockets/puma.sock"
 rails_root = Dir.pwd
 # 本番環境のみデーモン起動
-if Rails.env.production?
+if ENV.fetch("RAILS_ENV", "development") == "production"
   pidfile File.join(rails_root, 'tmp', 'pids', 'puma.pid')
   state_path File.join(rails_root, 'tmp', 'pids', 'puma.state')
   stdout_redirect(
