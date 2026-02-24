@@ -33,28 +33,31 @@ class AddMissingIndexesOnTaggings < ActiveRecord::Migration[6.0]
                                            :taggable_id
     # ●目的：対象ID検索の高速化
     # 対象テーブル：ActsAsTaggableOn.taggings_table
-    add_index ActsAsTaggableOn.taggings_table, :taggable_type unless index_exists? ActsAsTaggableOn.taggings_table,
-                                             :taggable_type
+    add_index ActsAsTaggableOn.taggings_table, :taggable_type,
+          length: 191 unless index_exists? ActsAsTaggableOn.taggings_table, :taggable_type
     # ●目的：対象タイプ検索の高速化
     # 対象テーブル：ActsAsTaggableOn.taggings_table
     add_index ActsAsTaggableOn.taggings_table, :tagger_id unless index_exists? ActsAsTaggableOn.taggings_table,
                                            :tagger_id
     # ●目的：タガー検索の高速化
     # 対象テーブル：ActsAsTaggableOn.taggings_table
-    add_index ActsAsTaggableOn.taggings_table, :context unless index_exists? ActsAsTaggableOn.taggings_table, :context
+    add_index ActsAsTaggableOn.taggings_table, :context,
+          length: 191 unless index_exists? ActsAsTaggableOn.taggings_table, :context
     # ●目的：文脈検索の高速化
     # 対象テーブル：ActsAsTaggableOn.taggings_table
 
     unless index_exists? ActsAsTaggableOn.taggings_table, %i[tagger_id tagger_type]
-      add_index ActsAsTaggableOn.taggings_table, %i[tagger_id tagger_type]
+      add_index ActsAsTaggableOn.taggings_table, %i[tagger_id tagger_type],
+                length: { tagger_type: 191 }
       # ●目的：タガーを複合キーで検索する索引を追加する
       # 対象テーブル：ActsAsTaggableOn.taggings_table
     end
 
-    unless index_exists? ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type tagger_id context],
-                         name: 'taggings_idy'
+        unless index_exists? ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type tagger_id context],
+             name: 'taggings_idy'
       add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type tagger_id context],
-            name: 'taggings_idy'
+        name: 'taggings_idy',
+        length: { taggable_type: 191, context: 191 }
       # ●目的：対象+タガー+文脈の複合検索用索引を追加する
       # 対象テーブル：ActsAsTaggableOn.taggings_table
     end

@@ -39,7 +39,8 @@ class AddMissingUniqueIndices < ActiveRecord::Migration[6.0]
     # 対象テーブル：ActsAsTaggableOn.taggings_table
     add_index ActsAsTaggableOn.taggings_table,
               %i[tag_id taggable_id taggable_type context tagger_id tagger_type],
-              unique: true, name: 'taggings_idx'
+              unique: true, name: 'taggings_idx',
+              length: { taggable_type: 191, context: 191, tagger_type: 191 }
     # ●目的：タグ付けの重複を防ぐ複合ユニーク索引を追加する
     # 対象テーブル：ActsAsTaggableOn.taggings_table
   end
@@ -48,7 +49,7 @@ class AddMissingUniqueIndices < ActiveRecord::Migration[6.0]
     # ●目的：マイグレーションを取り消し、DB構造を元に戻す
     # rails db:rollback 実行時に呼ばれる
 
-i# remove_index ActsAsTaggableOn.tags_table, :name
+# remove_index ActsAsTaggableOn.tags_table, :name
     # ●目的：タグ名ユニーク索引を削除する
     # 対象テーブル：ActsAsTaggableOn.tags_table
 

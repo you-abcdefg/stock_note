@@ -87,7 +87,8 @@ class ActsAsTaggableOnMigration < ActiveRecord::Migration[6.0]
     end
 
         add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
-          name: 'taggings_taggable_context_idx'
+          name: 'taggings_taggable_context_idx',
+          length: { taggable_type: 191, context: 191 }
         # ●目的：対象+文脈の検索を高速化する索引を追加する
         # 対象テーブル：ActsAsTaggableOn.taggings_table
   end
