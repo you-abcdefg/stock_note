@@ -107,8 +107,9 @@ class PostsController < ApplicationController
   def tagged
     # URLから渡されたタグ名でタグを検索
     @tag = ActsAsTaggableOn::Tag.find_by(name: params[:tag])
-    # そのタグが付いた投稿を取得（N+1問題を防ぐため、userとtagsを事前読み込み）
-    @posts = Post.tagged_with(@tag.name).includes(:user, :tags) if @tag
+    # そのタグが付いた投稿を取得（公開済みのみを表示）
+    # includes(:user, :tags) で関連データを事前読み込み（N+1問題を防ぐ）
+    @posts = Post.tagged_with(@tag.name).where(status: :published).includes(:user, :tags) if @tag
   end
 
   # =====================================
