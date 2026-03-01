@@ -176,32 +176,19 @@
     
     <%# ***** ナビゲーションメニューのクリックで自動折りたたみ ***** %>
     <script>
-      // ハンバーガーメニューのトグル機能を明示的に実装
+      // Bootstrapのネイティブcollapse機能を活用
       document.addEventListener('DOMContentLoaded', function() {
-        const navbarToggle = document.querySelector('.navbar-toggler');
-        const navbarCollapse = document.querySelector('.navbar-collapse');
-        
-        if (navbarToggle && navbarCollapse) {
-          // ハンバーガーボタンクリック時の処理
-          navbarToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            navbarCollapse.classList.toggle('show');
-            
-            // aria-expanded属性を更新
-            const isExpanded = navbarCollapse.classList.contains('show');
-            navbarToggle.setAttribute('aria-expanded', isExpanded);
+        // メニューリンククリック時に自動で閉じる処理のみ実装
+        // ハンバーガーボタンの開閉はBootstrapのdata-toggle="collapse"に任せる
+        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+          link.addEventListener('click', function() {
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            // Bootstrapのcollapseメソッドを使用してメニューを閉じる
+            if (navbarCollapse.classList.contains('show')) {
+              $(navbarCollapse).collapse('hide');
+            }
           });
-          
-          // メニューリンククリック時に自動で閉じる
-          document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-              if (navbarCollapse.classList.contains('show')) {
-                navbarCollapse.classList.remove('show');
-                navbarToggle.setAttribute('aria-expanded', 'false');
-              }
-            });
-          });
-        }
+        });
       });
     </script>
   </body>
