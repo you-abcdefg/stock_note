@@ -50,3 +50,10 @@ ja:
       user:
         # ユーザー認証が必要な際のメッセージ
         unauthenticated: "ログインしてください。"
+  enums:
+    user:
+      role:
+        general: "一般ユーザー"
+        admin: "管理者"
+        guest: "ゲストユーザー"
+
