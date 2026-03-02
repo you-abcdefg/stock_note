@@ -34,7 +34,7 @@
 ## スクリーンショット
 
 ### 投稿詳細ページ（数式・画像・コードを含む例）
-![投稿詳細ページのサンプル](/images/screenshots/stock_note_PF-sample.png)
+![投稿詳細ページのサンプル](public/images/screenshots/stock_note_PF-sample.png)
 
 *数式（上付き・下付き・左添え字）、画像埋め込み、コードブロック表示に対応した投稿例*
 
