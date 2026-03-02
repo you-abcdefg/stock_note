@@ -329,6 +329,78 @@ function initContentEditableEditor() {
   });
 
   bodyEditor.addEventListener('paste', (e) => {
+    // クリップボードから画像データを取得
+    const items = e.clipboardData?.items;
+    if (items) {
+      let hasImage = false;
+      const imagesToInsert = [];
+      
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        // 画像データの場合
+        if (item.type.indexOf('image') !== -1) {
+          hasImage = true;
+          e.preventDefault(); // デフォルトの貼り付けを防止
+          
+          const blob = item.getAsFile();
+          if (blob) {
+            // ファイル名を生成（タイムスタンプ付き）
+            const timestamp = Date.now();
+            const extension = blob.type.split('/')[1] || 'png';
+            const filename = `pasted-image-${timestamp}.${extension}`;
+            
+            // Fileオブジェクトを作成
+            const file = new File([blob], filename, { type: blob.type });
+            
+            // ローカルURLマップに追加
+            localImageUrlMap.set(filename, URL.createObjectURL(file));
+            
+            // allFilesに追加（重複チェック）
+            if (!allFiles.find((f) => f.name === filename)) {
+              allFiles.push(file);
+            }
+            
+            imagesToInsert.push(filename);
+          }
+        }
+      }
+      
+      if (hasImage && imagesToInsert.length > 0) {
+        // DataTransferを使ってimageInputのfilesを更新
+        if (imageInput) {
+          const dt = new DataTransfer();
+          allFiles.forEach((file) => dt.items.add(file));
+          imageInput.files = dt.files;
+        }
+        
+        // カーソル位置に画像記法を挿入
+        const sel = window.getSelection();
+        if (sel.rangeCount === 0) {
+          const range = document.createRange();
+          range.selectNodeContents(bodyEditor);
+          range.collapse(false);
+          sel.addRange(range);
+        }
+        
+        const lines = imagesToInsert.map((filename) => `![説明](image:${filename})`);
+        const text = lines.join('\n');
+        
+        const range = sel.getRangeAt(0);
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+        range.setStartAfter(textNode);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        
+        bodyEditor.focus();
+        processEditorContent();
+        syncHiddenField();
+        return;
+      }
+    }
+    
+    // 画像以外の貼り付け（テキストなど）の場合
     setTimeout(() => {
       processEditorContent();
       syncHiddenField();
