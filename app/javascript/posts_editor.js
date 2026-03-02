@@ -60,6 +60,213 @@ function initContentEditableEditor() {
     return fallbackRange;
   };
 
+  const CARD_SELECTOR = '.media-card, .code-card, .formula-card';
+  let draggingCard = null;
+  let dragInsertIndicator = null;
+  let dragInsertPosition = null;
+
+  const isMovableCard = (node) => {
+    return !!(node && node.nodeType === 1 && node.matches && node.matches(CARD_SELECTOR));
+  };
+
+  const getCardBundleNodes = (card) => {
+    if (!isMovableCard(card)) return [];
+    if (card.classList.contains('media-card')) {
+      const spacer = card.previousSibling;
+      if (spacer && spacer.nodeType === 1 && spacer.classList.contains('card-spacer')) {
+        return [spacer, card];
+      }
+    }
+    return [card];
+  };
+
+  const getInsertAnchorNode = (card) => {
+    if (!isMovableCard(card)) return null;
+    if (card.classList.contains('media-card')) {
+      const spacer = card.previousSibling;
+      if (spacer && spacer.nodeType === 1 && spacer.classList.contains('card-spacer')) {
+        return spacer;
+      }
+    }
+    return card;
+  };
+
+  const clearDropMarkers = () => {
+    bodyEditor.querySelectorAll('.drop-target').forEach((node) => {
+      node.classList.remove('drop-target');
+    });
+  };
+
+  const createDragInsertIndicator = () => {
+    if (dragInsertIndicator) return dragInsertIndicator;
+    dragInsertIndicator = document.createElement('div');
+    dragInsertIndicator.className = 'drag-insert-indicator';
+    document.body.appendChild(dragInsertIndicator);
+    return dragInsertIndicator;
+  };
+
+  const showDragIndicator = (position) => {
+    const indicator = createDragInsertIndicator();
+    // 既存のインジケーターがあれば削除
+    if (indicator.parentNode && indicator.parentNode !== document.body) {
+      indicator.parentNode.removeChild(indicator);
+    }
+    
+    // position.nextNode の直前に挿入（実際の挿入位置を表示）
+    if (position && position.nextNode && position.nextNode.parentNode === bodyEditor) {
+      bodyEditor.insertBefore(indicator, position.nextNode);
+    } else {
+      bodyEditor.appendChild(indicator);
+    }
+  };
+
+  const removeDragIndicator = () => {
+    if (dragInsertIndicator && dragInsertIndicator.parentNode) {
+      dragInsertIndicator.parentNode.removeChild(dragInsertIndicator);
+    }
+    dragInsertIndicator = null;
+    dragInsertPosition = null;
+  };
+
+  const getDragInsertPosition = (mouseY) => {
+    // bodyEditor 直下のElement ノードのみを対象（text-line, card, indicator）
+    const allNodes = Array.from(bodyEditor.childNodes).filter(
+      (node) => {
+        if (node.nodeType !== Node.ELEMENT_NODE) return false;
+        if (node === draggingCard) return false;
+        if (node.classList && node.classList.contains('drag-insert-indicator')) return false;
+        return true;
+      }
+    );
+    
+    if (allNodes.length === 0) return { nextNode: null };
+
+    // 各 Element ノードの上端Y座標を計算
+    const nodePositions = [];
+    for (const node of allNodes) {
+      const rect = node.getBoundingClientRect();
+      if (rect.height > 0) {
+        nodePositions.push({ node, y: rect.top });
+      }
+    }
+    
+    if (nodePositions.length === 0) return { nextNode: null };
+    
+    // マウスY座標より上側にある最初のノードを返す
+    for (const { node, y } of nodePositions) {
+      if (mouseY < y) {
+        return { nextNode: node };
+      }
+    }
+    
+    // すべてのノードより下 → 末尾に挿入
+    return { nextNode: null };
+  };
+
+  const updateDragIndicatorByMouse = (mouseY) => {
+    if (!draggingCard) return;
+    dragInsertPosition = getDragInsertPosition(mouseY);
+    showDragIndicator(dragInsertPosition);
+  };
+
+  const moveCardBundleToNextNode = (sourceCard, nextNode) => {
+    if (!isMovableCard(sourceCard)) return;
+
+    const bundleNodes = getCardBundleNodes(sourceCard);
+    if (bundleNodes.length === 0) return;
+    if (nextNode && bundleNodes.includes(nextNode)) return;
+
+    const fragment = document.createDocumentFragment();
+    bundleNodes.forEach((node) => fragment.appendChild(node));
+
+    if (nextNode && nextNode.parentNode === bodyEditor) {
+      bodyEditor.insertBefore(fragment, nextNode);
+    } else {
+      bodyEditor.appendChild(fragment);
+    }
+
+    syncHiddenField();
+  };
+
+  const applyDropAtIndicatorPosition = () => {
+    if (!draggingCard) return;
+
+    const nextNode = dragInsertPosition ? dragInsertPosition.nextNode : null;
+    moveCardBundleToNextNode(draggingCard, nextNode);
+  };
+
+  const moveCardBundle = (sourceCard, targetCard, insertAfter = false) => {
+    if (!isMovableCard(sourceCard)) return;
+    if (targetCard && !isMovableCard(targetCard)) return;
+    if (targetCard && sourceCard === targetCard) return;
+
+    const bundleNodes = getCardBundleNodes(sourceCard);
+    if (bundleNodes.length === 0) return;
+
+    const fragment = document.createDocumentFragment();
+    bundleNodes.forEach((node) => fragment.appendChild(node));
+
+    if (!targetCard) {
+      bodyEditor.appendChild(fragment);
+    } else if (insertAfter) {
+      targetCard.parentNode.insertBefore(fragment, targetCard.nextSibling);
+    } else {
+      const anchorNode = getInsertAnchorNode(targetCard);
+      if (anchorNode) {
+        anchorNode.parentNode.insertBefore(fragment, anchorNode);
+      }
+    }
+
+    syncHiddenField();
+  };
+
+  const setCardDragHandlers = (card) => {
+    if (!isMovableCard(card) || card.dataset.dragInitialized === 'true') return;
+
+    card.dataset.dragInitialized = 'true';
+    card.setAttribute('draggable', 'true');
+
+    card.addEventListener('dragstart', (e) => {
+      draggingCard = card;
+      dragInsertPosition = null;
+      card.classList.add('is-dragging');
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', 'card');
+      }
+    });
+
+    card.addEventListener('dragend', () => {
+      card.classList.remove('is-dragging');
+      draggingCard = null;
+      clearDropMarkers();
+      removeDragIndicator();
+    });
+
+    card.addEventListener('dragover', (e) => {
+      if (!draggingCard || draggingCard === card) return;
+      e.preventDefault();
+      updateDragIndicatorByMouse(e.clientY);
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'move';
+      }
+    });
+
+    card.addEventListener('dragleave', () => {
+      // card 単体の dragleave では indicator を消さない
+      // (他のカード上に移動時に drop されることがあるため)
+    });
+
+    card.addEventListener('drop', (e) => {
+      if (!draggingCard || draggingCard === card) return;
+      e.preventDefault();
+      e.stopPropagation();
+      updateDragIndicatorByMouse(e.clientY);
+      applyDropAtIndicatorPosition();
+      removeDragIndicator();
+    });
+  };
+
   // HTML特殊文字をエスケープ
   const escapeHtml = (text) => {
     const map = {
@@ -451,6 +658,8 @@ function initContentEditableEditor() {
       syncHiddenField();
     });
 
+    setCardDragHandlers(card);
+
     return card;
   };
 
@@ -509,36 +718,59 @@ function initContentEditableEditor() {
       syncHiddenField();
     });
 
+    setCardDragHandlers(card);
+
     return card;
   };
 
   // ========== マークダウン記法をリアルタイムでカード化 ==========
   const processEditorContent = () => {
-    // 手順1：contenteditableが生成する改行要素をテキストに統合
-    Array.from(bodyEditor.childNodes).forEach((node) => {
-      if (node.nodeType === 1) { // Element node
-        if (node.tagName === 'BR') {
-          // <br> を \n テキストに変換
-          node.replaceWith(document.createTextNode('\n'));
-        } else if ((node.tagName === 'DIV' || node.tagName === 'P') && 
-                   !node.classList?.contains('media-card') && 
-                   !node.classList?.contains('code-card') &&
-                   !node.classList?.contains('formula-card')) {
-          // DIV/P のテキスト内容を抽出
-          const text = node.textContent || '';
-          if (text) {
-            node.replaceWith(document.createTextNode(text + '\n'));
-          } else {
-            node.remove();
+    // 手順0：既存のBR や 無関係な DIV/P をtext-lineでラップ
+    const wrapLooseContent = () => {
+      Array.from(bodyEditor.childNodes).forEach((node) => {
+        if (node.nodeType === 1) { // Element node
+          if (node.tagName === 'BR') {
+            // <br> を text-line でラップ
+            const textLine = document.createElement('div');
+            textLine.className = 'text-line';
+            textLine.contentEditable = 'true';
+            textLine.appendChild(document.createTextNode('\u200b'));
+            node.replaceWith(textLine);
+          } else if ((node.tagName === 'DIV' || node.tagName === 'P') && 
+                     !node.classList?.contains('text-line') &&
+                     !node.classList?.contains('media-card') && 
+                     !node.classList?.contains('code-card') &&
+                     !node.classList?.contains('formula-card')) {
+            // 無関係な DIV/P を text-line に変換（内容を保持）
+            const textLine = document.createElement('div');
+            textLine.className = 'text-line';
+            textLine.contentEditable = 'true';
+            while (node.firstChild) {
+              textLine.appendChild(node.firstChild);
+            }
+            if (textLine.childNodes.length === 0) {
+              textLine.appendChild(document.createTextNode('\u200b'));
+            }
+            node.replaceWith(textLine);
+          } else if (node.tagName === 'PRE') {
+            const preText = node.textContent || '';
+            const raw = `\n\n\u0060\u0060\u0060\n${preText}\n\u0060\u0060\u0060\n`;
+            const codeCard = buildCodeCard(raw);
+            node.parentNode.replaceChild(codeCard, node);
           }
-        } else if (node.tagName === 'PRE') {
-          const preText = node.textContent || '';
-          const raw = `\n\n\u0060\u0060\u0060\n${preText}\n\u0060\u0060\u0060\n`;
-          const codeCard = buildCodeCard(raw);
-          node.parentNode.replaceChild(codeCard, node);
+        } else if (node.nodeType === 3) { // Text node
+          // 手前のノードと後ろのノードを見て、テキストノードを text-line でラップするか判定
+          if (node.data.trim() !== '') {
+            const textLine = document.createElement('div');
+            textLine.className = 'text-line';
+            textLine.contentEditable = 'true';
+            textLine.appendChild(document.createTextNode(node.data));
+            node.replaceWith(textLine);
+          }
         }
-      }
-    });
+      });
+    };
+    wrapLooseContent();
 
     bodyEditor.normalize();
 
@@ -600,6 +832,8 @@ function initContentEditableEditor() {
             card.remove();
             syncHiddenField();
           });
+
+          setCardDragHandlers(card);
 
           fragment.appendChild(spacer);
           fragment.appendChild(card);
@@ -674,25 +908,22 @@ function initContentEditableEditor() {
     };
 
     Array.from(bodyEditor.childNodes).forEach((node) => {
-      if (node.nodeType === 3) {
-        // テキストノード
-        const rawText = (node.nodeValue || '').replace(/\u200b/g, '');
-        if (/^\s*$/.test(rawText) && (isCardNode(node.previousSibling) || isCardNode(node.nextSibling))) {
+      if (node.nodeType === 1) {
+        // Element node
+        if (node.classList?.contains('text-line')) {
+          // text-line の内容をテキスト化
+          const rawText = (node.textContent || '').replace(/\u200b/g, '');
+          if (rawText.trim() !== '') {
+            text += rawText + '\n';
+          } else if (text && !text.endsWith('\n')) {
+            text += '\n';
+          }
+        } else if (node.classList?.contains('card-spacer')) {
+          // card-spacer はスキップ
           return;
-        }
-        text += rawText;
-      } else if (node.nodeType === 1) {
-        // 要素ノード
-        if (node.tagName === 'BR') {
-          text += '\n';
-          return;
-        }
-        if (node.classList?.contains('card-spacer')) {
-          return;
-        }
-        if (node.classList?.contains('media-card')) {
+        } else if (node.classList?.contains('media-card')) {
           const filename = node.querySelector('.filename')?.textContent || '';
-          text += `![説明](image:${filename})`;
+          appendBlock(`![説明](image:${filename})`);
         } else if (node.classList?.contains('code-card')) {
           const pre = node.querySelector('pre');
           const lang = node.dataset?.lang || '';
@@ -701,10 +932,16 @@ function initContentEditableEditor() {
         } else if (node.classList?.contains('formula-card')) {
           const formulaText = node.dataset?.formula || '';
           appendBlock(serializeFormulaCard(formulaText));
-        } else {
-          // その他の要素（例：<br>、<p>など）
-          text += node.textContent;
+        } else if (node.tagName === 'BR') {
+          text += '\n';
         }
+      } else if (node.nodeType === 3) {
+        // テキストノード（旧形式対応）
+        const rawText = (node.nodeValue || '').replace(/\u200b/g, '');
+        if (/^\s*$/.test(rawText) && (isCardNode(node.previousSibling) || isCardNode(node.nextSibling))) {
+          return;
+        }
+        text += rawText;
       }
     });
 
@@ -735,6 +972,7 @@ function initContentEditableEditor() {
   // ========== ページ初期ロード時にカード化を実行 ==========
   processEditorContent();
   syncHiddenField();
+  bodyEditor.querySelectorAll(CARD_SELECTOR).forEach((card) => setCardDragHandlers(card));
 
   // ========== イベントリスナー登録 ==========
   // Enter キーで改行を挿入
@@ -745,19 +983,54 @@ function initContentEditableEditor() {
       if (sel.rangeCount === 0) return;
       
       const range = sel.getRangeAt(0);
-      const br = document.createElement('br');
-      range.insertNode(br);
-      const marker = document.createTextNode('\u200b');
-      br.parentNode.insertBefore(marker, br.nextSibling);
-      range.setStart(marker, 1);
-      range.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(range);
-      syncHiddenField();
       
-      requestAnimationFrame(() => {
-        bodyEditor.scrollTop = bodyEditor.scrollHeight;
-      });
+      // 新しい<div class="text-line">を作成
+      const newLine = document.createElement('div');
+      newLine.className = 'text-line';
+      newLine.contentEditable = 'true';
+      
+      // 現在のカーソル位置の後のコンテンツを新しい行に移動
+      const tempContainer = document.createElement('div');
+      const endRange = range.cloneRange();
+      endRange.collapse(false);
+      const fragment = endRange.extractContents();
+      if (fragment.childNodes.length > 0) {
+        newLine.appendChild(fragment);
+      } else {
+        const emptyMarker = document.createTextNode('\u200b');
+        newLine.appendChild(emptyMarker);
+      }
+      
+      // 新しい行をカーソル位置の後に挿入
+      const insertAfter = (element, referenceNode) => {
+        if (referenceNode.nextSibling) {
+          referenceNode.parentNode.insertBefore(element, referenceNode.nextSibling);
+        } else {
+          referenceNode.parentNode.appendChild(element);
+        }
+      };
+      
+      let currentNode = range.startContainer;
+      let parentLine = currentNode.nodeType === Node.TEXT_NODE ? currentNode.parentElement : currentNode;
+      if (!parentLine.classList?.contains('text-line')) {
+        parentLine = parentLine.closest('.text-line') || bodyEditor;
+      }
+      
+      insertAfter(newLine, parentLine);
+      
+      // カーソルを新しい行の最初に設定
+      const firstNodeInNew = newLine.firstChild || newLine;
+      const newRange = document.createRange();
+      if (firstNodeInNew.nodeType === Node.TEXT_NODE) {
+        newRange.setStart(firstNodeInNew, 0);
+      } else {
+        newRange.selectNodeContents(firstNodeInNew);
+        newRange.collapse(true);
+      }
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+      
+      syncHiddenField();
     }
   });
 
@@ -849,6 +1122,23 @@ function initContentEditableEditor() {
 
   bodyEditor.addEventListener('blur', () => {
     syncHiddenField();
+  });
+
+  bodyEditor.addEventListener('dragover', (e) => {
+    if (!draggingCard) return;
+    e.preventDefault();
+    updateDragIndicatorByMouse(e.clientY);
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'move';
+    }
+  });
+
+  bodyEditor.addEventListener('drop', (e) => {
+    if (!draggingCard) return;
+    e.preventDefault();
+    updateDragIndicatorByMouse(e.clientY);
+    applyDropAtIndicatorPosition();
+    removeDragIndicator();
   });
 
   // 画像挿入
