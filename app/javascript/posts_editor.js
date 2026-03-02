@@ -367,6 +367,26 @@ function initContentEditableEditor() {
   syncHiddenField();
 
   // ========== イベントリスナー登録 ==========
+  // Enter キーで改行を挿入（デフォルト動作を防止）
+  bodyEditor.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      insertTextAtSelection('\n');
+      // DIV/P など不要なブロック要素を削除
+      Array.from(bodyEditor.childNodes).forEach((node) => {
+        if (node.nodeType === 1 && (node.tagName === 'DIV' || node.tagName === 'P' || node.tagName === 'BR')) {
+          if (!node.classList?.contains('media-card') && !node.classList?.contains('code-card')) {
+            const text = node.textContent || '';
+            node.parentNode.replaceChild(document.createTextNode(text), node);
+          }
+        }
+      });
+      bodyEditor.normalize();
+      processEditorContent();
+      syncHiddenField();
+    }
+  });
+
   bodyEditor.addEventListener('input', () => {
     processEditorContent();
     syncHiddenField();
@@ -589,50 +609,72 @@ function initContentEditableEditor() {
       }
 
       const range = sel.getRangeAt(0);
-      const placeholder = '<sup></sup>';
-      const textNode = document.createTextNode(placeholder);
-      range.insertNode(textNode);
+      // 実際のDOMノードを作成（テキストノードではなく）
+      const supElement = document.createElement('sup');
+      const emptyText = document.createTextNode('');
+      supElement.appendChild(emptyText);
+      range.insertNode(supElement);
+      range.setStart(emptyText, 0);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
       
       bodyEditor.focus();
+      processEditorContent();
+      syncHiddenField();
       
-      setTimeout(() => {
+      // モーダルを表示
+      const modal = ensureFormulaModal();
+      modal.superRadio.checked = true;
+      modal.subRadio.checked = false;
+      modal.formulaInput.value = '';
+      modal.overlay.classList.add('is-open');
+      modal.formulaInput.focus();
+
+      // イベントハンドラを一度実行して古いハンドラを削除
+      const oldSaveBtn = modal.saveBtn.cloneNode(true);
+      const oldCancelBtn = modal.cancelBtn.cloneNode(true);
+      modal.saveBtn.parentNode.replaceChild(oldSaveBtn, modal.saveBtn);
+      modal.cancelBtn.parentNode.replaceChild(oldCancelBtn, modal.cancelBtn);
+      const newModal = {
+        ...modal,
+        saveBtn: oldSaveBtn,
+        cancelBtn: oldCancelBtn
+      };
+
+      const onSave = () => {
+        const formulaText = newModal.formulaInput.value || 'テキスト';
+        const isSuper = newModal.superRadio.checked;
+        const tagName = isSuper ? 'sup' : 'sub';
+        
+        // 最後に挿入した tag を検索
+        const allElements = bodyEditor.querySelectorAll(tagName);
+        const lastElement = allElements[allElements.length - 1];
+        
+        if (lastElement) {
+          lastElement.textContent = formulaText;
+        }
+        
+        newModal.overlay.classList.remove('is-open');
         processEditorContent();
         syncHiddenField();
+      };
+      
+      const onCancel = () => {
+        // プレースホルダーを削除
+        const allElements = bodyEditor.querySelectorAll('sup');
+        const lastElement = allElements[allElements.length - 1];
+        if (lastElement && !lastElement.textContent) {
+          lastElement.parentNode.removeChild(lastElement);
+        }
         
-        const modal = ensureFormulaModal();
-        modal.superRadio.checked = true;
-        modal.formulaInput.value = '';
-        modal.overlay.classList.add('is-open');
-        modal.formulaInput.focus();
+        newModal.overlay.classList.remove('is-open');
+        processEditorContent();
+        syncHiddenField();
+      };
 
-        const onSave = () => {
-          const formulaText = modal.formulaInput.value || '';
-          const isSuper = modal.superRadio.checked;
-          const tagName = isSuper ? 'sup' : 'sub';
-          
-          // 最後に挿入したプレースホルダーを検索
-          const allTexts = Array.from(bodyEditor.childNodes).map(n => n.textContent).join('');
-          let targetElement = bodyEditor.querySelector(`${tagName}:last-of-type`);
-          
-          if (targetElement) {
-            targetElement.textContent = formulaText;
-          }
-          
-          modal.overlay.classList.remove('is-open');
-          syncHiddenField();
-          modal.saveBtn.removeEventListener('click', onSave);
-          modal.cancelBtn.removeEventListener('click', onCancel);
-        };
-        
-        const onCancel = () => {
-          modal.overlay.classList.remove('is-open');
-          modal.saveBtn.removeEventListener('click', onSave);
-          modal.cancelBtn.removeEventListener('click', onCancel);
-        };
-
-        modal.saveBtn.addEventListener('click', onSave);
-        modal.cancelBtn.addEventListener('click', onCancel);
-      }, 10);
+      newModal.saveBtn.addEventListener('click', onSave);
+      newModal.cancelBtn.addEventListener('click', onCancel);
     });
   }
 
