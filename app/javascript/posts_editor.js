@@ -18,6 +18,7 @@ function initContentEditableEditor() {
   const allFiles = [];
   const localImageUrlMap = window.localImageUrlMap || new Map();
   window.localImageUrlMap = localImageUrlMap;
+  let isUpdatingInputFiles = false; // changeイベントの再帰防止フラグ
 
   // HTML特殊文字をエスケープ
   const escapeHtml = (text) => {
@@ -368,9 +369,11 @@ function initContentEditableEditor() {
       if (hasImage && imagesToInsert.length > 0) {
         // DataTransferを使ってimageInputのfilesを更新
         if (imageInput) {
+          isUpdatingInputFiles = true; // フラグを立てる
           const dt = new DataTransfer();
           allFiles.forEach((file) => dt.items.add(file));
           imageInput.files = dt.files;
+          setTimeout(() => { isUpdatingInputFiles = false; }, 0); // フラグを下ろす
         }
         
         // カーソル位置に画像記法を挿入
@@ -422,6 +425,9 @@ function initContentEditableEditor() {
 
   if (imageInput) {
     imageInput.addEventListener('change', () => {
+      // 再帰的なchangeイベントをスキップ
+      if (isUpdatingInputFiles) return;
+      
       if (!imageInput.files || imageInput.files.length === 0) return;
 
       const newFiles = Array.from(imageInput.files);
@@ -434,9 +440,11 @@ function initContentEditableEditor() {
         }
       });
 
+      isUpdatingInputFiles = true; // フラグを立てる
       const dt = new DataTransfer();
       allFiles.forEach((file) => dt.items.add(file));
       imageInput.files = dt.files;
+      setTimeout(() => { isUpdatingInputFiles = false; }, 0); // フラグを下ろす
 
       // contenteditable divに挿入
       const sel = window.getSelection();
