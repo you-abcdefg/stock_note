@@ -172,7 +172,7 @@
                     <%# ***** strong：コメント投稿者の名前を太字で表示 ***** %>
                     <%# ***** comment.user&.name.presence：セーフナビゲーションでユーザー名を取得、存在確認 ***** %>
                     <%# ***** comment.user&.email：ユーザーが存在しないまたは名前がない場合はメールアドレスを表示 ***** %>
-                    <span class="text-muted"><%= comment.created_at&.strftime("%Y/%m/%d") %></span>
+                    <span class="text-muted"><%= comment.created_at&.strftime("%Y/%m/%d %H:%M") %></span>
                     <%# ***** span：コメント投稿日時を表示するインラインセクション ***** %>
                     <%# ***** text-muted：グレー色の文字色 ***** %>
                     <%# ***** comment.created_at&.strftime("%Y/%m/%d")：セーフナビゲーションで作成日時を指定形式で表示 ***** %>
@@ -231,9 +231,9 @@
           <%# ***** justify-content-between：要素を両端に配置 ***** %>
             <span>作成日</span>
             <%# ***** span：ラベルテキスト ***** %>
-            <strong><%= @post.created_at.strftime("%Y/%m/%d") %></strong>
+            <strong><%= @post.created_at.strftime("%Y/%m/%d %H:%M") %></strong>
             <%# ***** strong：作成日時を太字で表示 ***** %>
-            <%# ***** @post.created_at.strftime("%Y/%m/%d")：投稿作成日時を指定形式で表示 ***** %>
+            <%# ***** @post.created_at.strftime("%Y/%m/%d %H:%M")：投稿作成日時を指定形式で表示 ***** %>
           </div>
           <div class="d-flex justify-content-between mt-2">
           <%# ***** div：投稿情報アイテム（更新日）を囲むセクション ***** %>
@@ -242,9 +242,9 @@
           <%# ***** mt-2：上部マージンを追加 ***** %>
             <span>更新日</span>
             <%# ***** span：ラベルテキスト ***** %>
-            <strong><%= @post.updated_at.strftime("%Y/%m/%d") %></strong>
+            <strong><%= @post.updated_at.strftime("%Y/%m/%d %H:%M") %></strong>
             <%# ***** strong：更新日時を太字で表示 ***** %>
-            <%# ***** @post.updated_at.strftime("%Y/%m/%d")：投稿更新日時を指定形式で表示 ***** %>
+            <%# ***** @post.updated_at.strftime("%Y/%m/%d %H:%M")：投稿更新日時を指定形式で表示 ***** %>
           </div>
         </div>
       </div>
