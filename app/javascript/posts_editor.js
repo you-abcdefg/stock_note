@@ -13,6 +13,8 @@ function initContentEditableEditor() {
 
   const insertImageButton = document.getElementById('insert-image-button');
   const insertCodeButton = document.getElementById('insert-code-button');
+  const insertSuperButton = document.getElementById('insert-super-button');
+  const insertSubButton = document.getElementById('insert-sub-button');
   const imageInput = document.getElementById('post_images');
 
   const allFiles = [];
@@ -530,6 +532,63 @@ function initContentEditableEditor() {
       }, 10);
     });
   }
+
+  // 上付き文字挿入
+  if (insertSuperButton) {
+    insertSuperButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sel = window.getSelection();
+      if (sel.rangeCount === 0) return;
+      const range = sel.getRangeAt(0);
+      const supElement = document.createElement('sup');
+      const textNode = document.createTextNode('');
+      supElement.appendChild(textNode);
+      range.insertNode(supElement);
+      const newRange = document.createRange();
+      newRange.setStart(textNode, 0);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+      bodyEditor.focus();
+      processEditorContent();
+      syncHiddenField();
+    });
+  }
+
+  // 下付き文字挿入
+  if (insertSubButton) {
+    insertSubButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sel = window.getSelection();
+      if (sel.rangeCount === 0) return;
+      const range = sel.getRangeAt(0);
+      const subElement = document.createElement('sub');
+      const textNode = document.createTextNode('');
+      subElement.appendChild(textNode);
+      range.insertNode(subElement);
+      const newRange = document.createRange();
+      newRange.setStart(textNode, 0);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+      bodyEditor.focus();
+      processEditorContent();
+      syncHiddenField();
+    });
+  }
+
+  // Enterキーで改行（デフォルト動作を許可）
+  bodyEditor.addEventListener('keydown', (e) => {
+    // Shift+Enterの場合はブラウザのデフォルト動作を許可（改行）
+    if (e.key === 'Enter' && !e.shiftKey) {
+      // デフォルト動作（改行）を許可
+      // 改行後のコンテンツ処理
+      setTimeout(() => {
+        processEditorContent();
+        syncHiddenField();
+      }, 0);
+    }
+  });
 
   // フォーム送信時に同期
   const form = bodyEditor.closest('form');
