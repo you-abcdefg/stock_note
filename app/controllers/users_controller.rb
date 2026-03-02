@@ -23,8 +23,14 @@ class UsersController < ApplicationController
   # ユーザー詳細表示（誰でも見れる）
   # =====================================
   def show
-    # ユーザーの投稿一覧を新しい順で取得
-    @posts = @user.posts.order(created_at: :desc)
+    # ユーザーの投稿に対してRansack検索を適用
+    @q = @user.posts.ransack(params[:q])
+    
+    # ソート順が指定されていない場合は新しい順をデフォルトに
+    @q.sorts = 'created_at desc' if @q.sorts.empty?
+    
+    # 検索結果を取得
+    @posts = @q.result.includes(:tags)
     
     # 管理者または本人以外は公開済み投稿のみ表示
     # （下書きや非公開投稿は見せない）

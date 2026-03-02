@@ -22,9 +22,23 @@ class PostsController < ApplicationController
   # 一覧表示（誰でも見れる）
   # =====================================
   def index
-    # 公開済み（published）の投稿だけを取得して、新しい順に表示
+    # Ransackで検索条件を作成
+    @q = Post.ransack(params[:q])
+    
+    # ソート順が指定されていない場合は新しい順をデフォルトに
+    @q.sorts = 'created_at desc' if @q.sorts.empty?
+    
+    # 公開済み（published）の投稿だけを取得
     # includes(:user, :tags) で関連データを事前読み込み（N+1問題を防ぐ）
-    @posts = Post.includes(:user, :tags).where(status: :published).order(created_at: :desc)
+    posts = @q.result.includes(:user, :tags)
+    
+    if user_signed_in?
+      # ログイン中：公開投稿 + 自分の下書き
+      @posts = posts.where("status = ? OR user_id = ?", Post.statuses[:published], current_user.id)
+    else
+      # 未ログイン：公開投稿のみ
+      @posts = posts.where(status: :published)
+    end
   end
 
   # =====================================
@@ -115,9 +129,19 @@ class PostsController < ApplicationController
   def tagged
     # URLから渡されたタグ名でタグを検索
     @tag = ActsAsTaggableOn::Tag.find_by(name: params[:tag])
-    # そのタグが付いた投稿を取得（公開済みのみを新しい順で表示）
-    # includes(:user, :tags) で関連データを事前読み込み（N+1問題を防ぐ）
-    @posts = Post.tagged_with(@tag.name).where(status: :published).includes(:user, :tags).order(created_at: :desc) if @tag
+    
+    if @tag
+      # タグが存在する場合、Ransackで検索条件を作成
+      @q = Post.tagged_with(@tag.name).ransack(params[:q])
+      
+      # ソート順が指定されていない場合は新しい順をデフォルトに
+      @q.sorts = 'created_at desc' if @q.sorts.empty?
+      
+      # 検索結果を取得（公開済みのみ）
+      @posts = @q.result.where(status: :published).includes(:user, :tags)
+    else
+      @posts = []
+    end
   end
 
   # =====================================

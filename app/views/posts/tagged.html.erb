@@ -1,7 +1,11 @@
 <div class="container px-5 px-sm-0 mt-4">
   <div class="row">
     <div class="col-md-12">
-      <h2>タグ検索: <strong><%= params[:tag] %></strong></h2>
+      <h2>タグ検索: <span class="badge badge-info"><%= params[:tag] %></span></h2>
+      
+      <%# ***** 検索フォーム ***** %>
+      <%= render 'search_form' %>
+      
       <% if @tag && @posts.any? %>
         <p class="text-muted"><%= @posts.count %> 件の投稿が見つかりました。</p>
         <table class="table table-hover">

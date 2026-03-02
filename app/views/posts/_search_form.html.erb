@@ -1,0 +1,78 @@
+<%# ***** 投稿検索フォーム（パーシャル） ***** %>
+<%# ***** すべての投稿一覧ページで共通で使用する検索フォーム ***** %>
+<% selected_tags = Array(params.dig(:q, :tags_name_in)).reject(&:blank?) %>
+<% tag_select_class = "form-control form-control-sm" %>
+
+<div class="card mb-3">
+  <div class="card-header">
+    <h5 class="mb-0">
+      <i class="fas fa-search"></i> 検索・フィルター
+    </h5>
+  </div>
+  <div class="card-body">
+    <%= search_form_for @q, url: search_posts_path, local: true, method: :get do |f| %>
+      <div class="row">
+        <!-- タグ検索 -->
+        <div class="col-md-4 mb-2">
+          <%= f.label :tags_name_in, 'タグ', class: 'form-label' %>
+          <%= f.select :tags_name_in, 
+              [['すべて', '']] + ActsAsTaggableOn::Tag.pluck(:name).map { |tag| [tag, tag] },
+              {},
+              { multiple: true, class: tag_select_class, size: 5 } %>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const tagSelect = document.querySelector('select[name="q[tags_name_in][]"]');
+              if (tagSelect && !tagSelect.value) {
+                tagSelect.options[0].selected = true;
+              }
+            });
+          </script>
+        </div>
+
+        <!-- ユーザー検索 -->
+        <div class="col-md-4 mb-2">
+          <%= f.label :user_name_cont, 'ユーザー名', class: 'form-label' %>
+          <%= f.search_field :user_name_cont, class: 'form-control form-control-sm', placeholder: 'ユーザー名で検索' %>
+          <small class="form-text text-muted">未指定の場合：全てのユーザー</small>
+        </div>
+
+        <!-- ソート順 -->
+        <div class="col-md-4 mb-2">
+          <%= f.label :s, '並び順', class: 'form-label' %>
+          <%= f.select :s, 
+              [
+                ['新しい順', 'created_at desc'],
+                ['古い順', 'created_at asc'],
+                ['更新日時（新しい順）', 'updated_at desc'],
+                ['更新日時（古い順）', 'updated_at asc'],
+                ['ユーザー名（昇順）', 'user_name asc'],
+                ['ユーザー名（降順）', 'user_name desc']
+              ],
+              { include_blank: '新しい順（デフォルト）' },
+              class: 'form-control form-control-sm' %>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <!-- 投稿日時（開始） -->
+        <div class="col-md-6 mb-2">
+          <%= f.label :created_at_gteq, '投稿日時（開始）', class: 'form-label' %>
+          <%= f.date_field :created_at_gteq, class: 'form-control form-control-sm', placeholder: 'yyyy-mm-dd' %>
+          <small class="form-text text-muted">未指定の場合：最も古い投稿から</small>
+        </div>
+
+        <!-- 投稿日時（終了） -->
+        <div class="col-md-6 mb-2">
+          <%= f.label :created_at_lteq_end_of_day, '投稿日時（終了）', class: 'form-label' %>
+          <%= f.date_field :created_at_lteq_end_of_day, class: 'form-control form-control-sm', placeholder: 'yyyy-mm-dd' %>
+          <small class="form-text text-muted">未指定の場合：最新の投稿まで</small>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <%= link_to 'リセット', request.path, class: 'btn btn-sm btn-secondary mr-2' %>
+        <%= f.submit '検索', class: 'btn btn-sm btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+</div>

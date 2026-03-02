@@ -9,75 +9,7 @@
       <h2 class="mb-4">投稿を検索</h2>
 
       <%# ***** 検索フォーム ***** %>
-      <div class="card mb-4">
-        <div class="card-body">
-          <%= search_form_for @q, url: search_posts_path, local: true do |f| %>
-            <div class="form-group">
-              <label for="q_title_cont">タイトルで検索</label>
-              <%= f.search_field :title_cont, class: 'form-control', placeholder: 'タイトルキーワード', id: 'q_title_cont' %>
-            </div>
-
-            <div class="form-group">
-              <label for="q_body_cont">本文で検索</label>
-              <%= f.search_field :body_cont, class: 'form-control', placeholder: '本文キーワード', id: 'q_body_cont' %>
-            </div>
-
-            <div class="form-group">
-              <label for="q_user_name_cont">投稿者で検索</label>
-              <%= f.search_field :user_name_cont, class: 'form-control', placeholder: 'ユーザー名', id: 'q_user_name_cont' %>
-            </div>
-
-            <div class="form-group">
-              <label for="q_tags_name_in">タグで検索</label>
-              <%= f.select :tags_name_in, 
-                  ActsAsTaggableOn::Tag.pluck(:name).map { |tag| [tag, tag] },
-                  { include_blank: '全てのタグ' },
-                  { multiple: true, class: 'form-control', id: 'q_tags_name_in' } %>
-            </div>
-
-            <div class="form-group">
-              <label for="q_status_eq">ステータス</label>
-              <%= f.select :status_eq, 
-                  [['すべて', ''], ['公開', 'published'], ['下書き', 'draft']], 
-                  { include_blank: false }, 
-                  class: 'form-control',
-                  id: 'q_status_eq' %>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="q_created_at_gteq">投稿日時（開始）</label>
-                <%= f.date_field :created_at_gteq, class: 'form-control', id: 'q_created_at_gteq' %>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="q_created_at_lteq_end_of_day">投稿日時（終了）</label>
-                <%= f.date_field :created_at_lteq_end_of_day, class: 'form-control', id: 'q_created_at_lteq_end_of_day' %>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="q_s">並び順</label>
-              <%= f.select :s, 
-                  [
-                    ['新しい順', 'created_at desc'],
-                    ['古い順', 'created_at asc'],
-                    ['ユーザー名（昇順）', 'user_name asc'],
-                    ['ユーザー名（降順）', 'user_name desc'],
-                    ['タイトル（昇順）', 'title asc'],
-                    ['タイトル（降順）', 'title desc']
-                  ],
-                  { include_blank: '新しい順（デフォルト）' },
-                  class: 'form-control',
-                  id: 'q_s' %>
-            </div>
-
-            <div class="form-group">
-              <%= f.submit '検索', class: 'btn btn-primary' %>
-              <%= link_to 'リセット', search_posts_path, class: 'btn btn-secondary' %>
-            </div>
-          <% end %>
-        </div>
-      </div>
+      <%= render 'search_form' %>
 
       <%# ***** 検索結果 ***** %>
       <% if @posts.any? %>
