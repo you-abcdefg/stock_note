@@ -13,8 +13,7 @@ function initContentEditableEditor() {
 
   const insertImageButton = document.getElementById('insert-image-button');
   const insertCodeButton = document.getElementById('insert-code-button');
-  const insertSuperButton = document.getElementById('insert-super-button');
-  const insertSubButton = document.getElementById('insert-sub-button');
+  const insertFormulaButton = document.getElementById('insert-formula-button');
   const imageInput = document.getElementById('post_images');
 
   const allFiles = [];
@@ -45,6 +44,57 @@ function initContentEditableEditor() {
     const getCodePreview = (code) => {
       const plain = (code || '').replace(/\s+/g, ' ').trim();
       return plain.slice(0, 10);
+    };
+
+    const ensureFormulaModal = () => {
+      if (document.getElementById('formula-editor-overlay')) {
+        return {
+          overlay: document.getElementById('formula-editor-overlay'),
+          formulaInput: document.getElementById('formula-input'),
+          superRadio: document.getElementById('formula-super'),
+          subRadio: document.getElementById('formula-sub'),
+          saveBtn: document.getElementById('formula-save'),
+          cancelBtn: document.getElementById('formula-cancel')
+        };
+      }
+
+      const overlay = document.createElement('div');
+      overlay.id = 'formula-editor-overlay';
+      overlay.className = 'formula-editor-overlay';
+      overlay.innerHTML = `
+        <div class="formula-editor-modal">
+          <div class="formula-editor-header">
+            <span>数式を編集</span>
+          </div>
+          <div class="formula-editor-content">
+            <div class="formula-type-selector">
+              <label><input type="radio" id="formula-super" name="formula-type" value="super" checked> 上付き文字</label>
+              <label><input type="radio" id="formula-sub" name="formula-type" value="sub"> 下付き文字</label>
+            </div>
+            <input type="text" id="formula-input" class="formula-editor-input" placeholder="数式を入力してください" />
+          </div>
+          <div class="formula-editor-actions">
+            <button type="button" id="formula-cancel" class="btn btn-sm btn-outline-secondary">キャンセル</button>
+            <button type="button" id="formula-save" class="btn btn-sm btn-primary">保存</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('is-open');
+        }
+      });
+
+      return {
+        overlay,
+        formulaInput: overlay.querySelector('#formula-input'),
+        superRadio: overlay.querySelector('#formula-super'),
+        subRadio: overlay.querySelector('#formula-sub'),
+        saveBtn: overlay.querySelector('#formula-save'),
+        cancelBtn: overlay.querySelector('#formula-cancel')
+      };
     };
 
     const ensureCodeModal = () => {
@@ -317,14 +367,6 @@ function initContentEditableEditor() {
   syncHiddenField();
 
   // ========== イベントリスナー登録 ==========
-  bodyEditor.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      insertTextAtSelection('\n');
-      processEditorContent();
-      syncHiddenField();
-    }
-  });
   bodyEditor.addEventListener('input', () => {
     processEditorContent();
     syncHiddenField();
@@ -533,62 +575,66 @@ function initContentEditableEditor() {
     });
   }
 
-  // 上付き文字挿入
-  if (insertSuperButton) {
-    insertSuperButton.addEventListener('click', (e) => {
+  // 数式挿入
+  if (insertFormulaButton) {
+    insertFormulaButton.addEventListener('click', (e) => {
       e.preventDefault();
-      const sel = window.getSelection();
-      if (sel.rangeCount === 0) return;
-      const range = sel.getRangeAt(0);
-      const supElement = document.createElement('sup');
-      const textNode = document.createTextNode('');
-      supElement.appendChild(textNode);
-      range.insertNode(supElement);
-      const newRange = document.createRange();
-      newRange.setStart(textNode, 0);
-      newRange.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(newRange);
-      bodyEditor.focus();
-      processEditorContent();
-      syncHiddenField();
-    });
-  }
 
-  // 下付き文字挿入
-  if (insertSubButton) {
-    insertSubButton.addEventListener('click', (e) => {
-      e.preventDefault();
       const sel = window.getSelection();
-      if (sel.rangeCount === 0) return;
-      const range = sel.getRangeAt(0);
-      const subElement = document.createElement('sub');
-      const textNode = document.createTextNode('');
-      subElement.appendChild(textNode);
-      range.insertNode(subElement);
-      const newRange = document.createRange();
-      newRange.setStart(textNode, 0);
-      newRange.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(newRange);
-      bodyEditor.focus();
-      processEditorContent();
-      syncHiddenField();
-    });
-  }
+      if (sel.rangeCount === 0) {
+        const range = document.createRange();
+        range.selectNodeContents(bodyEditor);
+        range.collapse(false);
+        sel.addRange(range);
+      }
 
-  // Enterキーで改行（デフォルト動作を許可）
-  bodyEditor.addEventListener('keydown', (e) => {
-    // Shift+Enterの場合はブラウザのデフォルト動作を許可（改行）
-    if (e.key === 'Enter' && !e.shiftKey) {
-      // デフォルト動作（改行）を許可
-      // 改行後のコンテンツ処理
+      const range = sel.getRangeAt(0);
+      const placeholder = '<sup></sup>';
+      const textNode = document.createTextNode(placeholder);
+      range.insertNode(textNode);
+      
+      bodyEditor.focus();
+      
       setTimeout(() => {
         processEditorContent();
         syncHiddenField();
-      }, 0);
-    }
-  });
+        
+        const modal = ensureFormulaModal();
+        modal.superRadio.checked = true;
+        modal.formulaInput.value = '';
+        modal.overlay.classList.add('is-open');
+        modal.formulaInput.focus();
+
+        const onSave = () => {
+          const formulaText = modal.formulaInput.value || '';
+          const isSuper = modal.superRadio.checked;
+          const tagName = isSuper ? 'sup' : 'sub';
+          
+          // 最後に挿入したプレースホルダーを検索
+          const allTexts = Array.from(bodyEditor.childNodes).map(n => n.textContent).join('');
+          let targetElement = bodyEditor.querySelector(`${tagName}:last-of-type`);
+          
+          if (targetElement) {
+            targetElement.textContent = formulaText;
+          }
+          
+          modal.overlay.classList.remove('is-open');
+          syncHiddenField();
+          modal.saveBtn.removeEventListener('click', onSave);
+          modal.cancelBtn.removeEventListener('click', onCancel);
+        };
+        
+        const onCancel = () => {
+          modal.overlay.classList.remove('is-open');
+          modal.saveBtn.removeEventListener('click', onSave);
+          modal.cancelBtn.removeEventListener('click', onCancel);
+        };
+
+        modal.saveBtn.addEventListener('click', onSave);
+        modal.cancelBtn.addEventListener('click', onCancel);
+      }, 10);
+    });
+  }
 
   // フォーム送信時に同期
   const form = bodyEditor.closest('form');

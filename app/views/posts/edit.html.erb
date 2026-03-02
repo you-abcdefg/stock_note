@@ -104,20 +104,12 @@
               コードを挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
-            <button type="button" class="btn btn-sm btn-outline-info mr-2" id="insert-super-button">
-            <%# ***** button：本文中へ上付き文字タグを挿入するボタン ***** %>
+            <button type="button" class="btn btn-sm btn-outline-info" id="insert-formula-button">
+            <%# ***** button：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-info"：小さめの水色枠ボタン ***** %>
-            <%# ***** id="insert-super-button"：JavaScriptで参照するID ***** %>
-              上付き挿入
-              <%# ***** ボタンの表示テキスト ***** %>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-info" id="insert-sub-button">
-            <%# ***** button：本文中へ下付き文字タグを挿入するボタン ***** %>
-            <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
-            <%# ***** class: "btn btn-sm btn-outline-info"：小さめの水色枠ボタン ***** %>
-            <%# ***** id="insert-sub-button"：JavaScriptで参照するID ***** %>
-              下付き挿入
+            <%# ***** id="insert-formula-button"：JavaScriptで参照するID ***** %>
+              数式を挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
           </div>
@@ -374,6 +366,112 @@
               <%# ***** justify-content: flex-end：右寄せ ***** %>
               justify-content: flex-end;
               <%# ***** gap: 8px：ボタン間の余白 ***** %>
+              gap: 8px;
+            }
+            <%# ***** .formula-editor-overlay：数式編集モーダルの背景 ***** %>
+            .formula-editor-overlay {
+              <%# ***** position: fixed：画面全体に固定 ***** %>
+              position: fixed;
+              <%# ***** inset: 0：上下左右を0に設定 ***** %>
+              inset: 0;
+              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
+              background: rgba(0, 0, 0, 0.4);
+              <%# ***** display: none：初期状態は非表示 ***** %>
+              display: none;
+              <%# ***** align-items: center：縦中央揃え ***** %>
+              align-items: center;
+              <%# ***** justify-content: center：横中央揃え ***** %>
+              justify-content: center;
+              <%# ***** z-index: 9999：最前面表示 ***** %>
+              z-index: 9999;
+            }
+            <%# ***** .formula-editor-overlay.is-open：モーダル表示時 ***** %>
+            .formula-editor-overlay.is-open {
+              <%# ***** display: flex：フレックスで表示 ***** %>
+              display: flex;
+            }
+            <%# ***** .formula-editor-modal：モーダル本体 ***** %>
+            .formula-editor-modal {
+              <%# ***** background: #fff：背景色を白 ***** %>
+              background: #fff;
+              <%# ***** width: min(90vw, 500px)：横幅を制限 ***** %>
+              width: min(90vw, 500px);
+              <%# ***** border-radius: 8px：角丸 ***** %>
+              border-radius: 8px;
+              <%# ***** box-shadow：影を付ける ***** %>
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+              <%# ***** display: flex：縦並びレイアウト ***** %>
+              display: flex;
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              flex-direction: column;
+              <%# ***** padding: 24px：内側余白 ***** %>
+              padding: 24px;
+            }
+            <%# ***** .formula-editor-header：モーダルの見出し ***** %>
+            .formula-editor-header {
+              <%# ***** font-weight: 600：太字指定 ***** %>
+              font-weight: 600;
+              <%# ***** font-size: 16px：文字サイズ ***** %>
+              font-size: 16px;
+              <%# ***** margin-bottom: 16px：下余白 ***** %>
+              margin-bottom: 16px;
+            }
+            <%# ***** .formula-editor-content：モーダルコンテンツエリア ***** %>
+            .formula-editor-content {
+              <%# ***** display: flex：縦並び ***** %>
+              display: flex;
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              flex-direction: column;
+              <%# ***** gap: 16px：要素間の間隔 ***** %>
+              gap: 16px;
+              <%# ***** margin-bottom: 20px：下余白 ***** %>
+              margin-bottom: 20px;
+            }
+            <%# ***** .formula-type-selector：上付き・下付き選択ラジオボタン ***** %>
+            .formula-type-selector {
+              <%# ***** display: flex：横並び ***** %>
+              display: flex;
+              <%# ***** gap: 20px：選択肢間の間隔 ***** %>
+              gap: 20px;
+            }
+            <%# ***** .formula-type-selector label：ラジオボタンのラベル ***** %>
+            .formula-type-selector label {
+              <%# ***** display: flex：フレックスで並べる ***** %>
+              display: flex;
+              <%# ***** align-items: center：垂直中央揃え ***** %>
+              align-items: center;
+              <%# ***** gap: 8px：チェックボックスとテキストの間隔 ***** %>
+              gap: 8px;
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              cursor: pointer;
+            }
+            <%# ***** .formula-type-selector input：ラジオボタン ***** %>
+            .formula-type-selector input {
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              cursor: pointer;
+            }
+            <%# ***** .formula-editor-input：数式入力フィールド ***** %>
+            .formula-editor-input {
+              <%# ***** width: 100%：横幅100% ***** %>
+              width: 100%;
+              <%# ***** padding: 10px 12px：内側余白 ***** %>
+              padding: 10px 12px;
+              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
+              border: 1px solid #dee2e6;
+              <%# ***** border-radius: 6px：角丸 ***** %>
+              border-radius: 6px;
+              <%# ***** font-size: 14px：文字サイズ ***** %>
+              font-size: 14px;
+              <%# ***** box-sizing: border-box：padding を幅に含める ***** %>
+              box-sizing: border-box;
+            }
+            <%# ***** .formula-editor-actions：モーダル下部のボタン領域 ***** %>
+            .formula-editor-actions {
+              <%# ***** display: flex：横並び ***** %>
+              display: flex;
+              <%# ***** justify-content: flex-end：右寄せ ***** %>
+              justify-content: flex-end;
+              <%# ***** gap: 8px：ボタン間の間隔 ***** %>
               gap: 8px;
             }
           </style>
