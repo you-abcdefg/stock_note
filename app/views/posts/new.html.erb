@@ -66,7 +66,7 @@
         <%# ***** div：本文入力フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
         <%# ***** mb-3：下部マージンを追加 ***** %>
-          <%= form.label :body, "本文" %>
+          <label>本文</label>
           <%# ***** form.label：本文入力フィールドのラベルを表示 ***** %>
           <%# ***** :body：ラベル対象属性 ***** %>
           <%# ***** "本文"：ラベルのテキスト ***** %>
@@ -124,6 +124,8 @@
               padding: 10px 12px;
               <%# ***** box-sizing: border-box：paddingを幅/高さに含める ***** %>
               box-sizing: border-box;
+              <%# ***** text-align: left：テキストを左寄せ ***** %>
+              text-align: left;
             }
             <%# ***** .card-spacer：カードとテキストの間隔調整用スペーサー ***** %>
             #body-editor .card-spacer {
@@ -196,10 +198,12 @@
             #body-editor .code-card {
               <%# ***** display: block：ブロック要素として配置 ***** %>
               display: block;
-              <%# ***** margin: 8px 0：上下余白を設定 ***** %>
-              margin: 8px 0;
-              <%# ***** padding: 6px 6px 6px 12px：内側余白を調整 ***** %>
-              padding: 6px 6px 6px 12px;
+              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
+              margin: 0 !important;
+              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
+              margin-top: 0 !important;
+              <%# ***** padding: 0：全padding削除 ***** %>
+              padding: 0 !important;
               <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
               background: #f8f9fa;
               <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
@@ -214,8 +218,8 @@
               overflow: hidden;
               <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
               transition: all 0.2s;
-              <%# ***** font-size: 0.75rem：文字サイズ ***** %>
-              font-size: 0.75rem;
+              <%# ***** height: 100px：高さを統一 ***** %>
+              height: 100px;
             }
             <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
             #body-editor .code-card:hover {
@@ -228,23 +232,72 @@
             #body-editor .code-card pre {
               <%# ***** margin: 0：余白をリセット ***** %>
               margin: 0;
-              <%# ***** font-size: 0.75rem：文字サイズ ***** %>
-              font-size: 0.75rem;
-              <%# ***** line-height: 1.4：行の高さ ***** %>
-              line-height: 1.4;
-              <%# ***** white-space: nowrap：1行表示に固定 ***** %>
-              white-space: nowrap;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
-              overflow: hidden;
-              <%# ***** text-overflow: ellipsis：省略記号を表示 ***** %>
-              text-overflow: ellipsis;
+              <%# ***** font-size: 12px：文字サイズを調整 ***** %>
+              font-size: 12px;
+              <%# ***** line-height: 1.5：行の高さ ***** %>
+              line-height: 1.5;
+              <%# ***** white-space: pre-wrap：折り返し表示を許可 ***** %>
+              white-space: pre-wrap;
+              <%# ***** word-break: break-word：単語途中での折り返し ***** %>
+              word-break: break-word;
+              <%# ***** overflow: auto：はみ出しをスクロール表示 ***** %>
+              overflow: auto;
+              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              height: 100%;
+            }
+            <%# ***** .formula-card：数式カード ***** %>
+            #body-editor .formula-card {
+              <%# ***** display: block：ブロック要素として配置 ***** %>
+              display: block;
+              <%# ***** width: 100%：横幅を100%に統一 ***** %>
+              width: 100%;
+              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
+              margin: 0 !important;
+              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
+              margin-top: 0 !important;
+              <%# ***** padding: 0：内側余白も0に ***** %>
+              padding: 0 !important;
+              <%# ***** text-align: left：左寄せを明示的に設定 ***** %>
+              text-align: left;
+              <%# ***** height: 100px：高さを統一 ***** %>
+              height: 100px;
+              <%# ***** position: relative：配置基準 ***** %>
+              position: relative;
+              <%# ***** float: none：浮動を無効化 ***** %>
+              float: none;
+            }
+            <%# ***** .code-card-body：コードカード本体 ***** %>
+            #body-editor .code-card-body {
+              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
+              padding: 3px 4px 0 4px !important;
+              <%# ***** margin: 0：余白なし ***** %>
+              margin: 0 !important;
+              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              height: 100%;
+              <%# ***** display: block：ブロック要素 ***** %>
+              display: block !important;
+              <%# ***** line-height: 1.2：行の高さ ***** %>
+              line-height: 1.2 !important;
+            }
+            <%# ***** .formula-card-body：数式カード本体 ***** %>
+            #body-editor .formula-card-body {
+              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
+              padding: 3px 4px 0 4px !important;
+              <%# ***** margin: 0：余白なし ***** %>
+              margin: 0 !important;
+              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              height: 100%;
+              <%# ***** display: block：ブロック要素 ***** %>
+              display: block !important;
+              <%# ***** line-height: 1.2：行の高さ ***** %>
+              line-height: 1.2 !important;
             }
             <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
             #body-editor .card-delete-btn {
               <%# ***** position: absolute：カード右上に配置 ***** %>
               position: absolute;
-              <%# ***** top: 2px：上からの位置 ***** %>
-              top: 2px;
+              <%# ***** top: 0：上からの位置を0に ***** %>
+              top: 0;
               <%# ***** right: 2px：右からの位置 ***** %>
               right: 2px;
               <%# ***** padding: 1px 3px：内側余白 ***** %>
@@ -304,8 +357,10 @@
             .code-editor-modal {
               <%# ***** background: #fff：背景色を白 ***** %>
               background: #fff;
-              <%# ***** width: min(90vw, 900px)：横幅を制限 ***** %>
-              width: min(90vw, 900px);
+              <%# ***** width: 90%：横幅を SCSS と統一 ***** %>
+              width: 90%;
+              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
+              max-width: 1200px;
               <%# ***** height: min(70vh, 600px)：高さを制限 ***** %>
               height: min(70vh, 600px);
               <%# ***** border-radius: 8px：角丸 ***** %>
@@ -384,8 +439,10 @@
             .formula-editor-modal {
               <%# ***** background: #fff：背景色を白 ***** %>
               background: #fff;
-              <%# ***** width: min(90vw, 500px)：横幅を制限 ***** %>
-              width: min(90vw, 500px);
+              <%# ***** width: 90%：横幅をコードモーダルと統一 ***** %>
+              width: 90%;
+              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
+              max-width: 1200px;
               <%# ***** border-radius: 8px：角丸 ***** %>
               border-radius: 8px;
               <%# ***** box-shadow：影を付ける ***** %>
@@ -416,6 +473,22 @@
               gap: 16px;
               <%# ***** margin-bottom: 20px：下余白 ***** %>
               margin-bottom: 20px;
+            }
+            <%# ***** .formula-input-group：上付き・下付き入力フィールドグループ ***** %>
+            .formula-input-group {
+              <%# ***** display: flex：縦並び ***** %>
+              display: flex;
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              flex-direction: column;
+              <%# ***** gap: 8px：要素間の間隔 ***** %>
+              gap: 8px;
+            }
+            <%# ***** .formula-input-group label：入力フィールドのラベル ***** %>
+            .formula-input-group label {
+              <%# ***** font-weight: 500：太字 ***** %>
+              font-weight: 500;
+              <%# ***** font-size: 13px：小さめのフォント ***** %>
+              font-size: 13px;
             }
             <%# ***** .formula-type-selector：上付き・下付き選択ラジオボタン ***** %>
             .formula-type-selector {
@@ -477,7 +550,7 @@
         <%# ***** div：タグ選択フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
         <%# ***** mb-3：下部マージンを追加 ***** %>
-          <%= form.label :tag_list, "タグ" %>
+          <label>タグ</label>
           <%# ***** form.label：タグ入力フィールドのラベルを表示 ***** %>
           <%# ***** :tag_list：ラベル対象属性 ***** %>
           <%# ***** "タグ"：ラベルのテキスト ***** %>
