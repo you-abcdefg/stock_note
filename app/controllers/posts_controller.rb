@@ -66,7 +66,12 @@ class PostsController < ApplicationController
   # 投稿を更新（自分の投稿または管理者のみ）
   # =====================================
   def update
-    if @post.update(post_params) # 更新成功
+    # 画像以外のパラメータで更新（画像は別途追加処理）
+    if @post.update(post_params.except(:images)) # 更新成功
+      # 新しい画像があれば既存画像に追加（置き換えではなく追加）
+      if params[:post][:images].present?
+        @post.images.attach(params[:post][:images])
+      end
       redirect_to @post, notice: '投稿を更新しました。'
     else # 更新失敗
       render :edit # 編集画面に戻る
