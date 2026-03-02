@@ -93,6 +93,9 @@ class PostsController < ApplicationController
     # Ransackで検索条件を作成（例：タイトルや本文で検索）
     @q = Post.ransack(params[:q])
     
+    # ソート順が指定されていない場合は新しい順をデフォルトに
+    @q.sorts = 'created_at desc' if @q.sorts.empty?
+    
     # ***** 他のユーザーの下書きは表示しないフィルタリング *****
     # 公開投稿と、ログイン中ユーザーの下書きのみを取得
     posts = @q.result.includes(:user, :tags)
@@ -112,9 +115,9 @@ class PostsController < ApplicationController
   def tagged
     # URLから渡されたタグ名でタグを検索
     @tag = ActsAsTaggableOn::Tag.find_by(name: params[:tag])
-    # そのタグが付いた投稿を取得（公開済みのみを表示）
+    # そのタグが付いた投稿を取得（公開済みのみを新しい順で表示）
     # includes(:user, :tags) で関連データを事前読み込み（N+1問題を防ぐ）
-    @posts = Post.tagged_with(@tag.name).where(status: :published).includes(:user, :tags) if @tag
+    @posts = Post.tagged_with(@tag.name).where(status: :published).includes(:user, :tags).order(created_at: :desc) if @tag
   end
 
   # =====================================
