@@ -237,10 +237,33 @@ function initContentEditableEditor() {
         </div>
       `;
       
+      // モーダルの完全なスタイルをJavaScriptで定義
       const style = document.createElement('style');
       if (!document.querySelector('style[data-formula-modal]')) {
         style.setAttribute('data-formula-modal', 'true');
         style.textContent = `
+          .formula-editor-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+          }
+          .formula-editor-overlay.is-open {
+            display: flex !important;
+          }
+          .formula-editor-modal {
+            background: #fff;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+          }
           .formula-editor-textarea {
             width: 100%;
             min-height: 120px;
@@ -265,6 +288,7 @@ function initContentEditableEditor() {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
           overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
         }
       });
 
@@ -301,6 +325,60 @@ function initContentEditableEditor() {
           </div>
         </div>
       `;
+      
+      // モーダルの完全なスタイルをJavaScriptで定義
+      if (!document.querySelector('style[data-code-modal]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-code-modal', 'true');
+        style.textContent = `
+          .code-editor-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+          }
+          .code-editor-overlay.is-open {
+            display: flex !important;
+          }
+          .code-editor-modal {
+            background: #fff;
+            width: 90%;
+            max-width: 1200px;
+            height: min(70vh, 600px);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+          }
+          .code-editor-header {
+            font-weight: 600;
+            margin-bottom: 8px;
+          }
+          .code-editor-textarea {
+            flex: 1;
+            width: 100%;
+            resize: none;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px;
+          }
+          .code-editor-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
       document.body.appendChild(overlay);
 
       const textarea = overlay.querySelector('#code-editor-textarea');
@@ -310,6 +388,7 @@ function initContentEditableEditor() {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
           overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
         }
       });
 
