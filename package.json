@@ -1,6 +1,9 @@
 {
   "name": "stock-note",
   "private": true,
+  "engines": {
+    "node": ">=20 <21"
+  },
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
