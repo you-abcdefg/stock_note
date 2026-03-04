@@ -43,5 +43,6 @@ jobs:
             sudo kill $(cat tmp/pids/puma.pid) || true
             echo "kill puma process"
           fi
-          ~/.rbenv/shims/bundle exec puma -e production -C config/puma.rb
+          ~/.rbenv/shims/bundle exec puma -d -e production -C config/puma.rb
+          echo "puma started in daemon mode"
         '
