@@ -31,6 +31,10 @@ Rails.application.routes.draw do # ルーティング設定をここから開始
       get 'image_url' # /posts/image_url?filename=... で画像URLを取得
     end
     
+    member do
+      post 'add_to_list', to: 'list_items#create_from_post'
+    end
+
     # 投稿に紐づくコメント
     resources :comments, only: [:create, :destroy] # コメントの作成・削除ルートだけを定義する
     # only：指定したアクションだけを定義する
@@ -66,6 +70,15 @@ Rails.application.routes.draw do # ルーティング設定をここから開始
       # post 'join'：参加処理をPOSTで受け取る
       delete 'leave' # グループ退出ルートを定義する
       # delete 'leave'：退出処理をDELETEで受け取る
+    end
+  end
+
+  # リスト
+  resources :lists do
+    resources :list_items, only: [:update, :destroy] do
+      member do
+        patch :move
+      end
     end
   end
 

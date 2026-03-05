@@ -24,6 +24,8 @@ class Post < ApplicationRecord
   # :post_groups：中間テーブルとの関連名
   # dependent: :destroy：投稿削除時に紐付けも削除する
   has_many :groups, through: :post_groups # 所属グループ
+  has_many :list_items, dependent: :destroy
+  has_many :lists, through: :list_items
   # has_many：複数の関連を持つ
   # :groups：グループとの関連名
   # through: :post_groups：中間テーブル経由で取得する

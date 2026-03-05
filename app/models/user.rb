@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :liked_posts, through: :likes, source: :post # いいねした投稿
   has_many :group_memberships, dependent: :destroy # グループメンバーシップ
   has_many :groups, through: :group_memberships # 所属グループ
+  has_many :lists, dependent: :destroy
 
   # ゲストユーザーを作成するクラスメソッド
   def self.guest

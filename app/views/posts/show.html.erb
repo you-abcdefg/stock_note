@@ -104,6 +104,31 @@
             <% end %>
             <%# ***** end：if文の終了 ***** %>
           </div>
+
+          <% if user_signed_in? && current_user == @post.user %>
+            <div class="card mt-3">
+              <div class="card-body py-3">
+                <h6 class="mb-2">この投稿をリストに追加</h6>
+                <% if @available_lists_for_post.present? %>
+                  <%= form_with url: add_to_list_post_path(@post), local: true do |f| %>
+                    <div class="form-row align-items-end">
+                      <div class="col-md-9">
+                        <%= label_tag :list_id, '追加先リスト' %>
+                        <%= select_tag :list_id,
+                                       options_from_collection_for_select(@available_lists_for_post, :id, :title),
+                                       class: 'form-control' %>
+                      </div>
+                      <div class="col-md-3 mt-2 mt-md-0">
+                        <%= f.submit 'リストに追加', class: 'btn btn-primary btn-block' %>
+                      </div>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <p class="text-muted mb-0">追加先リストがありません。先にリストを作成してください。</p>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
 
