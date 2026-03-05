@@ -46,7 +46,7 @@ class PostsController < ApplicationController
   # =====================================
   def show
     # @postはbefore_actionのset_postで取得済み
-    if user_signed_in? && @post.user == current_user
+    if user_signed_in?
       @available_lists_for_post = current_user.lists.order(created_at: :desc)
     end
   end

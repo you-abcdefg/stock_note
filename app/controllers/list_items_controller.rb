@@ -7,11 +7,6 @@ class ListItemsController < ApplicationController
   def create_from_post
     post = Post.find(params[:id])
 
-    unless post.user == current_user
-      redirect_to post_path(post), alert: '投稿作成者のみリストに追加できます。'
-      return
-    end
-
     list = current_user.lists.find_by(id: params[:list_id])
 
     unless list
