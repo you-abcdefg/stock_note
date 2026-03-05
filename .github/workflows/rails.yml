@@ -19,19 +19,8 @@ jobs:
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
           set -euo pipefail
-
-          if [ -d "$HOME/stock_note/.git" ]; then
-            APP_DIR="$HOME/stock_note"
-          elif [ -d "$HOME/environment/stock_note/.git" ]; then
-            APP_DIR="$HOME/environment/stock_note"
-          else
-            echo "stock_note の配置先が見つかりません。"
-            exit 1
-          fi
-
-          cd "$APP_DIR"
-          git fetch origin main
-          git reset --hard origin/main
+          cd stock_note
+          git pull origin main
 
           if [ -s "$HOME/.nvm/nvm.sh" ]; then
             . "$HOME/.nvm/nvm.sh"
@@ -50,13 +39,10 @@ jobs:
           NODE_OPTIONS=--openssl-legacy-provider ~/.rbenv/shims/bundle exec rails assets:precompile RAILS_ENV=production
           ~/.rbenv/shims/bundle exec rails db:migrate RAILS_ENV=production
 
-          if [[ -e tmp/pids/puma.state ]]; then
-            ~/.rbenv/shims/bundle exec pumactl -S tmp/pids/puma.state stop || true
+          if [[ -e tmp/pids/puma.pid ]]; then
+            sudo kill $(cat tmp/pids/puma.pid) || true
+            echo "kill puma process"
           fi
-          pkill -f "puma.*stock_note" || true
-          sleep 2
-
-          RAILS_ENV=production ~/.rbenv/shims/bundle exec puma -d -e production -C config/puma.rb
-          pgrep -af puma || true
+          ~/.rbenv/shims/bundle exec puma -d -e production -C config/puma.rb
           echo "puma started in daemon mode"
         '
