@@ -1,64 +1,110 @@
+<%# ***** admin/users/index のビュー ***** %>
 <div class="container mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="d-flex justify-content-between align-items-center mb-4">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <h1>ユーザー管理</h1>
+    <%# ***** h1：見出し要素 ***** %>
     <%= link_to 'ユーザーを追加', new_admin_user_path, class: 'btn btn-primary' %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <%= search_form_for @q, url: admin_users_path do |f| %>
     <div class="row mb-3">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <div class="col-md-4">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <%= f.label :name_cont, 'ユーザー名検索' %>
+      <%# ***** フォーム入力欄セクション ***** %>
         <%= f.search_field :name_cont, class: 'form-control', placeholder: '名前で検索' %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <div class="col-md-4">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <%= f.label :email_cont, 'メールアドレス検索' %>
         <%= f.search_field :email_cont, class: 'form-control', placeholder: 'メールで検索' %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <div class="col-md-4">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <%= f.label :role_eq, '権限' %>
         <%= f.select :role_eq, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, { include_blank: '全て' }, class: 'form-control' %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <div class="mb-3">
+    <%# ***** 送信ボタンセクション ***** %>
       <%= f.submit '検索', class: 'btn btn-primary' %>
       <%= link_to 'リセット', admin_users_path, class: 'btn btn-secondary' %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <% end %>
 
+<%# ***** 一覧テーブルセクション ***** %>
   <table class="table table-striped">
+  <%# ***** table：テーブル要素 ***** %>
     <thead>
+    <%# ***** thead：テーブル見出し要素 ***** %>
       <tr>
+      <%# ***** tr：テーブル行要素 ***** %>
         <th>ID</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>名前</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>メールアドレス</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>権限</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>作成日</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>操作</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
       </tr>
+      <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
     </thead>
+    <%# ***** </thead>：theadタグ（テーブル見出し要素）の終了 ***** %>
     <tbody>
+    <%# ***** 一覧ループセクション ***** %>
       <% @users.each do |user| %>
+      <%# ***** each：コレクションを順に処理するループ ***** %>
         <tr>
+        <%# ***** tr：テーブル行要素 ***** %>
           <td><%= user.id %></td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
           <td><%= link_to user.name, admin_user_path(user) %></td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
           <td><%= user.email %></td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
           <td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
             <span class="badge badge-<%= user.admin? ? 'danger' : user.general? ? 'primary' : 'secondary' %>">
+            <%# ***** span：インライン要素 ***** %>
               <%= I18n.t("enums.user.role.#{user.role}") %>
             </span>
+            <%# ***** </span>：spanタグ（インライン要素）の終了 ***** %>
           </td>
+          <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
           <td><%= user.created_at.strftime('%Y/%m/%d') %></td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
           <td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
             <%= link_to '詳細', admin_user_path(user), class: 'btn btn-sm btn-info' %>
             <%= link_to '編集', edit_admin_user_path(user), class: 'btn btn-sm btn-warning' %>
             <% unless user == current_user %>
+            <%# ***** unless：条件が偽の場合に処理する分岐 ***** %>
               <%= link_to '削除', admin_user_path(user), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-danger' %>
             <% end %>
           </td>
+          <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
         </tr>
+        <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
       <% end %>
     </tbody>
+    <%# ***** </tbody>：tbodyタグ（テーブル本文要素）の終了 ***** %>
   </table>
+  <%# ***** </table>：tableタグ（テーブル要素）の終了 ***** %>
 
   <%= paginate @users %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

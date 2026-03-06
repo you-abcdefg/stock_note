@@ -4,8 +4,11 @@
 <%# ***** Ransackで複数条件での検索に対応 ***** %>
 
 <div class="container px-5 px-sm-0 mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="row">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="col-md-12">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <h2 class="mb-4">投稿を検索</h2>
 
       <%# ***** 検索フォーム ***** %>
@@ -13,61 +16,106 @@
 
       <%# ***** 検索結果 ***** %>
       <% if @posts.any? %>
+      <%# ***** if：条件を判定する分岐 ***** %>
         <div class="alert alert-info" role="alert">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           検索結果: <%= @posts.count %>件
         </div>
 
+      <%# ***** 一覧テーブルセクション ***** %>
         <table class="table table-hover">
+        <%# ***** table：テーブル要素 ***** %>
           <thead>
+          <%# ***** thead：テーブル見出し要素 ***** %>
             <tr>
+            <%# ***** tr：テーブル行要素 ***** %>
               <th>投稿日時</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>ユーザー</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>タイトル</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>ステータス</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>タグ</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>操作</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
             </tr>
+            <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
           </thead>
+          <%# ***** </thead>：theadタグ（テーブル見出し要素）の終了 ***** %>
           <tbody>
+<%# ***** 一覧ループセクション ***** %>
             <% @posts.each do |post| %>
+            <%# ***** each：コレクションを順に処理するループ ***** %>
               <tr>
+              <%# ***** tr：テーブル行要素 ***** %>
                 <td><%= post.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td><%= link_to(post.user.name.presence || '未設定', user_path(post.user)) %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td><%= link_to post.title, post_path(post) %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td>
+<%# ***** 条件分岐セクション ***** %>
                   <% if post.published? %>
+                  <%# ***** if：条件を判定する分岐 ***** %>
                     <span class="badge badge-success">公開</span>
+                    <%# ***** span：インライン要素 ***** %>
                   <% else %>
+                  <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
                     <span class="badge badge-secondary">下書き</span>
+                    <%# ***** span：インライン要素 ***** %>
                   <% end %>
                 </td>
+                <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
                 <td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                   <% post.tags.each do |tag| %>
+                  <%# ***** each：コレクションを順に処理するループ ***** %>
                     <%= link_to tag.name, tagged_posts_path(tag.name), class: 'badge badge-info' %>
                   <% end %>
                 </td>
+                <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
                 <td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                   <div class="btn-group btn-group-sm" role="group">
+                  <%# ***** div：汎用コンテナ要素 ***** %>
                     <%= link_to '詳細', post_path(post), class: 'btn btn-info' %>
                     <% if user_signed_in? && (current_user == post.user || current_user.admin?) %>
+                    <%# ***** if：条件を判定する分岐 ***** %>
                       <%= link_to '編集', edit_post_path(post), class: 'btn btn-warning' %>
                       <%= link_to '削除', post_path(post), method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: 'btn btn-danger' %>
                     <% end %>
                   </div>
+                  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
                 </td>
+                <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
               </tr>
+              <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
             <% end %>
           </tbody>
+          <%# ***** </tbody>：tbodyタグ（テーブル本文要素）の終了 ***** %>
         </table>
+        <%# ***** </table>：tableタグ（テーブル要素）の終了 ***** %>
       <% else %>
+      <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
         <div class="alert alert-warning" role="alert">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           検索条件に一致する投稿が見つかりませんでした。
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% end %>
 
       <div class="mt-3">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <%= link_to '投稿一覧に戻る', posts_path, class: 'btn btn-secondary' %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

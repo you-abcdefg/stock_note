@@ -1,3 +1,4 @@
+<%# ***** posts/edit のビュー ***** %>
 <div class="container px-5 px-sm-0 mt-4">
 <%# ***** container：レスポンシブコンテナクラス ***** %>
 <%# ***** px-5 px-sm-0：パディング調整（小画面で0、大画面で5） ***** %>
@@ -15,7 +16,9 @@
         <%# ***** @post.images.each：添付画像の一覧をループ ***** %>
         window.imageUrlMap = {
           <%# ***** 画像ファイル名をキー、URLを値に設定 ***** %>
+<%# ***** 一覧ループセクション ***** %>
           <% @post.images.each do |image| %>
+          <%# ***** each：コレクションを順に処理するループ ***** %>
             '<%= image.filename %>': '<%= url_for(image) %>',
           <% end %>
           <%# ***** end：画像一覧のループ終了 ***** %>
@@ -23,12 +26,15 @@
         <%# ***** imageUrlMapの定義終了 ***** %>
       </script>
 
+    <%# ***** 入力フォームセクション ***** %>
       <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
       <%# ***** form_with：投稿編集フォーム生成ヘルパー ***** %>
       <%# ***** model: @post：Postモデルをフォームに紐づける ***** %>
       <%# ***** local: true：Turboドライブを無効化して同期通信で送信 ***** %>
       <%# ***** html: { multipart: true }：ファイルアップロードを有効化 ***** %>
 
+      <%# ***** エラーメッセージ表示セクション ***** %>
+      <%# ***** 条件分岐セクション ***** %>
         <% if @post.errors.any? %>
         <%# ***** if：投稿にエラーがある場合の条件 ***** %>
         <%# ***** @post.errors.any?：1つ以上のエラーが存在するか判定 ***** %>
@@ -50,7 +56,9 @@
               <% end %>
               <%# ***** end：eachループの終了 ***** %>
             </ul>
+            <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
         <%# ***** end：if文の終了 ***** %>
 
@@ -62,10 +70,12 @@
           <%# ***** form.label：タイトル入力フィールドのラベルを表示 ***** %>
           <%# ***** :title：ラベル対象属性 ***** %>
           <%= form.text_field :title, class: "form-control" %>
+<%# ***** フォーム入力欄セクション ***** %>
           <%# ***** form.text_field：単一行テキスト入力フィールド ***** %>
           <%# ***** :title：投稿タイトル属性を対象 ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
         <%# ***** div：本文入力フォームグループ ***** %>
@@ -76,7 +86,9 @@
           <%# ***** :body：ラベル対象属性 ***** %>
           <%# ***** "本文"：ラベルのテキスト ***** %>
           <textarea id="body-source" class="form-control mb-2" rows="8" placeholder="ここに本文を入力してください（テキスト編集レイヤー）"><%= @post.body %></textarea>
+          <%# ***** textarea：複数行入力要素 ***** %>
           <small class="text-muted d-block mb-2">上段で本文を編集すると、下段のカード表示が自動で更新されます。</small>
+          <%# ***** small：補足テキスト要素 ***** %>
           <div id="body-editor" contenteditable="false" data-preview-only="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto; background: #f8f9fa;"></div>
           <%# ***** div contenteditable：テキスト編集可能なdiv（textareaの代わり） ***** %>
           <%# ***** id="body-editor"：JavaScriptで参照するID ***** %>
@@ -91,11 +103,15 @@
           <%# ***** div：本文挿入ボタンを配置する行 ***** %>
           <%# ***** mt-2：上部マージンを追加 ***** %>
             <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="insert-text-button">
+            <%# ***** button：ボタン要素 ***** %>
               テキストカードを追加
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
+            <%# ***** button：ボタン要素 ***** %>
               URLカードを追加
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
             <%# ***** button：本文中へ画像記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -104,6 +120,7 @@
               画像を挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="insert-code-button">
             <%# ***** button：本文中へコードブロック記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -112,6 +129,7 @@
               コードを挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <button type="button" class="btn btn-sm btn-outline-info" id="insert-formula-button">
             <%# ***** button：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -120,9 +138,12 @@
               数式を挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
+            <%# ***** button：ボタン要素 ***** %>
               全体プレビュー
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
           </div>
 
 
@@ -627,6 +648,7 @@
               タグを選択
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">
             <%# ***** button：新規タグ作成ボタン ***** %>
             <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
@@ -635,12 +657,15 @@
               タグを作成
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
             <span id="selected-tags" class="ml-3 text-muted"></span>
             <%# ***** span：選択されたタグを表示するセクション ***** %>
             <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
             <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
         <%# ***** div：公開状態選択フォームグループ ***** %>
@@ -656,10 +681,12 @@
           <%# ***** {}：HTMLオプション（プレースホルダーなど） ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group">
         <%# ***** div：送信・キャンセルボタングループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+<%# ***** 送信ボタンセクション ***** %>
           <%= form.submit "更新", class: "btn btn-primary" %>
           <%# ***** form.submit：フォーム送信ボタン ***** %>
           <%# ***** "更新"：ボタンのテキスト ***** %>
@@ -670,6 +697,7 @@
           <%# ***** @post：表示対象の投稿詳細ページへのパス ***** %>
           <%# ***** class: "btn btn-outline-secondary"：グレー枠線のボタンスタイル ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
         <%# ***** div：タグ選択用Bootstrapモーダル ***** %>
@@ -704,7 +732,9 @@
                   <%# ***** aria-hidden="true"：スクリーンリーダーから隠す ***** %>
                   <%# ***** &times；：× 記号のHTML実体参照 ***** %>
                 </button>
+                <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
               </div>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
               <div class="modal-body">
               <%# ***** div：モーダルボディ（コンテンツ） ***** %>
               <%# ***** modal-body：モーダルボディのスタイル ***** %>
@@ -736,9 +766,11 @@
                         <%# ***** class: "custom-control-label"：Bootstrapのカスタムラベルスタイル ***** %>
                         <%# ***** for: "tag_#{tag.id}"：関連付けるチェックボックスのID ***** %>
                       </div>
+                      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
                     <% end %>
                     <%# ***** end：eachループの終了 ***** %>
                   </div>
+                  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
                 <% else %>
                 <%# ***** else：利用可能なタグが存在しない場合 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes"></div>
@@ -751,6 +783,7 @@
                 <% end %>
                 <%# ***** end：if文の終了 ***** %>
               </div>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
               <div class="modal-footer">
               <%# ***** div：モーダルフッター ***** %>
               <%# ***** modal-footer：モーダルフッターのスタイル ***** %>
@@ -760,10 +793,14 @@
                 <%# ***** class: "btn btn-secondary"：グレー色のセカンダリボタンのスタイル ***** %>
                 <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
               </div>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
             </div>
+            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
 
+      <%# ***** スクリプトセクション ***** %>
         <script>
         <%# ***** script：タグ選択・作成のJavaScriptロジック ***** %>
           const initPostForm = () => {
@@ -1051,9 +1088,12 @@
           document.addEventListener('turbolinks:load', initPostForm);
           <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
         </script>
+        <%# ***** </script>：scriptタグ（スクリプト要素）の終了 ***** %>
       <% end %>
       <%# ***** end：form_withブロックの終了 ***** %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
 <%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

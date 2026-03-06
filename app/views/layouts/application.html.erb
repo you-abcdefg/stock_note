@@ -5,7 +5,9 @@
 
 <!DOCTYPE html>
 <html>
+<%# ***** html：HTMLドキュメント全体 ***** %>
   <head>
+  <%# ***** head：ヘッダー情報セクション ***** %>
     <title>Stock Note</title>
     <%# ***** スマホ対応のためのviewport設定 ***** %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -19,149 +21,230 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%# ***** Font Awesome（アイコン）とBootstrap（CSSフレームワーク）をCDNから読み込み ***** %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <%# ***** link：外部リソース参照要素 ***** %>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <%# ***** link：外部リソース参照要素 ***** %>
   </head>
+  <%# ***** </head>：headタグ（ヘッダー情報セクション）の終了 ***** %>
 
   <body>
     <%# ***** ヘッダー：ナビゲーションバー ***** %>
     <header>
+    <%# ***** header：ヘッダー要素 ***** %>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <%# ***** nav：ナビゲーション要素 ***** %>
         <div class="container">
           <%# ***** サイトロゴ（リンクなし） ***** %>
           <span class="navbar-brand">Stock Note</span>
           
           <%# ***** スマホ用ハンバーガーメニューボタン ***** %>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <%# ***** button：ボタン要素 ***** %>
             <span class="navbar-toggler-icon"></span>
+            <%# ***** span：インライン要素 ***** %>
           </button>
           
           <%# ***** ナビゲーションメニュー ***** %>
           <div class="collapse navbar-collapse" id="navbarNav">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <ul class="navbar-nav ml-auto">
               <%# ***** ログイン中の場合 ***** %>
+<%# ***** 条件分岐セクション ***** %>
               <% if user_signed_in? %>
+              <%# ***** if：条件を判定する分岐 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to root_path, class: "nav-link text-light" do %>
                     <i class="fas fa-home"></i> Top
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to posts_path, class: "nav-link text-light" do %>
                     <i class="fas fa-list"></i> 投稿
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to user_path(current_user), class: "nav-link text-light" do %>
                     <i class="fas fa-user-circle"></i> マイページ
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to users_path, class: "nav-link text-light" do %>
                     <i class="fas fa-users"></i> ユーザー
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to groups_path, class: "nav-link text-light" do %>
                     <i class="fas fa-users-cog"></i> グループ
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to lists_path, class: "nav-link text-light" do %>
                     <i class="fas fa-list-ul"></i> リスト
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to tags_path, class: "nav-link text-light" do %>
                     <i class="fas fa-tags"></i> タグ
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to about_path, class: "nav-link text-light" do %>
                     <i class="fas fa-info-circle"></i> About
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
                 <%# ***** 管理者のみ表示される管理画面リンク ***** %>
                 <% if current_user.admin? %>
+                <%# ***** if：条件を判定する分岐 ***** %>
                   <li class="nav-item">
+                  <%# ***** li：リスト項目要素 ***** %>
                     <%= link_to admin_users_path, class: "nav-link text-light" do %>
                         <i class="fas fa-cogs"></i> 管理
+                        <%# ***** i：HTML要素 ***** %>
                     <% end %>
                   </li>
+                  <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <% end %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to destroy_user_session_path, method: :delete, class: "nav-link text-light" do %>
                     <i class="fas fa-sign-out-alt"></i> ログアウト
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
               <%# ***** ログインしていない場合 ***** %>
               <% else %>
+              <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to root_path, class: "nav-link text-light" do %>
                     <i class="fas fa-home"></i> Top
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to posts_path, class: "nav-link text-light" do %>
                     <i class="fas fa-list"></i> 投稿
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to users_path, class: "nav-link text-light" do %>
                     <i class="fas fa-users"></i> ユーザー
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to tags_path, class: "nav-link text-light" do %>
                     <i class="fas fa-tags"></i> タグ
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to lists_path, class: "nav-link text-light" do %>
                     <i class="fas fa-list-ul"></i> リスト
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to about_path, class: "nav-link text-light" do %>
                     <i class="fas fa-info-circle"></i> About
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to new_user_registration_path, class: "nav-link text-light" do %>
                     <i class="fas fa-user-plus"></i> 新規登録
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
+                <%# ***** li：リスト項目要素 ***** %>
                   <%= link_to new_user_session_path, class: "nav-link text-light" do %>
                     <i class="fas fa-sign-in-alt"></i> ログイン
+                    <%# ***** i：HTML要素 ***** %>
                   <% end %>
                 </li>
+                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
               <% end %>
             </ul>
+            <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       </nav>
+      <%# ***** </nav>：navタグ（ナビゲーション要素）の終了 ***** %>
     </header>
     
     <%# ***** メインコンテンツエリア ***** %>
     <main>
+    <%# ***** main：メインコンテンツ要素 ***** %>
       <div class="container mt-4">
         <%# ***** 成功メッセージ表示（notice） ***** %>
         <% if notice %>
+        <%# ***** if：条件を判定する分岐 ***** %>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <%= notice %>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <%# ***** button：ボタン要素 ***** %>
               <span aria-hidden="true">&times;</span>
+              <%# ***** span：インライン要素 ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
         <%# ***** エラーメッセージ表示（alert） ***** %>
         <% if alert %>
+        <%# ***** if：条件を判定する分岐 ***** %>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <%= alert %>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <%# ***** button：ボタン要素 ***** %>
               <span aria-hidden="true">&times;</span>
+              <%# ***** span：インライン要素 ***** %>
             </button>
+            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
       </div>
       <%# ***** 各ページのコンテンツがここに表示される ***** %>
@@ -170,22 +253,33 @@
     
     <%# ***** フッター ***** %>
     <footer class="border-top mt-5 pt-5">
+    <%# ***** footer：フッター要素 ***** %>
       <div class="container mb-5">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <div class="row">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <div class="mx-auto">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <p class="text-center">© 2026 Stock Note All rights reserved.</p>
+            <%# ***** p：段落要素 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     </footer>
 
     <%# ***** jQuery と Bootstrap の JavaScript を CDN から読み込み ***** %>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <%# ***** スクリプトセクション ***** %>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <%# ***** script：スクリプト要素 ***** %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
     
     <%# ***** ナビゲーションメニューのクリックで自動折りたたみ ***** %>
     <script>
+    <%# ***** script：スクリプト要素 ***** %>
       // Bootstrapのネイティブcollapse機能を活用
       document.addEventListener('DOMContentLoaded', function() {
         // メニューリンククリック時に自動で閉じる処理のみ実装
@@ -201,5 +295,8 @@
         });
       });
     </script>
+    <%# ***** </script>：scriptタグ（スクリプト要素）の終了 ***** %>
   </body>
+  <%# ***** </body>：bodyタグ（本文セクション）の終了 ***** %>
 </html>
+<%# ***** </html>：htmlタグ（HTMLドキュメント全体）の終了 ***** %>

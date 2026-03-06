@@ -1,44 +1,74 @@
+<%# ***** groups/index のビュー ***** %>
 <div class="container mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <h1>グループ（ジャンル）一覧</h1>
+  <%# ***** h1：見出し要素 ***** %>
 
   <div class="mb-3">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%= link_to '新規グループ作成', new_group_path, class: 'btn btn-primary' %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="row">
+<%# ***** 一覧ループセクション ***** %>
     <% @groups.each do |group| %>
+    <%# ***** each：コレクションを順に処理するループ ***** %>
       <div class="col-md-6 mb-4">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <div class="card h-100">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <div class="card-body">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <h5 class="card-title">
+            <%# ***** h5：見出し要素 ***** %>
               <%= link_to group.name, group_path(group) %>
             </h5>
+            <%# ***** </h5>：h5タグ（見出し要素）の終了 ***** %>
             <p class="card-text text-muted">
+            <%# ***** p：段落要素 ***** %>
               <%= truncate(group.description, length: 100) %>
             </p>
+            <%# ***** </p>：pタグ（段落要素）の終了 ***** %>
             <div class="d-flex justify-content-between align-items-center">
+            <%# ***** div：汎用コンテナ要素 ***** %>
               <div>
+              <%# ***** div：汎用コンテナ要素 ***** %>
                 <small class="text-muted">
+                <%# ***** small：補足テキスト要素 ***** %>
                   投稿数: <%= group.posts.count %>件 | 
                   メンバー: <%= group.users.count %>人
                 </small>
+<%# ***** 条件分岐セクション ***** %>
                 <% if user_signed_in? && current_user.group_memberships.exists?(group: group) %>
+                <%# ***** if：条件を判定する分岐 ***** %>
                   <span class="badge badge-success">所属中</span>
+                  <%# ***** span：インライン要素 ***** %>
                 <% end %>
               </div>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
               <div>
+              <%# ***** div：汎用コンテナ要素 ***** %>
                 <%= link_to '詳細', group_path(group), class: 'btn btn-sm btn-info' %>
                 <% if current_user&.admin? %>
+                <%# ***** if：条件を判定する分岐 ***** %>
                   <%= link_to '編集', edit_group_path(group), class: 'btn btn-sm btn-warning' %>
                   <%= link_to '削除', group_path(group), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-danger' %>
                 <% end %>
               </div>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
             </div>
+            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <% end %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <%= paginate @groups %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

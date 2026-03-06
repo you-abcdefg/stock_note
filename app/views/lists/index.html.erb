@@ -1,33 +1,60 @@
+<%# ***** lists/index のビュー ***** %>
 <div class="container mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="d-flex justify-content-between align-items-center mb-3">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <h2 class="mb-0">リスト一覧</h2>
+<%# ***** 条件分岐セクション ***** %>
     <% if user_signed_in? %>
+    <%# ***** if：条件を判定する分岐 ***** %>
       <%= link_to 'リスト作成', new_list_path, class: 'btn btn-primary btn-sm' %>
     <% end %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <% if @lists.any? %>
+  <%# ***** if：条件を判定する分岐 ***** %>
     <div class="row">
+    <%# ***** 一覧ループセクション ***** %>
       <% @lists.each do |list| %>
+      <%# ***** each：コレクションを順に処理するループ ***** %>
         <div class="col-md-6 mb-3">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <div class="card h-100">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <div class="card-body">
+            <%# ***** div：汎用コンテナ要素 ***** %>
               <h5 class="card-title">
+              <%# ***** h5：見出し要素 ***** %>
                 <%= link_to list.title, list_path(list) %>
               </h5>
+              <%# ***** </h5>：h5タグ（見出し要素）の終了 ***** %>
               <p class="mb-2 text-muted"><%= truncate(list.description, length: 100) %></p>
+              <%# ***** p：段落要素 ***** %>
               <div>
+              <%# ***** div：汎用コンテナ要素 ***** %>
                 <span class="badge <%= list.public_list? ? 'badge-success' : 'badge-secondary' %>">
+                <%# ***** span：インライン要素 ***** %>
                   <%= list.public_list? ? '全体公開' : '非公開' %>
                 </span>
+                <%# ***** </span>：spanタグ（インライン要素）の終了 ***** %>
                 <span class="ml-2 text-muted small">作成者: <%= list.user.name.presence || list.user.email %></span>
+                <%# ***** span：インライン要素 ***** %>
               </div>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
             </div>
+            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% end %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <% else %>
+  <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
     <div class="alert alert-info">表示できるリストがありません。</div>
+    <%# ***** div：汎用コンテナ要素 ***** %>
   <% end %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

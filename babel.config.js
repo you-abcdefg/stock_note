@@ -26,6 +26,7 @@ module.exports = function(api) { // Babel設定を生成する関数をエクス
   if (!validEnv.includes(currentEnv)) { // 不正な環境名ならエラーにする
     // if: 有効環境かどうかを判定する条件分岐
     throw new Error(
+    // throw: 例外を発生させてエラー処理へ移行する
       'Please specify a valid `NODE_ENV` or ' +
         '`BABEL_ENV` environment variables. Valid values are "development", ' +
         '"test", and "production". Instead, received: ' +

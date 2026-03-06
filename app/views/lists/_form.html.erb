@@ -1,25 +1,42 @@
+<%# ***** lists/_form のパーシャル ***** %>
+<%# ***** 入力フォームセクション ***** %>
 <%= form_with model: @list, local: true do |f| %>
+<%# ***** 条件分岐セクション ***** %>
+<%# ***** エラーメッセージ表示セクション ***** %>
   <% if @list.errors.any? %>
+  <%# ***** if：条件を判定する分岐 ***** %>
     <div class="alert alert-danger">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <ul class="mb-0">
+      <%# ***** 一覧ループセクション ***** %>
         <% @list.errors.full_messages.each do |message| %>
+        <%# ***** each：コレクションを順に処理するループ ***** %>
           <li><%= message %></li>
+          <%# ***** li：リスト項目要素 ***** %>
         <% end %>
       </ul>
+      <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <% end %>
 
   <div class="form-group">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%= f.label :title, 'リスト名' %>
+  <%# ***** フォーム入力欄セクション ***** %>
     <%= f.text_field :title, class: 'form-control' %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="form-group">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%= f.label :description, '説明' %>
     <%= f.text_area :description, class: 'form-control', rows: 4 %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="form-group">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%= f.label :visibility, '公開設定' %>
     <%= f.select :visibility,
                  [['非公開', 'private_list'], ['全体公開', 'public_list']],
@@ -27,5 +44,6 @@
                  class: 'form-control' %>
   </div>
 
+<%# ***** 送信ボタンセクション ***** %>
   <%= f.submit class: 'btn btn-primary' %>
 <% end %>

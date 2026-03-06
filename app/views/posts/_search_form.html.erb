@@ -1,25 +1,39 @@
 <%# ***** 投稿検索フォーム（パーシャル） ***** %>
 <%# ***** すべての投稿一覧ページで共通で使用する検索フォーム ***** %>
 <% selected_tags = Array(params.dig(:q, :tags_name_in)).reject(&:blank?) %>
+<%# ***** selected_tags：この行で使用する値を保持する変数 ***** %>
 <% tag_select_class = "form-control form-control-sm" %>
+<%# ***** tag_select_class：この行で使用する値を保持する変数 ***** %>
 
 <div class="card mb-3">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="card-header">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <h5 class="mb-0">
+    <%# ***** h5：見出し要素 ***** %>
       <i class="fas fa-search"></i> 検索・フィルター
+      <%# ***** i：HTML要素 ***** %>
     </h5>
+    <%# ***** </h5>：h5タグ（見出し要素）の終了 ***** %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <div class="card-body">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%= search_form_for @q, url: search_posts_path, local: true, method: :get do |f| %>
       <div class="row">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <!-- タグ検索 -->
         <div class="col-md-4 mb-2">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <%= f.label :tags_name_in, 'タグ', class: 'form-label' %>
+<%# ***** フォーム入力欄セクション ***** %>
           <%= f.select :tags_name_in, 
               [['すべて', '']] + ActsAsTaggableOn::Tag.pluck(:name).map { |tag| [tag, tag] },
               {},
               { multiple: true, class: tag_select_class, size: 5 } %>
+<%# ***** スクリプトセクション ***** %>
           <script>
+          <%# ***** script：スクリプト要素 ***** %>
             document.addEventListener('DOMContentLoaded', function() {
               const tagSelect = document.querySelector('select[name="q[tags_name_in][]"]');
               if (tagSelect && !tagSelect.value) {
@@ -27,17 +41,23 @@
               }
             });
           </script>
+          <%# ***** </script>：scriptタグ（スクリプト要素）の終了 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <!-- ユーザー検索 -->
         <div class="col-md-4 mb-2">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <%= f.label :user_name_cont, 'ユーザー名', class: 'form-label' %>
           <%= f.search_field :user_name_cont, class: 'form-control form-control-sm', placeholder: 'ユーザー名で検索' %>
           <small class="form-text text-muted">未指定の場合：全てのユーザー</small>
+          <%# ***** small：補足テキスト要素 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <!-- ソート順 -->
         <div class="col-md-4 mb-2">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <%= f.label :s, '並び順', class: 'form-label' %>
           <%= f.select :s, 
               [
@@ -51,28 +71,43 @@
               { include_blank: '新しい順（デフォルト）' },
               class: 'form-control form-control-sm' %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
       <div class="row mt-2">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <!-- 投稿日時（開始） -->
         <div class="col-md-6 mb-2">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <%= f.label :created_at_gteq, '投稿日時（開始）', class: 'form-label' %>
           <%= f.date_field :created_at_gteq, class: 'form-control form-control-sm', placeholder: 'yyyy-mm-dd' %>
           <small class="form-text text-muted">未指定の場合：最も古い投稿から</small>
+          <%# ***** small：補足テキスト要素 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <!-- 投稿日時（終了） -->
         <div class="col-md-6 mb-2">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           <%= f.label :created_at_lteq_end_of_day, '投稿日時（終了）', class: 'form-label' %>
           <%= f.date_field :created_at_lteq_end_of_day, class: 'form-control form-control-sm', placeholder: 'yyyy-mm-dd' %>
           <small class="form-text text-muted">未指定の場合：最新の投稿まで</small>
+          <%# ***** small：補足テキスト要素 ***** %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
       <div class="d-flex justify-content-end mt-3">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <%= link_to 'リセット', request.path, class: 'btn btn-sm btn-secondary mr-2' %>
+      <%# ***** 送信ボタンセクション ***** %>
         <%= f.submit '検索', class: 'btn btn-sm btn-primary' %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <% end %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

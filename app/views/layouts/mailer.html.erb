@@ -1,13 +1,23 @@
+<%# ***** layouts/mailer のビュー ***** %>
 <!DOCTYPE html>
 <html>
+<%# ***** html：HTMLドキュメント全体 ***** %>
   <head>
+  <%# ***** head：ヘッダー情報セクション ***** %>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <%# ***** meta：メタ情報要素 ***** %>
     <style>
+    <%# ***** style：スタイル定義要素 ***** %>
       /* Email styles need to be inline */
     </style>
+    <%# ***** </style>：styleタグ（スタイル定義要素）の終了 ***** %>
   </head>
 
+  <%# ***** メール本文セクション ***** %>
   <body>
+    <%# ***** 各メールテンプレートの本文を挿入 ***** %>
     <%= yield %>
   </body>
+  <%# ***** </body>：bodyタグ（本文セクション）の終了 ***** %>
 </html>
+<%# ***** </html>：htmlタグ（HTMLドキュメント全体）の終了 ***** %>

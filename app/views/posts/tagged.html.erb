@@ -1,59 +1,107 @@
+<%# ***** posts/tagged のビュー ***** %>
 <div class="container px-5 px-sm-0 mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="row">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="col-md-12">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <h2>タグ検索: <span class="badge badge-info"><%= params[:tag] %></span></h2>
       
       <%# ***** 検索フォーム ***** %>
       <%= render 'search_form' %>
       
+  <%# ***** 条件分岐セクション ***** %>
       <% if @tag && @posts.any? %>
+      <%# ***** if：条件を判定する分岐 ***** %>
         <p class="text-muted"><%= @posts.count %> 件の投稿が見つかりました。</p>
+      <%# ***** 一覧テーブルセクション ***** %>
         <table class="table table-hover">
+        <%# ***** table：テーブル要素 ***** %>
           <thead>
+          <%# ***** thead：テーブル見出し要素 ***** %>
             <tr>
+            <%# ***** tr：テーブル行要素 ***** %>
               <th>投稿日時</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>ユーザー</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>タイトル</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>本文</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>ステータス</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>タグ</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
               <th>操作</th>
+              <%# ***** th：テーブル見出しセル要素 ***** %>
             </tr>
+            <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
           </thead>
+          <%# ***** </thead>：theadタグ（テーブル見出し要素）の終了 ***** %>
           <tbody>
+<%# ***** 一覧ループセクション ***** %>
             <% @posts.each do |post| %>
+            <%# ***** each：コレクションを順に処理するループ ***** %>
               <tr>
+              <%# ***** tr：テーブル行要素 ***** %>
                 <td><%= post.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td><%= link_to(post.user.name.presence || '未設定', user_path(post.user)) %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td><%= link_to post.title, post_path(post) %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td><%= truncate(post.body, length: 50) %></td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                 <td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                   <% if post.published? %>
+                  <%# ***** if：条件を判定する分岐 ***** %>
                     <span class="badge badge-success">公開</span>
+                    <%# ***** span：インライン要素 ***** %>
                   <% else %>
+                  <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
                     <span class="badge badge-secondary">下書き</span>
+                    <%# ***** span：インライン要素 ***** %>
                   <% end %>
                 </td>
+                <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
                 <td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                   <% if post.respond_to?(:tags) %>
+                  <%# ***** if：条件を判定する分岐 ***** %>
                     <% post.tags.each do |tag| %>
+                    <%# ***** each：コレクションを順に処理するループ ***** %>
                       <span class="badge badge-info">
+                      <%# ***** span：インライン要素 ***** %>
                         <%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %>
                       </span>
+                      <%# ***** </span>：spanタグ（インライン要素）の終了 ***** %>
                     <% end %>
                   <% end %>
                 </td>
+                <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
                 <td>
+                <%# ***** td：テーブルデータセル要素 ***** %>
                   <%= link_to "表示", post_path(post), class: "btn btn-sm btn-info" %>
                 </td>
+                <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
               </tr>
+              <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
             <% end %>
           </tbody>
+          <%# ***** </tbody>：tbodyタグ（テーブル本文要素）の終了 ***** %>
         </table>
+        <%# ***** </table>：tableタグ（テーブル要素）の終了 ***** %>
       <% else %>
+      <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
         <p class="text-muted">このタグの投稿は見つかりません。</p>
+        <%# ***** p：段落要素 ***** %>
       <% end %>
       <%= link_to "投稿一覧へ戻る", posts_path, class: "btn btn-outline-secondary mt-3" %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

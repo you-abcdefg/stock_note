@@ -4,42 +4,68 @@
 <%# ***** ログイン中のユーザーには編集・削除ボタンも表示 ***** %>
 
 <div class="container px-5 px-sm-0 mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="row">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="col-md-12">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <div class="d-flex justify-content-between align-items-center mb-3">
+      <%# ***** div：汎用コンテナ要素 ***** %>
         <h2>投稿一覧</h2>
+        <%# ***** h2：見出し要素 ***** %>
         <div>
+<%# ***** 条件分岐セクション ***** %>
           <% if user_signed_in? %>
+          <%# ***** if：条件を判定する分岐 ***** %>
             <%= link_to "新規作成", new_post_path, class: "btn btn-primary" %>
           <% end %>
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
       <% unless user_signed_in? %>
+      <%# ***** unless：条件が偽の場合に処理する分岐 ***** %>
         <div class="alert alert-info mt-3" role="alert">
+        <%# ***** div：汎用コンテナ要素 ***** %>
           新規投稿を作成するには、ログインが必要です。
         </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% end %>
 
       <%# ***** 検索フォーム ***** %>
       <%= render 'search_form' %>
       
       <%# ***** Bootstrap のテーブルで一覧表示 ***** %>
+    <%# ***** 一覧テーブルセクション ***** %>
       <table class="table table-hover">
+      <%# ***** table：テーブル要素 ***** %>
         <thead>
+        <%# ***** thead：テーブル見出し要素 ***** %>
           <tr>
+          <%# ***** tr：テーブル行要素 ***** %>
             <th>投稿日時</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
             <th>ユーザー</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
             <th>タイトル</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
             <th>本文</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
             <th>ステータス</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
             <th>タグ</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
             <th>操作</th>
+            <%# ***** th：テーブル見出しセル要素 ***** %>
           </tr>
+          <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
         </thead>
+        <%# ***** </thead>：theadタグ（テーブル見出し要素）の終了 ***** %>
         <tbody>
           <%# ***** @postsの各投稿をループ処理 ***** %>
           <% @posts.each do |post| %>
+          <%# ***** each：コレクションを順に処理するループ ***** %>
             <tr>
               <%# ***** 投稿日時を表示 ***** %>
               <td><%= post.created_at.strftime('%Y/%m/%d %H:%M') %></td>
@@ -55,40 +81,58 @@
               
               <%# ***** ステータスをバッジで表示 ***** %>
               <td>
+              <%# ***** td：テーブルデータセル要素 ***** %>
                 <% if post.published? %>
+                <%# ***** if：条件を判定する分岐 ***** %>
                   <span class="badge badge-success">公開</span>
+                  <%# ***** span：インライン要素 ***** %>
                 <% else %>
+                <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
                   <span class="badge badge-secondary">下書き</span>
+                  <%# ***** span：インライン要素 ***** %>
                 <% end %>
               </td>
               
               <%# ***** タグがあれば表示（クリックでタグ検索） ***** %>
               <td>
+              <%# ***** td：テーブルデータセル要素 ***** %>
                 <% if post.respond_to?(:tags) %>
+<%# ***** 一覧ループセクション ***** %>
                   <% post.tags.each do |tag| %>
+                  <%# ***** each：コレクションを順に処理するループ ***** %>
                     <span class="badge badge-info"><%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %></span>
+                    <%# ***** span：インライン要素 ***** %>
                   <% end %>
                 <% end %>
               </td>
               
               <%# ***** 操作ボタン（表示・編集・削除） ***** %>
               <td>
+              <%# ***** td：テーブルデータセル要素 ***** %>
                 <% if user_signed_in? %>
                   <%# ***** 「表示」ボタンは誰でも表示 ***** %>
                   <%= link_to "表示", post_path(post), class: "btn btn-sm btn-info" %>
                   
                   <%# ***** 「編集」「削除」は投稿者本人または管理者のみ ***** %>
                   <% if current_user == post.user || current_user.admin? %>
+                  <%# ***** if：条件を判定する分岐 ***** %>
                     <%= link_to "編集", edit_post_path(post), class: "btn btn-sm btn-warning" %>
                     <%= link_to "削除", post_path(post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-danger" %>
                   <% end %>
                 <% end %>
               </td>
+              <%# ***** </td>：tdタグ（テーブルデータセル要素）の終了 ***** %>
             </tr>
+            <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
           <% end %>
         </tbody>
+        <%# ***** </tbody>：tbodyタグ（テーブル本文要素）の終了 ***** %>
       </table>
+      <%# ***** </table>：tableタグ（テーブル要素）の終了 ***** %>
       
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

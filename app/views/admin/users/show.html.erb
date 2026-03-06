@@ -1,67 +1,115 @@
+<%# ***** admin/users/show のビュー ***** %>
 <div class="container mt-4">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <h1>ユーザー詳細</h1>
+  <%# ***** h1：見出し要素 ***** %>
 
   <div class="card">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="card-body">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <dl class="row">
+      <%# ***** dl：HTML要素 ***** %>
         <dt class="col-sm-3">ID</dt>
+        <%# ***** dt：HTML要素 ***** %>
         <dd class="col-sm-9"><%= @user.id %></dd>
+        <%# ***** dd：HTML要素 ***** %>
 
         <dt class="col-sm-3">名前</dt>
+        <%# ***** dt：HTML要素 ***** %>
         <dd class="col-sm-9"><%= @user.name %></dd>
+        <%# ***** dd：HTML要素 ***** %>
 
         <dt class="col-sm-3">メールアドレス</dt>
+        <%# ***** dt：HTML要素 ***** %>
         <dd class="col-sm-9"><%= @user.email %></dd>
+        <%# ***** dd：HTML要素 ***** %>
 
         <dt class="col-sm-3">権限</dt>
+        <%# ***** dt：HTML要素 ***** %>
         <dd class="col-sm-9">
+        <%# ***** dd：HTML要素 ***** %>
           <span class="badge badge-<%= @user.admin? ? 'danger' : @user.general? ? 'primary' : 'secondary' %>">
+          <%# ***** span：インライン要素 ***** %>
             <%= I18n.t("enums.user.role.#{@user.role}") %>
           </span>
+          <%# ***** </span>：spanタグ（インライン要素）の終了 ***** %>
         </dd>
+        <%# ***** </dd>：ddタグ（定義説明要素）の終了 ***** %>
 
         <dt class="col-sm-3">作成日</dt>
+        <%# ***** dt：HTML要素 ***** %>
         <dd class="col-sm-9"><%= @user.created_at.strftime('%Y年%m月%d日 %H:%M') %></dd>
+        <%# ***** dd：HTML要素 ***** %>
 
         <dt class="col-sm-3">更新日</dt>
+        <%# ***** dt：HTML要素 ***** %>
         <dd class="col-sm-9"><%= @user.updated_at.strftime('%Y年%m月%d日 %H:%M') %></dd>
+        <%# ***** dd：HTML要素 ***** %>
       </dl>
+      <%# ***** </dl>：dlタグ（定義リスト要素）の終了 ***** %>
     </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <h3 class="mt-4">投稿一覧（<%= @user.posts.count %>件）</h3>
+<%# ***** 条件分岐セクション ***** %>
   <% if @user.posts.any? %>
+  <%# ***** if：条件を判定する分岐 ***** %>
     <ul class="list-group">
+    <%# ***** 一覧ループセクション ***** %>
       <% @user.posts.order(created_at: :desc).limit(10).each do |post| %>
+      <%# ***** each：コレクションを順に処理するループ ***** %>
         <li class="list-group-item">
+        <%# ***** li：リスト項目要素 ***** %>
           <%= link_to post.title, post_path(post) %>
           <small class="text-muted">（<%= post.created_at.strftime('%Y/%m/%d') %>）</small>
+          <%# ***** small：補足テキスト要素 ***** %>
         </li>
+        <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
       <% end %>
     </ul>
+    <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
   <% else %>
+  <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
     <p class="text-muted">投稿はありません。</p>
+    <%# ***** p：段落要素 ***** %>
   <% end %>
 
   <h3 class="mt-4">コメント一覧（<%= @user.comments.count %>件）</h3>
+  <%# ***** h3：見出し要素 ***** %>
   <% if @user.comments.any? %>
+  <%# ***** if：条件を判定する分岐 ***** %>
     <ul class="list-group">
+    <%# ***** ul：順序なしリスト要素 ***** %>
       <% @user.comments.order(created_at: :desc).limit(10).each do |comment| %>
+      <%# ***** each：コレクションを順に処理するループ ***** %>
         <li class="list-group-item">
+        <%# ***** li：リスト項目要素 ***** %>
           <%= truncate(comment.body, length: 100) %>
           <small class="text-muted">（<%= comment.created_at.strftime('%Y/%m/%d') %>）</small>
+          <%# ***** small：補足テキスト要素 ***** %>
         </li>
+        <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
       <% end %>
     </ul>
+    <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
   <% else %>
+  <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
     <p class="text-muted">コメントはありません。</p>
+    <%# ***** p：段落要素 ***** %>
   <% end %>
 
   <div class="mt-4">
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%= link_to '編集', edit_admin_user_path(@user), class: 'btn btn-warning' %>
     <%= link_to '戻る', admin_users_path, class: 'btn btn-secondary' %>
     <% unless @user == current_user %>
+    <%# ***** unless：条件が偽の場合に処理する分岐 ***** %>
       <%= link_to '削除', admin_user_path(@user), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-danger' %>
     <% end %>
   </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
