@@ -1,7 +1,7 @@
 <%# ***** lists/index のビュー ***** %>
 <div class="container mt-4">
-<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="d-flex justify-content-between align-items-center mb-3">
+<%# ***** div：汎用コンテナ要素 ***** %>
   <%# ***** div：汎用コンテナ要素 ***** %>
     <h2 class="mb-0">リスト一覧</h2>
 <%# ***** 条件分岐セクション ***** %>
@@ -19,10 +19,10 @@
       <% @lists.each do |list| %>
       <%# ***** each：コレクションを順に処理するループ ***** %>
         <div class="col-md-6 mb-3">
-        <%# ***** div：汎用コンテナ要素 ***** %>
           <div class="card h-100">
-          <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** div：汎用コンテナ要素 ***** %>
             <div class="card-body">
+          <%# ***** div：汎用コンテナ要素 ***** %>
             <%# ***** div：汎用コンテナ要素 ***** %>
               <h5 class="card-title">
               <%# ***** h5：見出し要素 ***** %>
@@ -41,12 +41,12 @@
                 <span class="ml-2 text-muted small">作成者: <%= list.user.name.presence || list.user.email %></span>
                 <%# ***** span：インライン要素 ***** %>
               </div>
-              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
             </div>
-            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% end %>
     </div>

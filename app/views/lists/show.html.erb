@@ -1,9 +1,9 @@
 <%# ***** lists/show のビュー ***** %>
 <div class="container mt-4">
-<%# ***** div：汎用コンテナ要素 ***** %>
   <div class="d-flex justify-content-between align-items-start mb-3">
-  <%# ***** div：汎用コンテナ要素 ***** %>
+<%# ***** div：汎用コンテナ要素 ***** %>
     <div>
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <%# ***** div：汎用コンテナ要素 ***** %>
       <h2 class="mb-1"><%= @list.title %></h2>
       <%# ***** h2：見出し要素 ***** %>
@@ -27,15 +27,15 @@
       <% end %>
       <%= link_to '一覧へ戻る', lists_path, class: 'btn btn-sm btn-outline-secondary' %>
     </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="card mb-4">
-  <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="card-header">リスト内の投稿</div>
-    <%# ***** div：汎用コンテナ要素 ***** %>
+  <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="card-body">
+    <%# ***** div：汎用コンテナ要素 ***** %>
     <%# ***** div：汎用コンテナ要素 ***** %>
       <% if @list_items.any? %>
       <%# ***** if：条件を判定する分岐 ***** %>
@@ -45,8 +45,8 @@
             <li class="list-group-item">
             <%# ***** li：リスト項目要素 ***** %>
               <div class="d-flex justify-content-between align-items-center">
-              <%# ***** div：汎用コンテナ要素 ***** %>
                 <div>
+              <%# ***** div：汎用コンテナ要素 ***** %>
                 <%# ***** div：汎用コンテナ要素 ***** %>
                 <span class="text-muted mr-2"><%= item.position %>.</span>
                 <%# ***** span：インライン要素 ***** %>
@@ -98,8 +98,8 @@
         <%# ***** p：段落要素 ***** %>
       <% end %>
     </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
 </div>

@@ -152,164 +152,164 @@
           <%# ***** style：本文内のカード/モーダルのCSS定義 ***** %>
             <%# ***** #body-editor：本文編集エリアのベーススタイル ***** %>
             #body-editor {
-              <%# ***** overflow-y: auto：縦方向のスクロールを許可 ***** %>
               overflow-y: auto;
-              <%# ***** overflow-x: hidden：横方向のはみ出しを隠す ***** %>
+              <%# ***** overflow-y: auto：縦方向のスクロールを許可 ***** %>
               overflow-x: hidden;
-              <%# ***** word-break: break-word：単語途中での改行を許可 ***** %>
+              <%# ***** overflow-x: hidden：横方向のはみ出しを隠す ***** %>
               word-break: break-word;
-              <%# ***** word-wrap: break-word：長い単語を折り返す ***** %>
+              <%# ***** word-break: break-word：単語途中での改行を許可 ***** %>
               word-wrap: break-word;
-              <%# ***** line-height: 1.6：行の高さを広めに設定 ***** %>
+              <%# ***** word-wrap: break-word：長い単語を折り返す ***** %>
               line-height: 1.6;
-              <%# ***** padding: 10px 12px：内側余白を上下左右に付与 ***** %>
+              <%# ***** line-height: 1.6：行の高さを広めに設定 ***** %>
               padding: 10px 12px;
-              <%# ***** box-sizing: border-box：paddingを幅/高さに含める ***** %>
+              <%# ***** padding: 10px 12px：内側余白を上下左右に付与 ***** %>
               box-sizing: border-box;
-              <%# ***** text-align: left：テキストを左寄せ ***** %>
+              <%# ***** box-sizing: border-box：paddingを幅/高さに含める ***** %>
               text-align: left;
+              <%# ***** text-align: left：テキストを左寄せ ***** %>
             }
             <%# ***** .card-spacer：カードとテキストの間隔調整用スペーサー ***** %>
             #body-editor .card-spacer {
-              <%# ***** display: inline-block：インライン要素として配置 ***** %>
               display: inline-block;
-              <%# ***** width: 12px：横方向の空白幅 ***** %>
+              <%# ***** display: inline-block：インライン要素として配置 ***** %>
               width: 12px;
-              <%# ***** height: 1px：高さを最小化 ***** %>
+              <%# ***** width: 12px：横方向の空白幅 ***** %>
               height: 1px;
+              <%# ***** height: 1px：高さを最小化 ***** %>
             }
             <%# ***** .media-card：画像カードのコンテナ ***** %>
             #body-editor .media-card {
-              <%# ***** display: inline-flex：インラインでフレックス配置 ***** %>
               display: inline-flex;
-              <%# ***** margin: 0 12px 8px 0：外側余白を調整 ***** %>
+              <%# ***** display: inline-flex：インラインでフレックス配置 ***** %>
               margin: 0 12px 8px 0;
-              <%# ***** vertical-align: top：上端揃え ***** %>
+              <%# ***** margin: 0 12px 8px 0：外側余白を調整 ***** %>
               vertical-align: top;
-              <%# ***** cursor: pointer：ホバー時にポインタ表示 ***** %>
+              <%# ***** vertical-align: top：上端揃え ***** %>
               cursor: pointer;
-              <%# ***** border: 1px solid #e9ecef：枠線を薄く表示 ***** %>
+              <%# ***** cursor: pointer：ホバー時にポインタ表示 ***** %>
               border: 1px solid #e9ecef;
-              <%# ***** border-radius: 3px：角丸 ***** %>
+              <%# ***** border: 1px solid #e9ecef：枠線を薄く表示 ***** %>
               border-radius: 3px;
-              <%# ***** background: white：背景色を白に設定 ***** %>
+              <%# ***** border-radius: 3px：角丸 ***** %>
               background: white;
-              <%# ***** position: relative：絶対配置ボタンの基準 ***** %>
+              <%# ***** background: white：背景色を白に設定 ***** %>
               position: relative;
-              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
+              <%# ***** position: relative：絶対配置ボタンの基準 ***** %>
               transition: all 0.2s;
-              <%# ***** width: 100px：カードの横幅 ***** %>
+              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
               width: 100px;
-              <%# ***** height: 72px：カードの縦幅 ***** %>
+              <%# ***** width: 100px：カードの横幅 ***** %>
               height: 72px;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              <%# ***** height: 72px：カードの縦幅 ***** %>
               overflow: hidden;
-              <%# ***** top: 0：上方向の位置調整 ***** %>
+              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
               top: 0;
-              <%# ***** font-size: 0：余白文字の影響を防止 ***** %>
+              <%# ***** top: 0：上方向の位置調整 ***** %>
               font-size: 0;
-              <%# ***** align-items: stretch：子要素を高さに合わせる ***** %>
+              <%# ***** font-size: 0：余白文字の影響を防止 ***** %>
               align-items: stretch;
+              <%# ***** align-items: stretch：子要素を高さに合わせる ***** %>
             }
             <%# ***** .media-card:hover：ホバー時の装飾 ***** %>
             #body-editor .media-card:hover {
-              <%# ***** border-color: #0d6efd：枠線色を強調 ***** %>
               border-color: #0d6efd;
+              <%# ***** border-color: #0d6efd：枠線色を強調 ***** %>
               <%# ***** box-shadow：影を付けて浮き上がり感を出す ***** %>
               box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             }
             <%# ***** .media-card img：画像の表示設定 ***** %>
             #body-editor .media-card img {
-              <%# ***** width: 100%：横幅をカードに合わせる ***** %>
               width: 100%;
-              <%# ***** height: 100%：縦幅をカードに合わせる ***** %>
+              <%# ***** width: 100%：横幅をカードに合わせる ***** %>
               height: 100%;
-              <%# ***** object-fit: cover：縦横比を保ちトリミング ***** %>
+              <%# ***** height: 100%：縦幅をカードに合わせる ***** %>
               object-fit: cover;
-              <%# ***** border-radius: 2px：画像の角丸 ***** %>
+              <%# ***** object-fit: cover：縦横比を保ちトリミング ***** %>
               border-radius: 2px;
-              <%# ***** display: block：余白のないブロック表示 ***** %>
+              <%# ***** border-radius: 2px：画像の角丸 ***** %>
               display: block;
+              <%# ***** display: block：余白のないブロック表示 ***** %>
             }
             <%# ***** .media-card .filename：ファイル名表示（現在は非表示） ***** %>
             #body-editor .media-card .filename {
-              <%# ***** display: none：ファイル名を非表示 ***** %>
               display: none;
+              <%# ***** display: none：ファイル名を非表示 ***** %>
             }
             <%# ***** .code-card：コードカードのコンテナ ***** %>
             #body-editor .code-card,
             #body-editor .url-card {
-              <%# ***** display: block：ブロック要素として配置 ***** %>
               display: block;
+              <%# ***** display: block：ブロック要素として配置 ***** %>
               <%# ***** margin: 0なし：上下左右の余白をなくす ***** %>
               margin: 0 !important;
-              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
               margin-top: 0 !important;
-              <%# ***** padding: 0：全padding削除 ***** %>
+              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
               padding: 0 !important;
-              <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
+              <%# ***** padding: 0：全padding削除 ***** %>
               background: #f8f9fa;
-              <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
+              <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
               border-left: 3px solid #0d6efd;
-              <%# ***** border-radius: 3px：角丸 ***** %>
+              <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
               border-radius: 3px;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** border-radius: 3px：角丸 ***** %>
               cursor: pointer;
-              <%# ***** position: relative：ボタン配置の基準 ***** %>
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
               position: relative;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              <%# ***** position: relative：ボタン配置の基準 ***** %>
               overflow: hidden;
-              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
+              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
               transition: all 0.2s;
-              <%# ***** height: 100px：高さを統一 ***** %>
+              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
               height: 100px;
+              <%# ***** height: 100px：高さを統一 ***** %>
             }
             <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
             #body-editor .code-card:hover,
             #body-editor .url-card:hover {
-              <%# ***** background: #e7f1ff：背景色を強調 ***** %>
               background: #e7f1ff;
-              <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
+              <%# ***** background: #e7f1ff：背景色を強調 ***** %>
               border-left-color: #0056b3;
+              <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
             }
             <%# ***** .code-card pre：コード表示のテキスト領域 ***** %>
             #body-editor .code-card pre,
             #body-editor .url-card pre {
-              <%# ***** margin: 0：余白をリセット ***** %>
               margin: 0;
-              <%# ***** font-size: 12px：文字サイズを調整 ***** %>
+              <%# ***** margin: 0：余白をリセット ***** %>
               font-size: 12px;
-              <%# ***** line-height: 1.5：行の高さ ***** %>
+              <%# ***** font-size: 12px：文字サイズを調整 ***** %>
               line-height: 1.5;
-              <%# ***** white-space: pre-wrap：折り返し表示を許可 ***** %>
+              <%# ***** line-height: 1.5：行の高さ ***** %>
               white-space: pre-wrap;
-              <%# ***** word-break: break-word：単語途中での折り返し ***** %>
+              <%# ***** white-space: pre-wrap：折り返し表示を許可 ***** %>
               word-break: break-word;
-              <%# ***** overflow: auto：はみ出しをスクロール表示 ***** %>
+              <%# ***** word-break: break-word：単語途中での折り返し ***** %>
               overflow: auto;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              <%# ***** overflow: auto：はみ出しをスクロール表示 ***** %>
               height: 100%;
+              <%# ***** height: 100%：親の高さに合わせる ***** %>
             }
             <%# ***** .formula-card：数式カード ***** %>
             #body-editor .formula-card {
-              <%# ***** display: block：ブロック要素として配置 ***** %>
               display: block;
-              <%# ***** width: 100%：横幅を100%に統一 ***** %>
+              <%# ***** display: block：ブロック要素として配置 ***** %>
               width: 100%;
-              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
+              <%# ***** width: 100%：横幅を100%に統一 ***** %>
               margin: 0 !important;
-              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
+              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
               margin-top: 0 !important;
-              <%# ***** padding: 0：内側余白も0に ***** %>
+              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
               padding: 0 !important;
-              <%# ***** text-align: left：左寄せを明示的に設定 ***** %>
+              <%# ***** padding: 0：内側余白も0に ***** %>
               text-align: left;
-              <%# ***** height: 100px：高さを統一 ***** %>
+              <%# ***** text-align: left：左寄せを明示的に設定 ***** %>
               height: 100px;
-              <%# ***** position: relative：配置基準 ***** %>
+              <%# ***** height: 100px：高さを統一 ***** %>
               position: relative;
-              <%# ***** float: none：浮動を無効化 ***** %>
+              <%# ***** position: relative：配置基準 ***** %>
               float: none;
+              <%# ***** float: none：浮動を無効化 ***** %>
             }
             #body-editor .text-card {
               display: block;
@@ -327,29 +327,29 @@
             }
             <%# ***** .code-card-body：コードカード本体 ***** %>
             #body-editor .code-card-body {
-              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
               padding: 3px 4px 0 4px !important;
-              <%# ***** margin: 0：余白なし ***** %>
+              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
               margin: 0 !important;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              <%# ***** margin: 0：余白なし ***** %>
               height: 100%;
-              <%# ***** display: block：ブロック要素 ***** %>
+              <%# ***** height: 100%：親の高さに合わせる ***** %>
               display: block !important;
-              <%# ***** line-height: 1.2：行の高さ ***** %>
+              <%# ***** display: block：ブロック要素 ***** %>
               line-height: 1.2 !important;
+              <%# ***** line-height: 1.2：行の高さ ***** %>
             }
             <%# ***** .formula-card-body：数式カード本体 ***** %>
             #body-editor .formula-card-body {
-              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
               padding: 3px 4px 0 4px !important;
-              <%# ***** margin: 0：余白なし ***** %>
+              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
               margin: 0 !important;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              <%# ***** margin: 0：余白なし ***** %>
               height: 100%;
-              <%# ***** display: block：ブロック要素 ***** %>
+              <%# ***** height: 100%：親の高さに合わせる ***** %>
               display: block !important;
-              <%# ***** line-height: 1.2：行の高さ ***** %>
+              <%# ***** display: block：ブロック要素 ***** %>
               line-height: 1.2 !important;
+              <%# ***** line-height: 1.2：行の高さ ***** %>
             }
             #body-editor .text-card-body {
               padding: 10px 12px 8px 8px !important;
@@ -372,248 +372,248 @@
             }
             <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
             #body-editor .card-delete-btn {
-              <%# ***** position: absolute：カード右上に配置 ***** %>
               position: absolute;
-              <%# ***** top: 0：上からの位置を0に ***** %>
+              <%# ***** position: absolute：カード右上に配置 ***** %>
               top: 0;
-              <%# ***** right: 2px：右からの位置 ***** %>
+              <%# ***** top: 0：上からの位置を0に ***** %>
               right: 2px;
-              <%# ***** padding: 1px 3px：内側余白 ***** %>
+              <%# ***** right: 2px：右からの位置 ***** %>
               padding: 1px 3px;
-              <%# ***** font-size: 9px：文字サイズ ***** %>
+              <%# ***** padding: 1px 3px：内側余白 ***** %>
               font-size: 9px;
-              <%# ***** background: #dc3545：背景色（赤） ***** %>
+              <%# ***** font-size: 9px：文字サイズ ***** %>
               background: #dc3545;
-              <%# ***** color: white：文字色 ***** %>
+              <%# ***** background: #dc3545：背景色（赤） ***** %>
               color: white;
-              <%# ***** border: none：枠線なし ***** %>
+              <%# ***** color: white：文字色 ***** %>
               border: none;
-              <%# ***** border-radius: 2px：角丸 ***** %>
+              <%# ***** border: none：枠線なし ***** %>
               border-radius: 2px;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** border-radius: 2px：角丸 ***** %>
               cursor: pointer;
-              <%# ***** z-index: 10：前面表示 ***** %>
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
               z-index: 10;
+              <%# ***** z-index: 10：前面表示 ***** %>
             }
             <%# ***** .media-card .card-delete-btn：画像カードの削除ボタン ***** %>
             #body-editor .media-card .card-delete-btn {
-              <%# ***** z-index: 20：画像の上に表示 ***** %>
               z-index: 20;
-              <%# ***** opacity: 0.95：少しだけ透過 ***** %>
+              <%# ***** z-index: 20：画像の上に表示 ***** %>
               opacity: 0.95;
-              <%# ***** display: inline-block：ボタンを表示 ***** %>
+              <%# ***** opacity: 0.95：少しだけ透過 ***** %>
               display: inline-block;
+              <%# ***** display: inline-block：ボタンを表示 ***** %>
             }
             <%# ***** .card-delete-btn:hover：削除ボタンのホバー色 ***** %>
             #body-editor .card-delete-btn:hover {
-              <%# ***** background: #bb2d3b：ホバー時の色 ***** %>
               background: #bb2d3b;
+              <%# ***** background: #bb2d3b：ホバー時の色 ***** %>
             }
             <%# ***** .code-editor-overlay：コード編集モーダルの背景 ***** %>
             .code-editor-overlay {
-              <%# ***** position: fixed：画面全体に固定 ***** %>
               position: fixed;
-              <%# ***** inset: 0：上下左右を0に設定 ***** %>
+              <%# ***** position: fixed：画面全体に固定 ***** %>
               inset: 0;
-              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
+              <%# ***** inset: 0：上下左右を0に設定 ***** %>
               background: rgba(0, 0, 0, 0.4);
-              <%# ***** display: none：初期状態は非表示 ***** %>
+              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
               display: none;
-              <%# ***** align-items: center：縦中央揃え ***** %>
+              <%# ***** display: none：初期状態は非表示 ***** %>
               align-items: center;
-              <%# ***** justify-content: center：横中央揃え ***** %>
+              <%# ***** align-items: center：縦中央揃え ***** %>
               justify-content: center;
-              <%# ***** z-index: 9999：最前面表示 ***** %>
+              <%# ***** justify-content: center：横中央揃え ***** %>
               z-index: 9999;
+              <%# ***** z-index: 9999：最前面表示 ***** %>
             }
             <%# ***** .code-editor-overlay.is-open：モーダル表示時 ***** %>
             .code-editor-overlay.is-open {
-              <%# ***** display: flex：フレックスで表示 ***** %>
               display: flex;
+              <%# ***** display: flex：フレックスで表示 ***** %>
             }
             <%# ***** .code-editor-modal：モーダル本体 ***** %>
             .code-editor-modal {
-              <%# ***** background: #fff：背景色を白 ***** %>
               background: #fff;
-              <%# ***** width: 90%：横幅を SCSS と統一 ***** %>
+              <%# ***** background: #fff：背景色を白 ***** %>
               width: 90%;
-              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
+              <%# ***** width: 90%：横幅を SCSS と統一 ***** %>
               max-width: 1200px;
-              <%# ***** height: min(70vh, 600px)：高さを制限 ***** %>
+              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
               height: min(70vh, 600px);
-              <%# ***** border-radius: 8px：角丸 ***** %>
+              <%# ***** height: min(70vh, 600px)：高さを制限 ***** %>
               border-radius: 8px;
+              <%# ***** border-radius: 8px：角丸 ***** %>
               <%# ***** box-shadow：影を付ける ***** %>
               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-              <%# ***** display: flex：縦並びレイアウト ***** %>
               display: flex;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** display: flex：縦並びレイアウト ***** %>
               flex-direction: column;
-              <%# ***** padding: 12px：内側余白 ***** %>
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
               padding: 12px;
+              <%# ***** padding: 12px：内側余白 ***** %>
             }
             <%# ***** .code-editor-header：モーダルの見出し ***** %>
             .code-editor-header {
-              <%# ***** font-weight: 600：太字指定 ***** %>
               font-weight: 600;
-              <%# ***** margin-bottom: 8px：下余白 ***** %>
+              <%# ***** font-weight: 600：太字指定 ***** %>
               margin-bottom: 8px;
+              <%# ***** margin-bottom: 8px：下余白 ***** %>
             }
             <%# ***** .code-editor-textarea：コード入力欄 ***** %>
             .code-editor-textarea {
-              <%# ***** flex: 1：高さを埋める ***** %>
               flex: 1;
-              <%# ***** width: 100%：横幅100% ***** %>
+              <%# ***** flex: 1：高さを埋める ***** %>
               width: 100%;
-              <%# ***** resize: none：サイズ変更不可 ***** %>
+              <%# ***** width: 100%：横幅100% ***** %>
               resize: none;
+              <%# ***** resize: none：サイズ変更不可 ***** %>
               <%# ***** font-family：等幅フォントを指定 ***** %>
               font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-              <%# ***** font-size: 13px：文字サイズ ***** %>
               font-size: 13px;
-              <%# ***** line-height: 1.5：行の高さ ***** %>
+              <%# ***** font-size: 13px：文字サイズ ***** %>
               line-height: 1.5;
-              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
+              <%# ***** line-height: 1.5：行の高さ ***** %>
               border: 1px solid #dee2e6;
-              <%# ***** border-radius: 6px：角丸 ***** %>
+              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
               border-radius: 6px;
-              <%# ***** padding: 10px：内側余白 ***** %>
+              <%# ***** border-radius: 6px：角丸 ***** %>
               padding: 10px;
+              <%# ***** padding: 10px：内側余白 ***** %>
             }
             <%# ***** .code-editor-actions：モーダル下部のボタン領域 ***** %>
             .code-editor-actions {
-              <%# ***** margin-top: 10px：上余白 ***** %>
               margin-top: 10px;
-              <%# ***** display: flex：横並び ***** %>
+              <%# ***** margin-top: 10px：上余白 ***** %>
               display: flex;
-              <%# ***** justify-content: flex-end：右寄せ ***** %>
+              <%# ***** display: flex：横並び ***** %>
               justify-content: flex-end;
-              <%# ***** gap: 8px：ボタン間の余白 ***** %>
+              <%# ***** justify-content: flex-end：右寄せ ***** %>
               gap: 8px;
+              <%# ***** gap: 8px：ボタン間の余白 ***** %>
             }
             <%# ***** .formula-editor-overlay：数式編集モーダルの背景 ***** %>
             .formula-editor-overlay {
-              <%# ***** position: fixed：画面全体に固定 ***** %>
               position: fixed;
-              <%# ***** inset: 0：上下左右を0に設定 ***** %>
+              <%# ***** position: fixed：画面全体に固定 ***** %>
               inset: 0;
-              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
+              <%# ***** inset: 0：上下左右を0に設定 ***** %>
               background: rgba(0, 0, 0, 0.4);
-              <%# ***** display: none：初期状態は非表示 ***** %>
+              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
               display: none;
-              <%# ***** align-items: center：縦中央揃え ***** %>
+              <%# ***** display: none：初期状態は非表示 ***** %>
               align-items: center;
-              <%# ***** justify-content: center：横中央揃え ***** %>
+              <%# ***** align-items: center：縦中央揃え ***** %>
               justify-content: center;
-              <%# ***** z-index: 9999：最前面表示 ***** %>
+              <%# ***** justify-content: center：横中央揃え ***** %>
               z-index: 9999;
+              <%# ***** z-index: 9999：最前面表示 ***** %>
             }
             <%# ***** .formula-editor-overlay.is-open：モーダル表示時 ***** %>
             .formula-editor-overlay.is-open {
-              <%# ***** display: flex：フレックスで表示 ***** %>
               display: flex;
+              <%# ***** display: flex：フレックスで表示 ***** %>
             }
             <%# ***** .formula-editor-modal：モーダル本体 ***** %>
             .formula-editor-modal {
-              <%# ***** background: #fff：背景色を白 ***** %>
               background: #fff;
-              <%# ***** width: 90%：横幅をコードモーダルと統一 ***** %>
+              <%# ***** background: #fff：背景色を白 ***** %>
               width: 90%;
-              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
+              <%# ***** width: 90%：横幅をコードモーダルと統一 ***** %>
               max-width: 1200px;
-              <%# ***** border-radius: 8px：角丸 ***** %>
+              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
               border-radius: 8px;
+              <%# ***** border-radius: 8px：角丸 ***** %>
               <%# ***** box-shadow：影を付ける ***** %>
               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-              <%# ***** display: flex：縦並びレイアウト ***** %>
               display: flex;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** display: flex：縦並びレイアウト ***** %>
               flex-direction: column;
-              <%# ***** padding: 24px：内側余白 ***** %>
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
               padding: 24px;
+              <%# ***** padding: 24px：内側余白 ***** %>
             }
             <%# ***** .formula-editor-header：モーダルの見出し ***** %>
             .formula-editor-header {
-              <%# ***** font-weight: 600：太字指定 ***** %>
               font-weight: 600;
-              <%# ***** font-size: 16px：文字サイズ ***** %>
+              <%# ***** font-weight: 600：太字指定 ***** %>
               font-size: 16px;
-              <%# ***** margin-bottom: 16px：下余白 ***** %>
+              <%# ***** font-size: 16px：文字サイズ ***** %>
               margin-bottom: 16px;
+              <%# ***** margin-bottom: 16px：下余白 ***** %>
             }
             <%# ***** .formula-editor-content：モーダルコンテンツエリア ***** %>
             .formula-editor-content {
-              <%# ***** display: flex：縦並び ***** %>
               display: flex;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** display: flex：縦並び ***** %>
               flex-direction: column;
-              <%# ***** gap: 16px：要素間の間隔 ***** %>
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
               gap: 16px;
-              <%# ***** margin-bottom: 20px：下余白 ***** %>
+              <%# ***** gap: 16px：要素間の間隔 ***** %>
               margin-bottom: 20px;
+              <%# ***** margin-bottom: 20px：下余白 ***** %>
             }
             <%# ***** .formula-input-group：上付き・下付き入力フィールドグループ ***** %>
             .formula-input-group {
-              <%# ***** display: flex：縦並び ***** %>
               display: flex;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** display: flex：縦並び ***** %>
               flex-direction: column;
-              <%# ***** gap: 8px：要素間の間隔 ***** %>
+              <%# ***** flex-direction: column：縦方向に並べる ***** %>
               gap: 8px;
+              <%# ***** gap: 8px：要素間の間隔 ***** %>
             }
             <%# ***** .formula-input-group label：入力フィールドのラベル ***** %>
             .formula-input-group label {
-              <%# ***** font-weight: 500：太字 ***** %>
               font-weight: 500;
-              <%# ***** font-size: 13px：小さめのフォント ***** %>
+              <%# ***** font-weight: 500：太字 ***** %>
               font-size: 13px;
+              <%# ***** font-size: 13px：小さめのフォント ***** %>
             }
             <%# ***** .formula-type-selector：上付き・下付き選択ラジオボタン ***** %>
             .formula-type-selector {
-              <%# ***** display: flex：横並び ***** %>
               display: flex;
-              <%# ***** gap: 20px：選択肢間の間隔 ***** %>
+              <%# ***** display: flex：横並び ***** %>
               gap: 20px;
+              <%# ***** gap: 20px：選択肢間の間隔 ***** %>
             }
             <%# ***** .formula-type-selector label：ラジオボタンのラベル ***** %>
             .formula-type-selector label {
-              <%# ***** display: flex：フレックスで並べる ***** %>
               display: flex;
-              <%# ***** align-items: center：垂直中央揃え ***** %>
+              <%# ***** display: flex：フレックスで並べる ***** %>
               align-items: center;
-              <%# ***** gap: 8px：チェックボックスとテキストの間隔 ***** %>
+              <%# ***** align-items: center：垂直中央揃え ***** %>
               gap: 8px;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** gap: 8px：チェックボックスとテキストの間隔 ***** %>
               cursor: pointer;
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
             }
             <%# ***** .formula-type-selector input：ラジオボタン ***** %>
             .formula-type-selector input {
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
               cursor: pointer;
+              <%# ***** cursor: pointer：ポインタ表示 ***** %>
             }
             <%# ***** .formula-editor-input：数式入力フィールド ***** %>
             .formula-editor-input {
-              <%# ***** width: 100%：横幅100% ***** %>
               width: 100%;
-              <%# ***** padding: 10px 12px：内側余白 ***** %>
+              <%# ***** width: 100%：横幅100% ***** %>
               padding: 10px 12px;
-              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
+              <%# ***** padding: 10px 12px：内側余白 ***** %>
               border: 1px solid #dee2e6;
-              <%# ***** border-radius: 6px：角丸 ***** %>
+              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
               border-radius: 6px;
-              <%# ***** font-size: 14px：文字サイズ ***** %>
+              <%# ***** border-radius: 6px：角丸 ***** %>
               font-size: 14px;
-              <%# ***** box-sizing: border-box：padding を幅に含める ***** %>
+              <%# ***** font-size: 14px：文字サイズ ***** %>
               box-sizing: border-box;
+              <%# ***** box-sizing: border-box：padding を幅に含める ***** %>
             }
             <%# ***** .formula-editor-actions：モーダル下部のボタン領域 ***** %>
             .formula-editor-actions {
-              <%# ***** display: flex：横並び ***** %>
               display: flex;
-              <%# ***** justify-content: flex-end：右寄せ ***** %>
+              <%# ***** display: flex：横並び ***** %>
               justify-content: flex-end;
-              <%# ***** gap: 8px：ボタン間の間隔 ***** %>
+              <%# ***** justify-content: flex-end：右寄せ ***** %>
               gap: 8px;
+              <%# ***** gap: 8px：ボタン間の間隔 ***** %>
             }
           </style>
           <%# ***** /style：本文内スタイル定義の終了 ***** %>
@@ -663,8 +663,8 @@
             <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
             <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
@@ -793,12 +793,12 @@
                 <%# ***** class: "btn btn-secondary"：グレー色のセカンダリボタンのスタイル ***** %>
                 <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
               </div>
-              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
             </div>
-            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
+          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
       <%# ***** スクリプトセクション ***** %>
         <script>
@@ -1092,8 +1092,8 @@
       <% end %>
       <%# ***** end：form_withブロックの終了 ***** %>
     </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
-  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

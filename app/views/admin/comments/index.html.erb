@@ -6,8 +6,8 @@
 
   <%= search_form_for @q, url: admin_comments_path do |f| %>
     <div class="row mb-3">
-    <%# ***** div：汎用コンテナ要素 ***** %>
       <div class="col-md-4">
+    <%# ***** div：汎用コンテナ要素 ***** %>
       <%# ***** div：汎用コンテナ要素 ***** %>
         <%= f.label :body_cont, 'コメント本文検索' %>
       <%# ***** フォーム入力欄セクション ***** %>
@@ -25,8 +25,8 @@
         <%= f.label :post_title_cont, '投稿タイトル検索' %>
         <%= f.search_field :post_title_cont, class: 'form-control', placeholder: '投稿タイトルで検索' %>
       </div>
-      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <div class="mb-3">
     <%# ***** 送信ボタンセクション ***** %>
@@ -44,7 +44,6 @@
       <tr>
       <%# ***** tr：テーブル行要素 ***** %>
         <th>ID</th>
-        <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>コメント内容</th>
         <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>投稿者</th>
@@ -54,6 +53,7 @@
         <th>作成日</th>
         <%# ***** th：テーブル見出しセル要素 ***** %>
         <th>操作</th>
+        <%# ***** th：テーブル見出しセル要素 ***** %>
         <%# ***** th：テーブル見出しセル要素 ***** %>
       </tr>
       <%# ***** </tr>：trタグ（テーブル行要素）の終了 ***** %>
@@ -66,7 +66,6 @@
         <tr>
         <%# ***** tr：テーブル行要素 ***** %>
           <td><%= comment.id %></td>
-          <%# ***** td：テーブルデータセル要素 ***** %>
           <td><%= truncate(comment.body, length: 50) %></td>
           <%# ***** td：テーブルデータセル要素 ***** %>
           <td><%= link_to comment.user.name, admin_user_path(comment.user) %></td>
@@ -76,6 +75,7 @@
           <td><%= comment.created_at.strftime('%Y/%m/%d %H:%M') %></td>
           <%# ***** td：テーブルデータセル要素 ***** %>
           <td>
+          <%# ***** td：テーブルデータセル要素 ***** %>
           <%# ***** td：テーブルデータセル要素 ***** %>
             <%= link_to '削除', admin_comment_path(comment), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-danger' %>
           </td>
