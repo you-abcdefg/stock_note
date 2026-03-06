@@ -19,6 +19,17 @@ class Post < ApplicationRecord
 
   enum status: { draft: 0, published: 1 }
 
+  scope :published_only, -> { where(status: :published) }
+  scope :visible_to, lambda { |user|
+    return published_only unless user
+
+    where(
+      arel_table[:status].eq(statuses[:published]).or(
+        arel_table[:user_id].eq(user.id)
+      )
+    )
+  }
+
   before_validation :normalize_body_document
   validate :validate_body_document_format
 

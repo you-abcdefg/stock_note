@@ -34,9 +34,7 @@ class UsersController < ApplicationController
     
     # 管理者または本人以外は公開済み投稿のみ表示
     # （下書きや非公開投稿は見せない）
-    unless current_user&.admin? || current_user == @user
-      @posts = @posts.where(status: :published)
-    end
+    @posts = @posts.published_only unless current_user&.admin? || current_user == @user
   end
 
   # =====================================
@@ -74,7 +72,10 @@ class UsersController < ApplicationController
   # =====================================
   def mypage
     # ログインしているかチェック
-    redirect_to root_path, alert: 'ログインしてください。' unless current_user
+    unless current_user
+      redirect_to root_path, alert: 'ログインしてください。'
+      return
+    end
     
     # 現在のユーザーを設定
     @user = current_user

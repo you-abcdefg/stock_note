@@ -22,23 +22,8 @@ class PostsController < ApplicationController
   # 一覧表示（誰でも見れる）
   # =====================================
   def index
-    # Ransackで検索条件を作成
-    @q = Post.ransack(params[:q])
-    
-    # ソート順が指定されていない場合は新しい順をデフォルトに
-    @q.sorts = 'created_at desc' if @q.sorts.empty?
-    
-    # 公開済み（published）の投稿だけを取得
-    # includes(:user, :tags) で関連データを事前読み込み（N+1問題を防ぐ）
-    posts = @q.result.includes(:user, :tags)
-    
-    if user_signed_in?
-      # ログイン中：公開投稿 + 自分の下書き
-      @posts = posts.where("status = ? OR user_id = ?", Post.statuses[:published], current_user.id)
-    else
-      # 未ログイン：公開投稿のみ
-      @posts = posts.where(status: :published)
-    end
+    initialize_post_search
+    @posts = apply_post_visibility(@q.result.includes(:user, :tags))
   end
 
   # =====================================
@@ -107,23 +92,8 @@ class PostsController < ApplicationController
   # 検索機能（Ransack使用）
   # =====================================
   def search
-    # Ransackで検索条件を作成（例：タイトルや本文で検索）
-    @q = Post.ransack(params[:q])
-    
-    # ソート順が指定されていない場合は新しい順をデフォルトに
-    @q.sorts = 'created_at desc' if @q.sorts.empty?
-    
-    # ***** 他のユーザーの下書きは表示しないフィルタリング *****
-    # 公開投稿と、ログイン中ユーザーの下書きのみを取得
-    posts = @q.result.includes(:user, :tags)
-    
-    if user_signed_in?
-      # ログイン中：公開投稿 + 自分の下書き
-      @posts = posts.where("status = ? OR user_id = ?", Post.statuses[:published], current_user.id)
-    else
-      # 未ログイン：公開投稿のみ
-      @posts = posts.where(status: Post.statuses[:published])
-    end
+    initialize_post_search
+    @posts = apply_post_visibility(@q.result.includes(:user, :tags))
   end
 
   # =====================================
@@ -141,7 +111,7 @@ class PostsController < ApplicationController
       @q.sorts = 'created_at desc' if @q.sorts.empty?
       
       # 検索結果を取得（公開済みのみ）
-      @posts = @q.result.where(status: :published).includes(:user, :tags)
+      @posts = @q.result.published_only.includes(:user, :tags)
     else
       @posts = []
     end
@@ -176,6 +146,15 @@ class PostsController < ApplicationController
     # :status：公開状態を許可する
     # images: []：複数画像の配列を許可する
     # tag_list: []：複数タグの配列を許可する
+  end
+
+  def initialize_post_search
+    @q = Post.ransack(params[:q])
+    @q.sorts = 'created_at desc' if @q.sorts.empty?
+  end
+
+  def apply_post_visibility(posts)
+    posts.visible_to(current_user)
   end
 
   # =====================================
