@@ -52,6 +52,8 @@ class Post < ApplicationRecord
   private
 
   def normalize_body_document
+    return unless body_looks_like_json?(body)
+
     document = parse_body_document(body)
     return unless document
 
@@ -61,7 +63,7 @@ class Post < ApplicationRecord
   def validate_body_document_format
     raw_body = body.to_s.strip
     return if raw_body.blank?
-    return unless raw_body.start_with?('{', '[')
+    return unless body_looks_like_json?(raw_body)
 
     document = parse_body_document(raw_body)
     if document.nil?
@@ -84,6 +86,13 @@ class Post < ApplicationRecord
     end
   rescue JSON::ParserError
     nil
+  end
+
+  def body_looks_like_json?(raw_body)
+    source = raw_body.to_s.lstrip
+    return false if source.start_with?('[[')
+
+    source.start_with?('{', '[')
   end
 
   def validate_document_schema(document)

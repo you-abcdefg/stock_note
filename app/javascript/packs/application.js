@@ -10,8 +10,8 @@ import "channels"
 import "../posts_editor"
 
 Rails.start()
-// Rails.start(): 関数を呼び出して必要な処理を実行する
+// 「Rails.start(【引数】);」: Rails.startを呼び出して必要な処理を実行する
 Turbolinks.start()
-// Turbolinks.start(): 関数を呼び出して必要な処理を実行する
+// 「Turbolinks.start(【引数】);」: Turbolinks.startを呼び出して必要な処理を実行する
 ActiveStorage.start()
-// ActiveStorage.start(): 関数を呼び出して必要な処理を実行する
+// 「ActiveStorage.start(【引数】);」: ActiveStorage.startを呼び出して必要な処理を実行する

@@ -11,14 +11,17 @@
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="row">
-<%# ***** 一覧ループセクション ***** %>
+  <%# ***** 一覧ループセクション ***** %>
     <% @groups.each do |group| %>
+    <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+    <%# ***** 「@groups」：処理対象となるコレクション ***** %>
+    <%# ***** 「|group|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
     <%# ***** each：コレクションを順に処理するループ ***** %>
       <div class="col-md-6 mb-4">
         <div class="card h-100">
-      <%# ***** div：汎用コンテナ要素 ***** %>
-          <div class="card-body">
         <%# ***** div：汎用コンテナ要素 ***** %>
+          <div class="card-body">
+          <%# ***** div：汎用コンテナ要素 ***** %>
           <%# ***** div：汎用コンテナ要素 ***** %>
             <h5 class="card-title">
             <%# ***** h5：見出し要素 ***** %>
@@ -32,15 +35,17 @@
             <%# ***** </p>：pタグ（段落要素）の終了 ***** %>
             <div class="d-flex justify-content-between align-items-center">
               <div>
-            <%# ***** div：汎用コンテナ要素 ***** %>
+              <%# ***** div：汎用コンテナ要素 ***** %>
               <%# ***** div：汎用コンテナ要素 ***** %>
                 <small class="text-muted">
                 <%# ***** small：補足テキスト要素 ***** %>
-                  投稿数: <%= group.posts.count %>件 | 
+                  投稿数: <%= group.posts.count %>件 |
                   メンバー: <%= group.users.count %>人
                 </small>
-<%# ***** 条件分岐セクション ***** %>
+                <%# ***** 条件分岐セクション ***** %>
                 <% if user_signed_in? && current_user.group_memberships.exists?(group: group) %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+                <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
                 <%# ***** if：条件を判定する分岐 ***** %>
                   <span class="badge badge-success">所属中</span>
                   <%# ***** span：インライン要素 ***** %>
@@ -51,19 +56,20 @@
               <%# ***** div：汎用コンテナ要素 ***** %>
                 <%= link_to '詳細', group_path(group), class: 'btn btn-sm btn-info' %>
                 <% if current_user&.admin? %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
                 <%# ***** if：条件を判定する分岐 ***** %>
                   <%= link_to '編集', edit_group_path(group), class: 'btn btn-sm btn-warning' %>
                   <%= link_to '削除', group_path(group), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-danger' %>
                 <% end %>
               </div>
             </div>
-              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-          </div>
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-        </div>
+          </div>
           <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-      </div>
+        </div>
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+      </div>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <% end %>
   </div>

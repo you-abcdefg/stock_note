@@ -5,22 +5,22 @@
 
 <div class="container px-5 px-sm-0 mt-4">
   <div class="row">
-<%# ***** div：汎用コンテナ要素 ***** %>
-    <div class="col-md-12">
   <%# ***** div：汎用コンテナ要素 ***** %>
+    <div class="col-md-12">
+    <%# ***** div：汎用コンテナ要素 ***** %>
     <%# ***** div：汎用コンテナ要素 ***** %>
       <h2 class="mb-4">ユーザーを検索</h2>
 
       <%# ***** 検索フォーム ***** %>
       <div class="card mb-4">
         <div class="card-body">
-      <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** div：汎用コンテナ要素 ***** %>
         <%# ***** div：汎用コンテナ要素 ***** %>
           <%= search_form_for @q, url: search_users_path, local: true do |f| %>
             <div class="form-group">
             <%# ***** div：汎用コンテナ要素 ***** %>
               <label for="q_name_cont">ユーザー名で検索</label>
-<%# ***** フォーム入力欄セクション ***** %>
+              <%# ***** フォーム入力欄セクション ***** %>
               <%= f.search_field :name_cont, class: 'form-control', placeholder: 'ユーザー名キーワード', id: 'q_name_cont' %>
             </div>
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
@@ -34,7 +34,7 @@
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
             <div class="form-group">
-<%# ***** 送信ボタンセクション ***** %>
+            <%# ***** 送信ボタンセクション ***** %>
               <%= f.submit '検索', class: 'btn btn-primary' %>
               <%= link_to 'リセット', search_users_path, class: 'btn btn-secondary' %>
             </div>
@@ -42,10 +42,11 @@
           <% end %>
         </div>
       </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
       <%# ***** 検索結果 ***** %>
       <% if @users.any? %>
+      <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
       <%# ***** if：条件を判定する分岐 ***** %>
         <div class="alert alert-info" role="alert">
         <%# ***** div：汎用コンテナ要素 ***** %>
@@ -54,14 +55,17 @@
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="row">
-<%# ***** 一覧ループセクション ***** %>
+        <%# ***** 一覧ループセクション ***** %>
           <% @users.each do |user| %>
+          <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+          <%# ***** 「@users」：処理対象となるコレクション ***** %>
+          <%# ***** 「|user|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
           <%# ***** each：コレクションを順に処理するループ ***** %>
             <div class="col-md-6 mb-3">
               <div class="card h-100">
-            <%# ***** div：汎用コンテナ要素 ***** %>
-                <div class="card-body">
               <%# ***** div：汎用コンテナ要素 ***** %>
+                <div class="card-body">
+                <%# ***** div：汎用コンテナ要素 ***** %>
                 <%# ***** div：汎用コンテナ要素 ***** %>
                   <h5 class="card-title">
                   <%# ***** h5：見出し要素 ***** %>
@@ -77,23 +81,26 @@
                   <div class="btn-group btn-group-sm" role="group">
                   <%# ***** div：汎用コンテナ要素 ***** %>
                     <%= link_to 'プロフィール', user_path(user), class: 'btn btn-info' %>
-<%# ***** 条件分岐セクション ***** %>
+                    <%# ***** 条件分岐セクション ***** %>
                     <% if user_signed_in? && current_user == user %>
+                    <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+                    <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
                     <%# ***** if：条件を判定する分岐 ***** %>
                       <%= link_to '編集', edit_user_path(user), class: 'btn btn-warning' %>
                     <% end %>
                   </div>
                 </div>
-                  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-              </div>
                 <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-            </div>
+              </div>
               <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+            </div>
+            <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           <% end %>
         </div>
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% else %>
+      <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
       <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
         <div class="alert alert-warning" role="alert">
         <%# ***** div：汎用コンテナ要素 ***** %>
@@ -107,9 +114,9 @@
         <%= link_to 'ユーザー一覧に戻る', users_path, class: 'btn btn-secondary' %>
       </div>
     </div>
-      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-  </div>
     <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-</div>
+  </div>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+</div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

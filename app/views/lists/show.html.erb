@@ -1,9 +1,9 @@
 <%# ***** lists/show のビュー ***** %>
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-start mb-3">
-<%# ***** div：汎用コンテナ要素 ***** %>
-    <div>
   <%# ***** div：汎用コンテナ要素 ***** %>
+    <div>
+    <%# ***** div：汎用コンテナ要素 ***** %>
     <%# ***** div：汎用コンテナ要素 ***** %>
       <h2 class="mb-1"><%= @list.title %></h2>
       <%# ***** h2：見出し要素 ***** %>
@@ -19,8 +19,9 @@
     </div>
     <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
     <div>
-  <%# ***** 条件分岐セクション ***** %>
+    <%# ***** 条件分岐セクション ***** %>
       <% if @list.owner?(current_user) %>
+      <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
       <%# ***** if：条件を判定する分岐 ***** %>
         <%= link_to '編集', edit_list_path(@list), class: 'btn btn-sm btn-outline-primary' %>
         <%= link_to '削除', list_path(@list), method: :delete, data: { confirm: 'リストを削除しますか？' }, class: 'btn btn-sm btn-outline-danger' %>
@@ -28,16 +29,17 @@
       <%= link_to '一覧へ戻る', lists_path, class: 'btn btn-sm btn-outline-secondary' %>
     </div>
   </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="card mb-4">
     <div class="card-header">リスト内の投稿</div>
-  <%# ***** div：汎用コンテナ要素 ***** %>
+    <%# ***** div：汎用コンテナ要素 ***** %>
     <div class="card-body">
     <%# ***** div：汎用コンテナ要素 ***** %>
     <%# ***** div：汎用コンテナ要素 ***** %>
       <% if @list_items.any? %>
+      <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
       <%# ***** if：条件を判定する分岐 ***** %>
         <ul class="list-group list-group-flush">
         <%# ***** ul：順序なしリスト要素 ***** %>
@@ -46,7 +48,7 @@
             <%# ***** li：リスト項目要素 ***** %>
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-              <%# ***** div：汎用コンテナ要素 ***** %>
+                <%# ***** div：汎用コンテナ要素 ***** %>
                 <%# ***** div：汎用コンテナ要素 ***** %>
                 <span class="text-muted mr-2"><%= item.position %>.</span>
                 <%# ***** span：インライン要素 ***** %>
@@ -54,6 +56,7 @@
                 </div>
                 <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
                 <% if @list.owner?(current_user) %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
                 <%# ***** if：条件を判定する分岐 ***** %>
                   <div class="d-flex">
                   <%# ***** div：汎用コンテナ要素 ***** %>
@@ -67,18 +70,20 @@
               <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
               <% if @list.owner?(current_user) %>
+              <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
 <%# ***** 入力フォームセクション ***** %>
                 <%= form_with model: [@list, item], local: true, class: 'mt-2' do |f| %>
                   <div class="form-group mb-2">
                   <%# ***** div：汎用コンテナ要素 ***** %>
                     <%= f.label :memo, '投稿メモ（1件）', class: 'small text-muted' %>
-<%# ***** フォーム入力欄セクション ***** %>
+                    <%# ***** フォーム入力欄セクション ***** %>
                     <%= f.text_area :memo, rows: 2, class: 'form-control' %>
                   </div>
-<%# ***** 送信ボタンセクション ***** %>
+                  <%# ***** 送信ボタンセクション ***** %>
                   <%= f.submit 'メモ保存', class: 'btn btn-sm btn-outline-primary' %>
                 <% end %>
               <% elsif item.memo.present? %>
+              <%# ***** 「elsif (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐 ***** %>
               <%# ***** elsif：前条件が偽の場合の追加分岐 ***** %>
                 <div class="mt-2 small text-muted">
                 <%# ***** div：汎用コンテナ要素 ***** %>
@@ -93,13 +98,14 @@
         </ul>
         <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
       <% else %>
+      <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
       <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
         <p class="text-muted mb-0">投稿はまだ登録されていません。</p>
         <%# ***** p：段落要素 ***** %>
       <% end %>
     </div>
   </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
 </div>

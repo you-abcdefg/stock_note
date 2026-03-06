@@ -9,15 +9,18 @@
     <%# ***** col-md-12：全幅を占めるカラム ***** %>
       <h2>投稿を編集</h2>
       <%# ***** h2：2番目のレベルの見出し ***** %>
-
       <%# ***** 画像URLマップをJavaScriptで利用できるようにする ***** %>
       <script>
-        <%# ***** window.imageUrlMap：画像ファイル名とURLの対応表 ***** %>
+      <%# ***** window.imageUrlMap：画像ファイル名とURLの対応表 ***** %>
         <%# ***** @post.images.each：添付画像の一覧をループ ***** %>
         window.imageUrlMap = {
-          <%# ***** 画像ファイル名をキー、URLを値に設定 ***** %>
+        <%# ***** 画像ファイル名をキー、URLを値に設定 ***** %>
 <%# ***** 一覧ループセクション ***** %>
           <% @post.images.each do |image| %>
+          <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+          <%# ***** 「@post.images」：処理対象となるコレクション ***** %>
+          <%# ***** 「|image|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
+
           <%# ***** each：コレクションを順に処理するループ ***** %>
             '<%= image.filename %>': '<%= url_for(image) %>',
           <% end %>
@@ -26,16 +29,17 @@
         <%# ***** imageUrlMapの定義終了 ***** %>
       </script>
 
-    <%# ***** 入力フォームセクション ***** %>
+      <%# ***** 入力フォームセクション ***** %>
       <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
       <%# ***** form_with：投稿編集フォーム生成ヘルパー ***** %>
       <%# ***** model: @post：Postモデルをフォームに紐づける ***** %>
       <%# ***** local: true：Turboドライブを無効化して同期通信で送信 ***** %>
       <%# ***** html: { multipart: true }：ファイルアップロードを有効化 ***** %>
-
       <%# ***** エラーメッセージ表示セクション ***** %>
       <%# ***** 条件分岐セクション ***** %>
         <% if @post.errors.any? %>
+        <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+
         <%# ***** if：投稿にエラーがある場合の条件 ***** %>
         <%# ***** @post.errors.any?：1つ以上のエラーが存在するか判定 ***** %>
           <div class="alert alert-danger">
@@ -48,6 +52,10 @@
             <ul>
             <%# ***** ul：順序なしリスト ***** %>
               <% @post.errors.full_messages.each do |message| %>
+              <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+              <%# ***** 「@post.errors.full_messages」：処理対象となるコレクション ***** %>
+              <%# ***** 「|message|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
+
               <%# ***** each：エラーメッセージをループして各メッセージを処理 ***** %>
               <%# ***** message：ループ内の現在のエラーメッセージ ***** %>
                 <li><%= message %></li>
@@ -70,7 +78,7 @@
           <%# ***** form.label：タイトル入力フィールドのラベルを表示 ***** %>
           <%# ***** :title：ラベル対象属性 ***** %>
           <%= form.text_field :title, class: "form-control" %>
-<%# ***** フォーム入力欄セクション ***** %>
+          <%# ***** フォーム入力欄セクション ***** %>
           <%# ***** form.text_field：単一行テキスト入力フィールド ***** %>
           <%# ***** :title：投稿タイトル属性を対象 ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
@@ -145,7 +153,6 @@
             </button>
             <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
           </div>
-
 
           <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
           <style>
@@ -618,14 +625,12 @@
           </style>
           <%# ***** /style：本文内スタイル定義の終了 ***** %>
           </div>
-        <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
+          <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
         <%= form.file_field :images, multiple: true, accept: "image/*", style: "display: none;" %>
         <%# ***** form.file_field：JavaScriptで動作する隠れたファイル選択フィールド ***** %>
         <%# ***** multiple: true：複数ファイルの選択を許可 ***** %>
         <%# ***** accept: "image/*"：画像ファイルのみ選択可能に制限 ***** %>
         <%# ***** style: "display: none;"：ユーザーには表示しない ***** %>
-
-
 
         <div class="form-group mb-3">
         <%# ***** div：タグ選択フォームグループ ***** %>
@@ -664,7 +669,7 @@
             <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
           </div>
         </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
@@ -686,7 +691,7 @@
         <div class="form-group">
         <%# ***** div：送信・キャンセルボタングループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
-<%# ***** 送信ボタンセクション ***** %>
+        <%# ***** 送信ボタンセクション ***** %>
           <%= form.submit "更新", class: "btn btn-primary" %>
           <%# ***** form.submit：フォーム送信ボタン ***** %>
           <%# ***** "更新"：ボタンのテキスト ***** %>
@@ -739,6 +744,8 @@
               <%# ***** div：モーダルボディ（コンテンツ） ***** %>
               <%# ***** modal-body：モーダルボディのスタイル ***** %>
                 <% if @available_tags.any? %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+
                 <%# ***** if：利用可能なタグが存在するか判定 ***** %>
                 <%# ***** @available_tags.any?：1つ以上のタグが存在するか確認 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes">
@@ -747,6 +754,10 @@
                   <%# ***** flex-wrap：要素が複数行に折り返されるように設定 ***** %>
                   <%# ***** id="tag-checkboxes"：JavaScriptで参照するID ***** %>
                     <% @available_tags.each do |tag| %>
+                    <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+                    <%# ***** 「@available_tags」：処理対象となるコレクション ***** %>
+                    <%# ***** 「|tag|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
+
                     <%# ***** each：利用可能なタグをループして各タグを処理 ***** %>
                     <%# ***** tag：ループ内の現在のタグオブジェクト ***** %>
                       <div class="custom-control custom-checkbox mr-3 mb-2">
@@ -772,6 +783,8 @@
                   </div>
                   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
                 <% else %>
+                <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
+
                 <%# ***** else：利用可能なタグが存在しない場合 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes"></div>
                   <%# ***** div：（空の）タグチェックボックスコンテナ ***** %>
@@ -794,12 +807,11 @@
                 <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
               </div>
             </div>
-              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-          </div>
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-        </div>
+          </div>
           <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-
+        </div>
+        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <%# ***** スクリプトセクション ***** %>
         <script>
         <%# ***** script：タグ選択・作成のJavaScriptロジック ***** %>
@@ -825,7 +837,6 @@
             <%# ***** checkboxContainer：チェックボックスを囲むコンテナを取得 ***** %>
             const getCheckboxes = () => checkboxContainer.querySelectorAll('input[type="checkbox"]');
             <%# ***** getCheckboxes()：コンテナ内のすべてのチェックボックスを取得する関数 ***** %>
-
             <%# ***** メディア管理セクション削除に伴い、以下のDOM参照は使用不可：imageObjectsContainer、codeObjectsContainer、imageCountSpan、codeCountSpan、noImagesMessage、noCodeMessage ***** %>
 
             const codeTemplate = "\n```ruby\n\n```\n";
@@ -1093,7 +1104,7 @@
       <%# ***** end：form_withブロックの終了 ***** %>
     </div>
   </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-</div>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+</div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

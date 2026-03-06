@@ -5,26 +5,29 @@
 
 <div class="container px-5 px-sm-0 mt-4">
   <div class="row">
-<%# ***** div：汎用コンテナ要素 ***** %>
-    <div class="col-md-12">
   <%# ***** div：汎用コンテナ要素 ***** %>
-      <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="col-md-12">
     <%# ***** div：汎用コンテナ要素 ***** %>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+      <%# ***** div：汎用コンテナ要素 ***** %>
       <%# ***** div：汎用コンテナ要素 ***** %>
         <h2>投稿一覧</h2>
         <%# ***** h2：見出し要素 ***** %>
         <div>
-<%# ***** 条件分岐セクション ***** %>
+        <%# ***** 条件分岐セクション ***** %>
           <% if user_signed_in? %>
+          <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+          <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
           <%# ***** if：条件を判定する分岐 ***** %>
             <%= link_to "新規作成", new_post_path, class: "btn btn-primary" %>
           <% end %>
         </div>
       </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
       <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 
       <% unless user_signed_in? %>
+      <%# ***** 「unless (【条件】)」: 【条件】が偽の場合に処理する条件分岐 ***** %>
       <%# ***** unless：条件が偽の場合に処理する分岐 ***** %>
         <div class="alert alert-info mt-3" role="alert">
         <%# ***** div：汎用コンテナ要素 ***** %>
@@ -35,7 +38,7 @@
 
       <%# ***** 検索フォーム ***** %>
       <%= render 'search_form' %>
-      
+
       <%# ***** Bootstrap のテーブルで一覧表示 ***** %>
     <%# ***** 一覧テーブルセクション ***** %>
       <table class="table table-hover">
@@ -63,58 +66,70 @@
         </thead>
         <%# ***** </thead>：theadタグ（テーブル見出し要素）の終了 ***** %>
         <tbody>
-          <%# ***** @postsの各投稿をループ処理 ***** %>
+        <%# ***** @postsの各投稿をループ処理 ***** %>
           <% @posts.each do |post| %>
+          <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+          <%# ***** 「@posts」：処理対象となるコレクション ***** %>
+          <%# ***** 「|post|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
           <%# ***** each：コレクションを順に処理するループ ***** %>
             <tr>
-              <%# ***** 投稿日時を表示 ***** %>
+            <%# ***** 投稿日時を表示 ***** %>
               <td><%= post.created_at.strftime('%Y/%m/%d %H:%M') %></td>
-              
+
               <%# ***** ユーザー名をクリックするとユーザー詳細ページへ ***** %>
               <td><%= link_to(post.user.name.presence || '未設定', user_path(post.user)) %></td>
-              
+
               <%# ***** タイトルをクリックすると投稿詳細ページへ ***** %>
               <td><%= link_to post.title, post_path(post) %></td>
-              
+
               <%# ***** 本文は10文字まで表示（長い場合は「...」で省略） ***** %>
               <td><%= truncate(post.body, length: 10) %></td>
-              
+
               <%# ***** ステータスをバッジで表示 ***** %>
               <td>
               <%# ***** td：テーブルデータセル要素 ***** %>
                 <% if post.published? %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
                 <%# ***** if：条件を判定する分岐 ***** %>
                   <span class="badge badge-success">公開</span>
                   <%# ***** span：インライン要素 ***** %>
                 <% else %>
+                <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
                 <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
                   <span class="badge badge-secondary">下書き</span>
                   <%# ***** span：インライン要素 ***** %>
                 <% end %>
               </td>
-              
+
               <%# ***** タグがあれば表示（クリックでタグ検索） ***** %>
               <td>
               <%# ***** td：テーブルデータセル要素 ***** %>
                 <% if post.respond_to?(:tags) %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
 <%# ***** 一覧ループセクション ***** %>
                   <% post.tags.each do |tag| %>
+                  <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+                  <%# ***** 「post.tags」：処理対象となるコレクション ***** %>
+                  <%# ***** 「|tag|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
                   <%# ***** each：コレクションを順に処理するループ ***** %>
                     <span class="badge badge-info"><%= link_to tag.name, tagged_posts_path(tag.name), class: "text-white" %></span>
                     <%# ***** span：インライン要素 ***** %>
                   <% end %>
                 <% end %>
               </td>
-              
+
               <%# ***** 操作ボタン（表示・編集・削除） ***** %>
               <td>
               <%# ***** td：テーブルデータセル要素 ***** %>
                 <% if user_signed_in? %>
-                  <%# ***** 「表示」ボタンは誰でも表示 ***** %>
+                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+                <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
+                <%# ***** 「表示」ボタンは誰でも表示 ***** %>
                   <%= link_to "表示", post_path(post), class: "btn btn-sm btn-info" %>
-                  
+
                   <%# ***** 「編集」「削除」は投稿者本人または管理者のみ ***** %>
                   <% if current_user == post.user || current_user.admin? %>
+                  <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
                   <%# ***** if：条件を判定する分岐 ***** %>
                     <%= link_to "編集", edit_post_path(post), class: "btn btn-sm btn-warning" %>
                     <%= link_to "削除", post_path(post), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-sm btn-danger" %>
@@ -129,10 +144,10 @@
         <%# ***** </tbody>：tbodyタグ（テーブル本文要素）の終了 ***** %>
       </table>
       <%# ***** </table>：tableタグ（テーブル要素）の終了 ***** %>
-      
+
     </div>
   </div>
-    <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-</div>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+</div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>

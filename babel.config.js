@@ -24,23 +24,23 @@ module.exports = function(api) { // Babel設定を生成する関数をエクス
   // api.env('test'): 引数と一致するかをBabel側で判定
 
   if (!validEnv.includes(currentEnv)) { // 不正な環境名ならエラーにする
-    // if: 有効環境かどうかを判定する条件分岐
+    // 「if (【条件】)」: 【条件】を判定する条件分岐
     throw new Error(
-    // throw: 例外を発生させてエラー処理へ移行する
+    // 「throw new Error(;」: 例外を発生させてエラー処理へ移行する
       'Please specify a valid `NODE_ENV` or ' +
         '`BABEL_ENV` environment variables. Valid values are "development", ' +
         '"test", and "production". Instead, received: ' +
         JSON.stringify(currentEnv) +
         '.'
     )
-    // throw: 設定生成を中断するため例外を発生させる
+    // 「throw 【例外】;」: 例外を発生させてエラー処理へ移行する
     // new Error(...): エラーメッセージを持つ例外オブジェクトを作成する
     // JSON.stringify(currentEnv): 受け取った環境名を文字列化して表示する
   }
 
   // ●プリセットとプラグインを含む設定オブジェクトを返す
   return {
-    // return: 呼び出し元へ設定を返す
+    // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
     // { ... }: presetsとpluginsをまとめた設定本体
 
     presets: [ // 環境ごとのプリセット設定を定義

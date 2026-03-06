@@ -1,28 +1,32 @@
 <%# ***** users/edit のビュー ***** %>
 <div class="container mt-5">
   <div class="row">
-<%# ***** div：汎用コンテナ要素 ***** %>
-    <div class="col-lg-6 offset-lg-3">
   <%# ***** div：汎用コンテナ要素 ***** %>
-      <div class="card shadow-sm">
+    <div class="col-lg-6 offset-lg-3">
     <%# ***** div：汎用コンテナ要素 ***** %>
-        <div class="card-header bg-primary text-white">
+      <div class="card shadow-sm">
       <%# ***** div：汎用コンテナ要素 ***** %>
+        <div class="card-header bg-primary text-white">
+        <%# ***** div：汎用コンテナ要素 ***** %>
         <%# ***** div：汎用コンテナ要素 ***** %>
           <h5 class="mb-0"><i class="fas fa-user-edit"></i> プロフィール編集</h5>
           <%# ***** h5：見出し要素 ***** %>
         </div>
         <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
         <div class="card-body">
-<%# ***** 条件分岐セクション ***** %>
+        <%# ***** 条件分岐セクション ***** %>
 <%# ***** エラーメッセージ表示セクション ***** %>
           <% if @user.errors.any? %>
+          <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
           <%# ***** if：条件を判定する分岐 ***** %>
             <div class="alert alert-danger">
             <%# ***** div：汎用コンテナ要素 ***** %>
               <ul class="mb-0">
-<%# ***** 一覧ループセクション ***** %>
+              <%# ***** 一覧ループセクション ***** %>
                 <% @user.errors.full_messages.each do |message| %>
+                <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+                <%# ***** 「@user.errors.full_messages」：処理対象となるコレクション ***** %>
+                <%# ***** 「|message|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
                 <%# ***** each：コレクションを順に処理するループ ***** %>
                   <li><%= message %></li>
                   <%# ***** li：リスト項目要素 ***** %>
@@ -33,12 +37,12 @@
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           <% end %>
 
-<%# ***** 入力フォームセクション ***** %>
+          <%# ***** 入力フォームセクション ***** %>
           <%= form_with model: @user, local: true do |f| %>
             <div class="form-group">
             <%# ***** div：汎用コンテナ要素 ***** %>
               <%= f.label :name, 'ユーザー名' %>
-<%# ***** フォーム入力欄セクション ***** %>
+              <%# ***** フォーム入力欄セクション ***** %>
               <%= f.text_field :name, class: 'form-control', required: true %>
             </div>
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
@@ -53,18 +57,18 @@
             <div class="d-flex justify-content-between mt-4">
             <%# ***** div：汎用コンテナ要素 ***** %>
               <%= link_to '戻る', user_path(@user), class: 'btn btn-outline-secondary' %>
-<%# ***** 送信ボタンセクション ***** %>
+              <%# ***** 送信ボタンセクション ***** %>
               <%= f.submit '更新する', class: 'btn btn-primary' %>
             </div>
             <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
           <% end %>
         </div>
       </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-    </div>
       <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-  </div>
+    </div>
     <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-</div>
+  </div>
   <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+</div>
+<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
