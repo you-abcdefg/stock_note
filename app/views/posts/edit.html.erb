@@ -75,19 +75,27 @@
           <%# ***** form.label：本文入力フィールドのラベルを表示 ***** %>
           <%# ***** :body：ラベル対象属性 ***** %>
           <%# ***** "本文"：ラベルのテキスト ***** %>
-          <div id="body-editor" contenteditable="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;"><%= @post.body %></div>
+          <textarea id="body-source" class="form-control mb-2" rows="8" placeholder="ここに本文を入力してください（テキスト編集レイヤー）"><%= @post.body %></textarea>
+          <small class="text-muted d-block mb-2">上段で本文を編集すると、下段のカード表示が自動で更新されます。</small>
+          <div id="body-editor" contenteditable="false" data-preview-only="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto; background: #f8f9fa;"></div>
           <%# ***** div contenteditable：テキスト編集可能なdiv（textareaの代わり） ***** %>
           <%# ***** id="body-editor"：JavaScriptで参照するID ***** %>
           <%# ***** contenteditable="true"：ユーザーが編集可能に ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
           <%# ***** style: min-height, max-height等：表示を調整 ***** %>
           <%# ***** @post.body：既存の本文を初期値として表示 ***** %>
-          <input type="hidden" id="body-hidden" name="post[body]" value="">
+          <input type="hidden" id="body-hidden" name="post[body]" value="<%= @post.body %>">
           <%# ***** input hidden：フォーム送信時に本文を格納する隠れたフィールド ***** %>
           <%# ***** name="post[body]"：Railsフォームパラメータ ***** %>
           <div class="mt-2">
           <%# ***** div：本文挿入ボタンを配置する行 ***** %>
           <%# ***** mt-2：上部マージンを追加 ***** %>
+            <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="insert-text-button">
+              テキストカードを追加
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
+              URLカードを追加
+            </button>
             <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
             <%# ***** button：本文中へ画像記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -111,6 +119,9 @@
             <%# ***** id="insert-formula-button"：JavaScriptで参照するID ***** %>
               数式を挿入
               <%# ***** ボタンの表示テキスト ***** %>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
+              全体プレビュー
             </button>
           </div>
 
@@ -205,7 +216,8 @@
               display: none;
             }
             <%# ***** .code-card：コードカードのコンテナ ***** %>
-            #body-editor .code-card {
+            #body-editor .code-card,
+            #body-editor .url-card {
               <%# ***** display: block：ブロック要素として配置 ***** %>
               display: block;
               <%# ***** margin: 0なし：上下左右の余白をなくす ***** %>
@@ -232,14 +244,16 @@
               height: 100px;
             }
             <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
-            #body-editor .code-card:hover {
+            #body-editor .code-card:hover,
+            #body-editor .url-card:hover {
               <%# ***** background: #e7f1ff：背景色を強調 ***** %>
               background: #e7f1ff;
               <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
               border-left-color: #0056b3;
             }
             <%# ***** .code-card pre：コード表示のテキスト領域 ***** %>
-            #body-editor .code-card pre {
+            #body-editor .code-card pre,
+            #body-editor .url-card pre {
               <%# ***** margin: 0：余白をリセット ***** %>
               margin: 0;
               <%# ***** font-size: 12px：文字サイズを調整 ***** %>
@@ -276,6 +290,20 @@
               <%# ***** float: none：浮動を無効化 ***** %>
               float: none;
             }
+            #body-editor .text-card {
+              display: block;
+              width: 100%;
+              margin: 0 !important;
+              margin-top: 0 !important;
+              padding: 0 !important;
+              text-align: left;
+              min-height: 100px;
+              position: relative;
+              float: none;
+              background: #f8f9fa;
+              border-left: 3px solid #0d6efd;
+              border-radius: 3px;
+            }
             <%# ***** .code-card-body：コードカード本体 ***** %>
             #body-editor .code-card-body {
               <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
@@ -301,6 +329,25 @@
               display: block !important;
               <%# ***** line-height: 1.2：行の高さ ***** %>
               line-height: 1.2 !important;
+            }
+            #body-editor .text-card-body {
+              padding: 10px 12px 8px 8px !important;
+              margin: 0 !important;
+              min-height: 100%;
+              display: block !important;
+              line-height: 1.5 !important;
+              white-space: pre-wrap;
+              word-break: break-word;
+            }
+            #body-editor .url-card-body {
+              padding: 3px 4px 0 4px !important;
+              margin: 0 !important;
+              height: 100%;
+              display: block !important;
+              line-height: 1.2 !important;
+              white-space: pre-wrap;
+              word-break: break-word;
+              overflow: auto;
             }
             <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
             #body-editor .card-delete-btn {

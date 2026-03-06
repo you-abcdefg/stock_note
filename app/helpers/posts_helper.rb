@@ -36,7 +36,11 @@ module PostsHelper
     # if：条件文
     # post.body.blank?：投稿の本文が空または空白のみかを判定
 
-    body = post.body.to_s.gsub(/\r\n?/, "\n")
+    body = if post.respond_to?(:body_document?) && post.body_document?
+      card_document_to_legacy_body(post.body_document)
+    else
+      post.body.to_s
+    end.gsub(/\r\n?/, "\n")
     # body：本文を処理用に複製して代入する変数
     # post.body：投稿の本文内容を取得
     # dup：文字列を複製して元データを保護（操作時の影響を防ぐ）
@@ -190,6 +194,20 @@ module PostsHelper
       # return: formula値を数式→HTMLラムダで処理して最終HTMLで返す（Markdownパーサをバイパス）
     end
 
+    body = body.gsub(/\[\[sn-text:([A-Za-z0-9+\/=]+)\]\]/) do
+      payload = decode_card_payload.call($1)
+      next "" unless payload.is_a?(Hash)
+
+      payload['text'].to_s
+    end
+
+    body = body.gsub(/\[\[sn-url:([A-Za-z0-9+\/=]+)\]\]/) do
+      payload = decode_card_payload.call($1)
+      next "" unless payload.is_a?(Hash)
+
+      payload['url'].to_s
+    end
+
     # ● 旧形式 ``formula...`` 記法も後方互換で対応
     body = body.gsub(/``formula\s*\ntext:([\s\S]*?)\n``/) do
       # gsub: グローバル置換で ``formula\\ntext:...\\n`` パターンを処理
@@ -274,6 +292,37 @@ module PostsHelper
       # 除外されるもの：onclick, onload, onchange 等のイベントハンドラ（自動除去）
     )
     # return: サニタイズ済み安全HTMLを返す（Rails 7.x では .html_safe 扱いで出力可能）
+  end
+
+  def card_document_to_legacy_body(document)
+    cards = Array(document['cards'])
+
+    blocks = cards.filter_map do |card|
+      next unless card.is_a?(Hash)
+
+      case card['type'].to_s
+      when 'text'
+        card['content'].to_s
+      when 'formula'
+        payload = Base64.strict_encode64({ formula: card['content'].to_s }.to_json)
+        "[[sn-formula:#{payload}]]"
+      when 'code'
+        payload = Base64.strict_encode64({ lang: card['lang'].to_s, code: card['content'].to_s }.to_json)
+        "[[sn-code:#{payload}]]"
+      when 'url'
+        url = card['url'].to_s.strip
+        next if url.blank?
+
+        url
+      when 'image'
+        filename = card['filename'].to_s.strip
+        next if filename.blank?
+
+        "![説明](image:#{filename})"
+      end
+    end
+
+    blocks.join("\n\n")
   end
 
 end

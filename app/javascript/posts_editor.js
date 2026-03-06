@@ -7,6 +7,8 @@ document.addEventListener('turbolinks:load', initContentEditableEditor);
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
   const bodyHidden = document.getElementById('body-hidden');
+  const bodySource = document.getElementById('body-source');
+  const isPreviewOnly = bodyEditor?.dataset.previewOnly === 'true';
   
   if (!bodyEditor || bodyEditor.dataset.initialized === 'true') return;
   bodyEditor.dataset.initialized = 'true';
@@ -14,6 +16,9 @@ function initContentEditableEditor() {
   const insertImageButton = document.getElementById('insert-image-button');
   const insertCodeButton = document.getElementById('insert-code-button');
   const insertFormulaButton = document.getElementById('insert-formula-button');
+  const insertTextButton = document.getElementById('insert-text-button');
+  const insertUrlButton = document.getElementById('insert-url-button');
+  const openPreviewButton = document.getElementById('open-preview-modal-button');
   const imageInput = document.getElementById('post_images');
 
   const allFiles = [];
@@ -25,16 +30,20 @@ function initContentEditableEditor() {
   const CODE_TOKEN_PREFIX = '[[sn-code:';
   // CODE_TOKEN_PREFIX: コードカード用の保存形式プリフィックス（Base64 JSONをwrapする）
   const FORMULA_TOKEN_PREFIX = '[[sn-formula:';
+  const TEXT_TOKEN_PREFIX = '[[sn-text:';
+  const URL_TOKEN_PREFIX = '[[sn-url:';
   // FORMULA_TOKEN_PREFIX: 数式カード用の保存形式プリフィックス（Base64 JSONをwrapする）
   const CODE_TOKEN_REGEX = /\[\[sn-code:([A-Za-z0-9+\/=]+)\]\]/;
   // CODE_TOKEN_REGEX: コードカードトークンの中身を抽出するパターン
   const FORMULA_TOKEN_REGEX = /\[\[sn-formula:([A-Za-z0-9+\/=]+)\]\]/;
+  const TEXT_TOKEN_REGEX = /\[\[sn-text:([A-Za-z0-9+\/=]+)\]\]/;
+  const URL_TOKEN_REGEX = /\[\[sn-url:([A-Za-z0-9+\/=]+)\]\]/;
   // FORMULA_TOKEN_REGEX: 数式カードトークンの中身を抽出するパターン
 
   const isLockedCardNode = (node) => {
     if (!node) return false;
     const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
-    return !!(element && element.closest('.code-card, .formula-card'));
+    return !!(element && element.closest('.code-card, .formula-card, .text-card, .url-card, .media-card'));
   };
 
   const resolveEditorRange = () => {
@@ -60,10 +69,7 @@ function initContentEditableEditor() {
     return fallbackRange;
   };
 
-  const CARD_SELECTOR = '.media-card, .code-card, .formula-card';
-  let draggingCard = null;
-  let dragInsertIndicator = null;
-  let dragInsertPosition = null;
+  const CARD_SELECTOR = '.media-card, .code-card, .formula-card, .text-card, .url-card';
 
   const isMovableCard = (node) => {
     return !!(node && node.nodeType === 1 && node.matches && node.matches(CARD_SELECTOR));
@@ -91,180 +97,71 @@ function initContentEditableEditor() {
     return card;
   };
 
-  const clearDropMarkers = () => {
-    bodyEditor.querySelectorAll('.drop-target').forEach((node) => {
-      node.classList.remove('drop-target');
-    });
-  };
+  const moveCardByDirection = (card, direction) => {
+    if (!isMovableCard(card)) return;
 
-  const createDragInsertIndicator = () => {
-    if (dragInsertIndicator) return dragInsertIndicator;
-    dragInsertIndicator = document.createElement('div');
-    dragInsertIndicator.className = 'drag-insert-indicator';
-    document.body.appendChild(dragInsertIndicator);
-    return dragInsertIndicator;
-  };
-
-  const showDragIndicator = (position) => {
-    const indicator = createDragInsertIndicator();
-    // 既存のインジケーターがあれば削除
-    if (indicator.parentNode && indicator.parentNode !== document.body) {
-      indicator.parentNode.removeChild(indicator);
-    }
-    
-    // position.nextNode の直前に挿入（実際の挿入位置を表示）
-    if (position && position.nextNode && position.nextNode.parentNode === bodyEditor) {
-      bodyEditor.insertBefore(indicator, position.nextNode);
-    } else {
-      bodyEditor.appendChild(indicator);
-    }
-  };
-
-  const removeDragIndicator = () => {
-    if (dragInsertIndicator && dragInsertIndicator.parentNode) {
-      dragInsertIndicator.parentNode.removeChild(dragInsertIndicator);
-    }
-    dragInsertIndicator = null;
-    dragInsertPosition = null;
-  };
-
-  const getDragInsertPosition = (mouseY) => {
-    // bodyEditor 直下のElement ノードのみを対象（text-line, card, indicator）
-    const allNodes = Array.from(bodyEditor.childNodes).filter(
-      (node) => {
-        if (node.nodeType !== Node.ELEMENT_NODE) return false;
-        if (node === draggingCard) return false;
-        if (node.classList && node.classList.contains('drag-insert-indicator')) return false;
-        return true;
-      }
-    );
-    
-    if (allNodes.length === 0) return { nextNode: null };
-
-    // 各 Element ノードの上端Y座標を計算
-    const nodePositions = [];
-    for (const node of allNodes) {
-      const rect = node.getBoundingClientRect();
-      if (rect.height > 0) {
-        nodePositions.push({ node, y: rect.top });
-      }
-    }
-    
-    if (nodePositions.length === 0) return { nextNode: null };
-    
-    // マウスY座標より上側にある最初のノードを返す
-    for (const { node, y } of nodePositions) {
-      if (mouseY < y) {
-        return { nextNode: node };
-      }
-    }
-    
-    // すべてのノードより下 → 末尾に挿入
-    return { nextNode: null };
-  };
-
-  const updateDragIndicatorByMouse = (mouseY) => {
-    if (!draggingCard) return;
-    dragInsertPosition = getDragInsertPosition(mouseY);
-    showDragIndicator(dragInsertPosition);
-  };
-
-  const moveCardBundleToNextNode = (sourceCard, nextNode) => {
-    if (!isMovableCard(sourceCard)) return;
-
-    const bundleNodes = getCardBundleNodes(sourceCard);
-    if (bundleNodes.length === 0) return;
-    if (nextNode && bundleNodes.includes(nextNode)) return;
-
-    const fragment = document.createDocumentFragment();
-    bundleNodes.forEach((node) => fragment.appendChild(node));
-
-    if (nextNode && nextNode.parentNode === bodyEditor) {
-      bodyEditor.insertBefore(fragment, nextNode);
-    } else {
-      bodyEditor.appendChild(fragment);
-    }
-
-    syncHiddenField();
-  };
-
-  const applyDropAtIndicatorPosition = () => {
-    if (!draggingCard) return;
-
-    const nextNode = dragInsertPosition ? dragInsertPosition.nextNode : null;
-    moveCardBundleToNextNode(draggingCard, nextNode);
-  };
-
-  const moveCardBundle = (sourceCard, targetCard, insertAfter = false) => {
-    if (!isMovableCard(sourceCard)) return;
-    if (targetCard && !isMovableCard(targetCard)) return;
-    if (targetCard && sourceCard === targetCard) return;
-
-    const bundleNodes = getCardBundleNodes(sourceCard);
+    const bundleNodes = getCardBundleNodes(card);
     if (bundleNodes.length === 0) return;
 
     const fragment = document.createDocumentFragment();
     bundleNodes.forEach((node) => fragment.appendChild(node));
 
-    if (!targetCard) {
-      bodyEditor.appendChild(fragment);
-    } else if (insertAfter) {
-      targetCard.parentNode.insertBefore(fragment, targetCard.nextSibling);
-    } else {
-      const anchorNode = getInsertAnchorNode(targetCard);
-      if (anchorNode) {
-        anchorNode.parentNode.insertBefore(fragment, anchorNode);
+    if (direction === 'up') {
+      let cursor = (getInsertAnchorNode(card) || card).previousSibling;
+      while (cursor) {
+        if (isMovableCard(cursor)) {
+          const targetAnchor = getInsertAnchorNode(cursor) || cursor;
+          bodyEditor.insertBefore(fragment, targetAnchor);
+          syncHiddenField();
+          return;
+        }
+        cursor = cursor.previousSibling;
       }
+      bodyEditor.insertBefore(fragment, bodyEditor.firstChild);
+      syncHiddenField();
+      return;
     }
 
-    syncHiddenField();
+    if (direction === 'down') {
+      let cursor = bundleNodes[bundleNodes.length - 1].nextSibling;
+      while (cursor) {
+        if (isMovableCard(cursor)) {
+          const targetBundle = getCardBundleNodes(cursor);
+          const afterTarget = targetBundle[targetBundle.length - 1].nextSibling;
+          bodyEditor.insertBefore(fragment, afterTarget);
+          syncHiddenField();
+          return;
+        }
+        cursor = cursor.nextSibling;
+      }
+      bodyEditor.appendChild(fragment);
+      syncHiddenField();
+    }
   };
 
-  const setCardDragHandlers = (card) => {
-    if (!isMovableCard(card) || card.dataset.dragInitialized === 'true') return;
+  const setCardMoveHandlers = (card) => {
+    if (!isMovableCard(card)) return;
 
-    card.dataset.dragInitialized = 'true';
-    card.setAttribute('draggable', 'true');
+    const upButton = card.querySelector('.card-move-up-btn');
+    const downButton = card.querySelector('.card-move-down-btn');
 
-    card.addEventListener('dragstart', (e) => {
-      draggingCard = card;
-      dragInsertPosition = null;
-      card.classList.add('is-dragging');
-      if (e.dataTransfer) {
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', 'card');
-      }
-    });
+    if (upButton && upButton.dataset.initialized !== 'true') {
+      upButton.dataset.initialized = 'true';
+      upButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        moveCardByDirection(card, 'up');
+      });
+    }
 
-    card.addEventListener('dragend', () => {
-      card.classList.remove('is-dragging');
-      draggingCard = null;
-      clearDropMarkers();
-      removeDragIndicator();
-    });
-
-    card.addEventListener('dragover', (e) => {
-      if (!draggingCard || draggingCard === card) return;
-      e.preventDefault();
-      updateDragIndicatorByMouse(e.clientY);
-      if (e.dataTransfer) {
-        e.dataTransfer.dropEffect = 'move';
-      }
-    });
-
-    card.addEventListener('dragleave', () => {
-      // card 単体の dragleave では indicator を消さない
-      // (他のカード上に移動時に drop されることがあるため)
-    });
-
-    card.addEventListener('drop', (e) => {
-      if (!draggingCard || draggingCard === card) return;
-      e.preventDefault();
-      e.stopPropagation();
-      updateDragIndicatorByMouse(e.clientY);
-      applyDropAtIndicatorPosition();
-      removeDragIndicator();
-    });
+    if (downButton && downButton.dataset.initialized !== 'true') {
+      downButton.dataset.initialized = 'true';
+      downButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        moveCardByDirection(card, 'down');
+      });
+    }
   };
 
   // HTML特殊文字をエスケープ
@@ -338,6 +235,16 @@ function initContentEditableEditor() {
       // return: [[sn-formula:Base64文字列]]形式で整形して返す（バッククォート記号依存脱却）
     };
 
+    const serializeTextCard = (text) => {
+      const payload = encodeBase64Utf8(JSON.stringify({ text: text || '' }));
+      return `${TEXT_TOKEN_PREFIX}${payload}]]`;
+    };
+
+    const serializeUrlCard = (url) => {
+      const payload = encodeBase64Utf8(JSON.stringify({ url: url || '' }));
+      return `${URL_TOKEN_PREFIX}${payload}]]`;
+    };
+
     // ● 数式カードの保存形式を解釈して、新トークン形式・旧フェンス形式の両方に対応
     const parseFormulaContent = (rawFormula) => {
       // parseFormulaContent: 数式カードテキストから実際の数式文字列を抽出（新旧両形式対応）
@@ -360,6 +267,22 @@ function initContentEditableEditor() {
         .replace(/``formula\s*\n?/g, '')
         .replace(/\n?``\s*$/g, '')
         .trim();
+    };
+
+    const parseTextContent = (rawText) => {
+      const tokenPayload = decodeSerializedPayload(TEXT_TOKEN_REGEX, rawText);
+      if (tokenPayload && typeof tokenPayload.text === 'string') {
+        return tokenPayload.text;
+      }
+      return (rawText || '').trim();
+    };
+
+    const parseUrlContent = (rawText) => {
+      const tokenPayload = decodeSerializedPayload(URL_TOKEN_REGEX, rawText);
+      if (tokenPayload && typeof tokenPayload.url === 'string') {
+        return tokenPayload.url;
+      }
+      return (rawText || '').trim();
     };
 
     const parseFence = (text) => {
@@ -599,6 +522,186 @@ function initContentEditableEditor() {
       return { overlay, textarea, saveBtn, cancelBtn };
     };
 
+    const ensureTextModal = () => {
+      if (document.getElementById('text-editor-overlay')) {
+        return {
+          overlay: document.getElementById('text-editor-overlay'),
+          textarea: document.getElementById('text-editor-textarea'),
+          saveBtn: document.getElementById('text-editor-save'),
+          cancelBtn: document.getElementById('text-editor-cancel')
+        };
+      }
+
+      const overlay = document.createElement('div');
+      overlay.id = 'text-editor-overlay';
+      overlay.className = 'code-editor-overlay';
+      overlay.innerHTML = `
+        <div class="code-editor-modal">
+          <div class="code-editor-header">
+            <span>テキストを編集</span>
+          </div>
+          <textarea id="text-editor-textarea" class="code-editor-textarea"></textarea>
+          <div class="code-editor-actions">
+            <button type="button" id="text-editor-cancel" class="btn btn-sm btn-outline-secondary">キャンセル</button>
+            <button type="button" id="text-editor-save" class="btn btn-sm btn-primary">保存</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        }
+      });
+
+      return {
+        overlay,
+        textarea: overlay.querySelector('#text-editor-textarea'),
+        saveBtn: overlay.querySelector('#text-editor-save'),
+        cancelBtn: overlay.querySelector('#text-editor-cancel')
+      };
+    };
+
+    const ensurePreviewModal = () => {
+      if (document.getElementById('post-preview-overlay')) {
+        return {
+          overlay: document.getElementById('post-preview-overlay'),
+          body: document.getElementById('post-preview-body'),
+          closeBtn: document.getElementById('post-preview-close')
+        };
+      }
+
+      const overlay = document.createElement('div');
+      overlay.id = 'post-preview-overlay';
+      overlay.className = 'code-editor-overlay';
+      overlay.innerHTML = `
+        <div class="code-editor-modal" style="max-width: 1000px; height: min(80vh, 700px);">
+          <div class="code-editor-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>投稿全体プレビュー</span>
+            <button type="button" id="post-preview-close" class="btn btn-sm btn-outline-secondary">閉じる</button>
+          </div>
+          <div id="post-preview-body" style="flex:1; overflow:auto; border:1px solid #dee2e6; border-radius:6px; padding:12px; background:#fff;"></div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        }
+      });
+
+      return {
+        overlay,
+        body: overlay.querySelector('#post-preview-body'),
+        closeBtn: overlay.querySelector('#post-preview-close')
+      };
+    };
+
+  const buildTextCard = (rawText) => {
+    const card = document.createElement('div');
+    card.className = 'text-card';
+    card.contentEditable = 'false';
+    const content = parseTextContent(rawText);
+    card.dataset.text = content;
+    card.innerHTML = `<div class="text-card-body">${escapeHtml(content).replace(/\n/g, '<br>')}</div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
+
+    card.querySelector('.card-edit-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const modal = ensureTextModal();
+      modal.textarea.value = card.dataset.text || '';
+      modal.overlay.style.display = 'flex';
+      modal.overlay.classList.add('is-open');
+      modal.textarea.focus();
+
+      const onSave = () => {
+        card.dataset.text = modal.textarea.value;
+        const body = card.querySelector('.text-card-body');
+        if (body) body.innerHTML = escapeHtml(modal.textarea.value).replace(/\n/g, '<br>');
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+        syncHiddenField();
+      };
+      const onCancel = () => {
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+
+      modal.saveBtn.addEventListener('click', onSave);
+      modal.cancelBtn.addEventListener('click', onCancel);
+    });
+
+    card.querySelector('.card-delete-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      card.remove();
+      syncHiddenField();
+    });
+
+    setCardMoveHandlers(card);
+    return card;
+  };
+
+  const buildUrlCard = (rawUrl) => {
+    const card = document.createElement('div');
+    card.className = 'url-card';
+    card.contentEditable = 'false';
+    const url = parseUrlContent(rawUrl);
+    card.dataset.url = url;
+    card.innerHTML = `<pre class="url-card-body">${escapeHtml(url)}</pre><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
+
+    card.querySelector('.card-edit-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const modal = ensureTextModal();
+      modal.textarea.value = card.dataset.url || '';
+      modal.overlay.style.display = 'flex';
+      modal.overlay.classList.add('is-open');
+      modal.textarea.focus();
+
+      const onSave = () => {
+        const nextUrl = modal.textarea.value.trim();
+        card.dataset.url = nextUrl;
+        const body = card.querySelector('.url-card-body');
+        if (body) {
+          body.textContent = nextUrl;
+        }
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+        syncHiddenField();
+      };
+      const onCancel = () => {
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+
+      modal.saveBtn.addEventListener('click', onSave);
+      modal.cancelBtn.addEventListener('click', onCancel);
+    });
+
+    card.querySelector('.card-delete-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      card.remove();
+      syncHiddenField();
+    });
+
+    setCardMoveHandlers(card);
+    return card;
+  };
+
   const buildFormulaCard = (rawFormula) => {
     const card = document.createElement('div');
     card.className = 'formula-card';
@@ -607,7 +710,7 @@ function initContentEditableEditor() {
     
     card.dataset.formula = formulaText;
     
-    card.innerHTML = `<div class="formula-card-body">${escapeHtml(formulaText)}</div><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer; z-index: 10;">削除</button>`;
+    card.innerHTML = `<div class="formula-card-body">${escapeHtml(formulaText)}</div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer; z-index: 10;">削除</button>`;
 
     const editBtn = card.querySelector('.card-edit-btn');
     editBtn.addEventListener('click', (e) => {
@@ -655,7 +758,7 @@ function initContentEditableEditor() {
       syncHiddenField();
     });
 
-    setCardDragHandlers(card);
+    setCardMoveHandlers(card);
 
     return card;
   };
@@ -668,7 +771,7 @@ function initContentEditableEditor() {
     card.dataset.lang = parsed.lang;
     card.dataset.code = parsed.code;
     const preview = getCodePreview(parsed.code);
-    card.innerHTML = `<pre class="code-card-body">${escapeHtml(preview)}</pre><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
+    card.innerHTML = `<pre class="code-card-body">${escapeHtml(preview)}</pre><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
 
     const editBtn = card.querySelector('.card-edit-btn');
     editBtn.addEventListener('click', (e) => {
@@ -715,7 +818,7 @@ function initContentEditableEditor() {
       syncHiddenField();
     });
 
-    setCardDragHandlers(card);
+    setCardMoveHandlers(card);
 
     return card;
   };
@@ -773,14 +876,27 @@ function initContentEditableEditor() {
 
     const childNodes = Array.from(bodyEditor.childNodes);
     
-    const combinedRegex = /(!\[([^\]]*)\]\(image:([^\)]+)\))|(```[\s\S]*?```)|(``formula[\s\S]*?``)|(\[\[sn-code:[A-Za-z0-9+\/=]+\]\])|(\[\[sn-formula:[A-Za-z0-9+\/=]+\]\])/g;
+    const combinedRegex = /(!\[([^\]]*)\]\(image:([^\)]+)\))|(```[\s\S]*?```)|(``formula[\s\S]*?``)|(\[\[sn-code:[A-Za-z0-9+\/=]+\]\])|(\[\[sn-formula:[A-Za-z0-9+\/=]+\]\])|(\[\[sn-text:[A-Za-z0-9+\/=]+\]\])|(\[\[sn-url:[A-Za-z0-9+\/=]+\]\])/g;
 
     const replaceBufferedNodes = (bufferNodes, bufferText) => {
       combinedRegex.lastIndex = 0;
       
       if (!bufferNodes.length) return;
       combinedRegex.lastIndex = 0;
-      if (!combinedRegex.test(bufferText)) return;
+      if (!combinedRegex.test(bufferText)) {
+        const plainTextOnly = (bufferText || '').trim();
+        if (!plainTextOnly) return;
+
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(document.createTextNode('\u200b'));
+        fragment.appendChild(buildTextCard(serializeTextCard(plainTextOnly)));
+        fragment.appendChild(document.createTextNode('\u200b'));
+
+        const first = bufferNodes[0];
+        first.parentNode.replaceChild(fragment, first);
+        bufferNodes.slice(1).forEach((n) => n.remove());
+        return;
+      }
       combinedRegex.lastIndex = 0;
       const fragment = document.createDocumentFragment();
       let lastIndex = 0;
@@ -788,9 +904,12 @@ function initContentEditableEditor() {
 
       while ((match = combinedRegex.exec(bufferText))) {
         if (match.index > lastIndex) {
-          fragment.appendChild(
-            document.createTextNode(bufferText.substring(lastIndex, match.index))
-          );
+          const plainText = bufferText.substring(lastIndex, match.index).trim();
+          if (plainText) {
+            fragment.appendChild(document.createTextNode('\u200b'));
+            fragment.appendChild(buildTextCard(serializeTextCard(plainText)));
+            fragment.appendChild(document.createTextNode('\u200b'));
+          }
         }
 
         if (match[1]) {
@@ -806,6 +925,8 @@ function initContentEditableEditor() {
           card.innerHTML = `
             <img src="/images/placeholder.png" alt="${alt || '画像'}" data-filename="${filename}" loading="lazy">
             <div class="filename">${filename}</div>
+            <button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button>
+            <button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button>
             <button class="card-delete-btn" type="button">削除</button>
           `;
 
@@ -830,7 +951,7 @@ function initContentEditableEditor() {
             syncHiddenField();
           });
 
-          setCardDragHandlers(card);
+          setCardMoveHandlers(card);
 
           fragment.appendChild(spacer);
           fragment.appendChild(card);
@@ -846,15 +967,26 @@ function initContentEditableEditor() {
           const card = buildFormulaCard(formulaContent);
           fragment.appendChild(card);
           fragment.appendChild(document.createTextNode('\u200b'));
+        } else if (match[8]) {
+          fragment.appendChild(document.createTextNode('\u200b'));
+          fragment.appendChild(buildTextCard(match[8]));
+          fragment.appendChild(document.createTextNode('\u200b'));
+        } else if (match[9]) {
+          fragment.appendChild(document.createTextNode('\u200b'));
+          fragment.appendChild(buildUrlCard(match[9]));
+          fragment.appendChild(document.createTextNode('\u200b'));
         }
 
         lastIndex = combinedRegex.lastIndex;
       }
 
       if (lastIndex < bufferText.length) {
-        fragment.appendChild(
-          document.createTextNode(bufferText.substring(lastIndex))
-        );
+        const plainText = bufferText.substring(lastIndex).trim();
+        if (plainText) {
+          fragment.appendChild(document.createTextNode('\u200b'));
+          fragment.appendChild(buildTextCard(serializeTextCard(plainText)));
+          fragment.appendChild(document.createTextNode('\u200b'));
+        }
       }
 
       const first = bufferNodes[0];
@@ -865,7 +997,7 @@ function initContentEditableEditor() {
     let bufferText = '';
 
     childNodes.forEach((node) => {
-      if (node.classList?.contains('media-card') || node.classList?.contains('code-card') || node.classList?.contains('formula-card')) {
+      if (node.classList?.contains('media-card') || node.classList?.contains('code-card') || node.classList?.contains('formula-card') || node.classList?.contains('text-card') || node.classList?.contains('url-card')) {
         replaceBufferedNodes(bufferNodes, bufferText);
         bufferNodes = [];
         bufferText = '';
@@ -891,7 +1023,9 @@ function initContentEditableEditor() {
       return !!(node && node.nodeType === 1 && node.classList &&
         (node.classList.contains('media-card') ||
          node.classList.contains('code-card') ||
-         node.classList.contains('formula-card')));
+         node.classList.contains('formula-card') ||
+         node.classList.contains('text-card') ||
+         node.classList.contains('url-card')));
     };
 
     const appendBlock = (blockText) => {
@@ -907,20 +1041,18 @@ function initContentEditableEditor() {
     Array.from(bodyEditor.childNodes).forEach((node) => {
       if (node.nodeType === 1) {
         // Element node
-        if (node.classList?.contains('text-line')) {
-          // text-line の内容をテキスト化
-          const rawText = (node.textContent || '').replace(/\u200b/g, '');
-          if (rawText.trim() !== '') {
-            text += rawText + '\n';
-          } else if (text && !text.endsWith('\n')) {
-            text += '\n';
-          }
-        } else if (node.classList?.contains('card-spacer')) {
+        if (node.classList?.contains('card-spacer')) {
           // card-spacer はスキップ
           return;
         } else if (node.classList?.contains('media-card')) {
           const filename = node.querySelector('.filename')?.textContent || '';
           appendBlock(`![説明](image:${filename})`);
+        } else if (node.classList?.contains('text-card')) {
+          const textCardText = node.dataset?.text || '';
+          appendBlock(serializeTextCard(textCardText));
+        } else if (node.classList?.contains('url-card')) {
+          const url = node.dataset?.url || '';
+          appendBlock(serializeUrlCard(url));
         } else if (node.classList?.contains('code-card')) {
           const pre = node.querySelector('pre');
           const lang = node.dataset?.lang || '';
@@ -951,6 +1083,18 @@ function initContentEditableEditor() {
       bodyHidden.value = text;
       bodyHidden.dispatchEvent(new Event('input'));
     }
+
+    if (bodySource && bodySource.value !== text) {
+      bodySource.value = text;
+    }
+  };
+
+  const renderEditorFromSource = (sourceText) => {
+    bodyEditor.innerHTML = '';
+    bodyEditor.appendChild(document.createTextNode(sourceText || ''));
+    processEditorContent();
+    bodyEditor.querySelectorAll(CARD_SELECTOR).forEach((card) => setCardMoveHandlers(card));
+    syncHiddenField();
   };
 
   const insertTextAtSelection = (text) => {
@@ -966,14 +1110,40 @@ function initContentEditableEditor() {
     sel.addRange(range);
   };
 
+  const insertTextIntoSource = (text, cursorShift = 0) => {
+    if (!bodySource) return;
+
+    const value = bodySource.value || '';
+    const hasSelection = typeof bodySource.selectionStart === 'number' && typeof bodySource.selectionEnd === 'number';
+    const start = hasSelection ? bodySource.selectionStart : value.length;
+    const end = hasSelection ? bodySource.selectionEnd : value.length;
+    const nextValue = `${value.slice(0, start)}${text}${value.slice(end)}`;
+
+    bodySource.value = nextValue;
+
+    const caret = Math.max(start + text.length + cursorShift, 0);
+    if (typeof bodySource.setSelectionRange === 'function') {
+      bodySource.focus();
+      bodySource.setSelectionRange(caret, caret);
+    }
+
+    renderEditorFromSource(nextValue);
+  };
+
   // ========== ページ初期ロード時にカード化を実行 ==========
-  processEditorContent();
-  syncHiddenField();
-  bodyEditor.querySelectorAll(CARD_SELECTOR).forEach((card) => setCardDragHandlers(card));
+  const initialSourceText = bodySource
+    ? bodySource.value
+    : ((bodyHidden && bodyHidden.value) || bodyEditor.textContent || '');
+  renderEditorFromSource(initialSourceText);
 
   // ========== イベントリスナー登録 ==========
   // Enter キーで改行を挿入
   bodyEditor.addEventListener('keydown', (e) => {
+    if (isPreviewOnly) {
+      e.preventDefault();
+      return;
+    }
+
     if (e.key === 'Enter') {
       e.preventDefault();
       const sel = window.getSelection();
@@ -1032,11 +1202,24 @@ function initContentEditableEditor() {
   });
 
   bodyEditor.addEventListener('input', () => {
+    if (isPreviewOnly) return;
     processEditorContent();
+    bodyEditor.querySelectorAll(CARD_SELECTOR).forEach((card) => setCardMoveHandlers(card));
     syncHiddenField();
   });
 
+  if (bodySource) {
+    bodySource.addEventListener('input', () => {
+      renderEditorFromSource(bodySource.value || '');
+    });
+  }
+
   bodyEditor.addEventListener('paste', (e) => {
+    if (isPreviewOnly) {
+      e.preventDefault();
+      return;
+    }
+
     // クリップボードから画像データを取得
     const items = e.clipboardData?.items;
     if (items) {
@@ -1121,32 +1304,102 @@ function initContentEditableEditor() {
     syncHiddenField();
   });
 
-  bodyEditor.addEventListener('dragover', (e) => {
-    if (!draggingCard) return;
-    e.preventDefault();
-    updateDragIndicatorByMouse(e.clientY);
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = 'move';
-    }
-  });
-
-  bodyEditor.addEventListener('drop', (e) => {
-    if (!draggingCard) return;
-    e.preventDefault();
-    updateDragIndicatorByMouse(e.clientY);
-    applyDropAtIndicatorPosition();
-    removeDragIndicator();
-  });
-
   // 画像挿入
   if (insertImageButton) {
     insertImageButton.addEventListener('click', () => {
       const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0 && isLockedCardNode(selection.anchorNode)) {
+      if (!isPreviewOnly && selection && selection.rangeCount > 0 && isLockedCardNode(selection.anchorNode)) {
         alert('コードカードや数式カード内に画像を挿入することはできません。');
         return;
       }
       imageInput?.click();
+    });
+  }
+
+  if (insertTextButton) {
+    insertTextButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modal = ensureTextModal();
+      modal.textarea.value = '';
+      modal.overlay.style.display = 'flex';
+      modal.overlay.classList.add('is-open');
+      modal.textarea.focus();
+
+      const onSave = () => {
+        const value = modal.textarea.value || '';
+        const token = serializeTextCard(value);
+        if (bodySource) {
+          insertTextIntoSource(`\n${token}\n`);
+        }
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+      const onCancel = () => {
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+
+      modal.saveBtn.addEventListener('click', onSave);
+      modal.cancelBtn.addEventListener('click', onCancel);
+    });
+  }
+
+  if (insertUrlButton) {
+    insertUrlButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modal = ensureTextModal();
+      modal.textarea.value = 'https://';
+      modal.overlay.style.display = 'flex';
+      modal.overlay.classList.add('is-open');
+      modal.textarea.focus();
+
+      const onSave = () => {
+        const value = (modal.textarea.value || '').trim();
+        if (value) {
+          const token = serializeUrlCard(value);
+          if (bodySource) {
+            insertTextIntoSource(`\n${token}\n`);
+          }
+        }
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+      const onCancel = () => {
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+
+      modal.saveBtn.addEventListener('click', onSave);
+      modal.cancelBtn.addEventListener('click', onCancel);
+    });
+  }
+
+  if (openPreviewButton) {
+    openPreviewButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const modal = ensurePreviewModal();
+      const clone = bodyEditor.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.querySelectorAll('button').forEach((btn) => btn.remove());
+      modal.body.innerHTML = '';
+      modal.body.appendChild(clone);
+      modal.overlay.style.display = 'flex';
+      modal.overlay.classList.add('is-open');
+
+      const onClose = () => {
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.closeBtn.removeEventListener('click', onClose);
+      };
+      modal.closeBtn.addEventListener('click', onClose);
     });
   }
 
@@ -1172,6 +1425,13 @@ function initContentEditableEditor() {
       allFiles.forEach((file) => dt.items.add(file));
       imageInput.files = dt.files;
       setTimeout(() => { isUpdatingInputFiles = false; }, 0); // フラグを下ろす
+
+      if (isPreviewOnly && bodySource) {
+        const lines = newFiles.map((file) => `![説明](image:${file.name})`);
+        const text = lines.join('\n');
+        insertTextIntoSource(text);
+        return;
+      }
 
       // contenteditable divに挿入
       const sel = window.getSelection();
@@ -1203,6 +1463,13 @@ function initContentEditableEditor() {
   if (insertCodeButton) {
     insertCodeButton.addEventListener('click', (e) => {
       e.preventDefault();
+
+      if (isPreviewOnly && bodySource) {
+        const template = '\n```ruby\n\n```\n';
+        insertTextIntoSource(template, -5);
+        return;
+      }
+
       const range = resolveEditorRange();
       if (!range) {
         alert('コードカードや数式カード内にコードを挿入することはできません。');
@@ -1310,6 +1577,15 @@ function initContentEditableEditor() {
       const onSave = () => {
         const formulaText = newModal.textarea.value || '';
         const formulaMarkdown = `\n\`\`formula\ntext:${formulaText}\n\`\`\n`;
+
+        if (isPreviewOnly && bodySource) {
+          insertTextIntoSource(formulaMarkdown);
+          if (newModal.overlay) {
+            newModal.overlay.classList.remove('is-open');
+            newModal.overlay.style.display = 'none';
+          }
+          return;
+        }
         
         // カーソル位置に挿入
         bodyEditor.focus();
@@ -1363,6 +1639,7 @@ function initContentEditableEditor() {
     });
   }
 
-  processEditorContent();
-  syncHiddenField();
+  if (bodySource && bodyHidden && bodySource.value !== bodyHidden.value) {
+    bodySource.value = bodyHidden.value;
+  }
 }

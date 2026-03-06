@@ -66,22 +66,29 @@
         <%# ***** div：本文入力フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
         <%# ***** mb-3：下部マージンを追加 ***** %>
-          <label>本文</label>
+          <label>カード配置</label>
           <%# ***** form.label：本文入力フィールドのラベルを表示 ***** %>
           <%# ***** :body：ラベル対象属性 ***** %>
           <%# ***** "本文"：ラベルのテキスト ***** %>
-          <div id="body-editor" contenteditable="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto;"></div>
+          <textarea id="body-source" class="d-none" rows="1" aria-hidden="true"></textarea>
+          <div id="body-editor" contenteditable="false" data-preview-only="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto; background: #f8f9fa;"></div>
           <%# ***** div contenteditable：テキスト編集可能なdiv（textareaの代わり） ***** %>
           <%# ***** id="body-editor"：JavaScriptで参照するID ***** %>
           <%# ***** contenteditable="true"：ユーザーが編集可能に ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
           <%# ***** style: min-height, max-height等：表示を調整 ***** %>
-          <input type="hidden" id="body-hidden" name="post[body]" value="">
+          <input type="hidden" id="body-hidden" name="post[body]" value="<%= @post.body %>">
           <%# ***** input hidden：フォーム送信時に本文を格納する隠れたフィールド ***** %>
           <%# ***** name="post[body]"：Railsフォームパラメータ ***** %>
           <div class="mt-2">
           <%# ***** div：本文挿入ボタンを配置する行 ***** %>
           <%# ***** mt-2：上部マージンを追加 ***** %>
+            <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="insert-text-button">
+              テキストを挿入
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
+              URLを挿入
+            </button>
             <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
             <%# ***** button：本文中へ画像記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -105,6 +112,9 @@
             <%# ***** id="insert-formula-button"：JavaScriptで参照するID ***** %>
               数式を挿入
               <%# ***** ボタンの表示テキスト ***** %>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
+              全体プレビュー
             </button>
           </div>
           <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
@@ -147,7 +157,7 @@
               <%# ***** cursor: pointer：ホバー時にポインタ表示 ***** %>
               cursor: pointer;
               <%# ***** border: 1px solid #e9ecef：枠線を薄く表示 ***** %>
-              border: 1px solid #e9ecef;
+              border: 1px solid #000;
               <%# ***** border-radius: 3px：角丸 ***** %>
               border-radius: 3px;
               <%# ***** background: white：背景色を白に設定 ***** %>
@@ -172,7 +182,7 @@
             <%# ***** .media-card:hover：ホバー時の装飾 ***** %>
             #body-editor .media-card:hover {
               <%# ***** border-color: #0d6efd：枠線色を強調 ***** %>
-              border-color: #0d6efd;
+              border-color: #000;
               <%# ***** box-shadow：影を付けて浮き上がり感を出す ***** %>
               box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             }
@@ -195,7 +205,8 @@
               display: none;
             }
             <%# ***** .code-card：コードカードのコンテナ ***** %>
-            #body-editor .code-card {
+            #body-editor .code-card,
+            #body-editor .url-card {
               <%# ***** display: block：ブロック要素として配置 ***** %>
               display: block;
               <%# ***** margin: 0：上下左右の余白をなくす ***** %>
@@ -207,7 +218,7 @@
               <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
               background: #f8f9fa;
               <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
-              border-left: 3px solid #0d6efd;
+              border: 1px solid #000;
               <%# ***** border-radius: 3px：角丸 ***** %>
               border-radius: 3px;
               <%# ***** cursor: pointer：ポインタ表示 ***** %>
@@ -222,14 +233,16 @@
               height: 100px;
             }
             <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
-            #body-editor .code-card:hover {
+            #body-editor .code-card:hover,
+            #body-editor .url-card:hover {
               <%# ***** background: #e7f1ff：背景色を強調 ***** %>
               background: #e7f1ff;
               <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
-              border-left-color: #0056b3;
+              border-color: #000;
             }
             <%# ***** .code-card pre：コード表示のテキスト領域 ***** %>
-            #body-editor .code-card pre {
+            #body-editor .code-card pre,
+            #body-editor .url-card pre {
               <%# ***** margin: 0：余白をリセット ***** %>
               margin: 0;
               <%# ***** font-size: 12px：文字サイズを調整 ***** %>
@@ -265,6 +278,21 @@
               position: relative;
               <%# ***** float: none：浮動を無効化 ***** %>
               float: none;
+              border: 1px solid #000;
+            }
+            #body-editor .text-card {
+              display: block;
+              width: 100%;
+              margin: 0 !important;
+              margin-top: 0 !important;
+              padding: 0 !important;
+              text-align: left;
+              height: 100px;
+              position: relative;
+              float: none;
+              background: #f8f9fa;
+              border: 1px solid #000;
+              border-radius: 3px;
             }
             <%# ***** .code-card-body：コードカード本体 ***** %>
             #body-editor .code-card-body {
@@ -291,6 +319,25 @@
               display: block !important;
               <%# ***** line-height: 1.2：行の高さ ***** %>
               line-height: 1.2 !important;
+            }
+            #body-editor .text-card-body {
+              padding: 10px 12px 8px 8px !important;
+              margin: 0 !important;
+              min-height: 100%;
+              display: block !important;
+              line-height: 1.5 !important;
+              white-space: pre-wrap;
+              word-break: break-word;
+            }
+            #body-editor .url-card-body {
+              padding: 3px 4px 0 4px !important;
+              margin: 0 !important;
+              height: 100%;
+              display: block !important;
+              line-height: 1.2 !important;
+              white-space: pre-wrap;
+              word-break: break-word;
+              overflow: auto;
             }
             <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
             #body-editor .card-delete-btn {
