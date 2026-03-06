@@ -471,7 +471,6 @@ function initContentEditableEditor() {
       overlay.className = 'formula-editor-overlay';
       // 「overlay.className = 'formula-editor-overlay';」: overlay.classNameの値を設定・更新する代入先
       overlay.innerHTML = `
-      // 「overlay.innerHTML = `;」: overlay.innerHTMLの値を設定・更新する代入先
         <div class="formula-editor-modal">
           <div class="formula-editor-content">
             <div class="formula-editor-topbar" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
@@ -514,7 +513,6 @@ function initContentEditableEditor() {
         style.setAttribute('data-formula-modal', 'true');
         // 「style.setAttribute('data-formula-modal', 'true');」: style.setAttributeを呼び出して必要な処理を実行する
         style.textContent = `
-        // 「style.textContent = `;」: style.textContentの値を設定・更新する代入先
           .formula-editor-overlay {
             position: fixed;
             inset: 0;
@@ -599,7 +597,6 @@ function initContentEditableEditor() {
       overlay.className = 'code-editor-overlay';
       // 「overlay.className = 'code-editor-overlay';」: overlay.classNameの値を設定・更新する代入先
       overlay.innerHTML = `
-      // 「overlay.innerHTML = `;」: overlay.innerHTMLの値を設定・更新する代入先
         <div class="code-editor-modal">
           <!-- ***** div.code-editor-modal：コード編集モーダル全体を包むコンテナ ***** -->
           <div class="code-editor-header">
@@ -630,7 +627,6 @@ function initContentEditableEditor() {
         style.setAttribute('data-code-modal', 'true');
         // 「style.setAttribute('data-code-modal', 'true');」: style.setAttributeを呼び出して必要な処理を実行する
         style.textContent = `
-        // 「style.textContent = `;」: style.textContentの値を設定・更新する代入先
           .code-editor-overlay {
             position: fixed;
             inset: 0;
@@ -724,7 +720,6 @@ function initContentEditableEditor() {
       overlay.className = 'code-editor-overlay';
       // 「overlay.className = 'code-editor-overlay';」: overlay.classNameの値を設定・更新する代入先
       overlay.innerHTML = `
-      // 「overlay.innerHTML = `;」: overlay.innerHTMLの値を設定・更新する代入先
         <div class="code-editor-modal">
           <div class="code-editor-header">
             <span>テキストを編集</span>
@@ -777,7 +772,6 @@ function initContentEditableEditor() {
       overlay.className = 'code-editor-overlay';
       // 「overlay.className = 'code-editor-overlay';」: overlay.classNameの値を設定・更新する代入先
       overlay.innerHTML = `
-      // 「overlay.innerHTML = `;」: overlay.innerHTMLの値を設定・更新する代入先
         <div class="code-editor-modal" style="max-width: 1000px; height: min(80vh, 700px);">
           <div class="code-editor-header" style="display:flex; justify-content:space-between; align-items:center;">
             <span>投稿全体プレビュー</span>
@@ -1352,7 +1346,6 @@ function initContentEditableEditor() {
           card.contentEditable = 'false';
           // 「card.contentEditable = 'false';」: card.contentEditableの値を設定・更新する代入先
           card.innerHTML = `
-          // 「card.innerHTML = `;」: card.innerHTMLの値を設定・更新する代入先
             <img src="/images/placeholder.png" alt="${alt || '画像'}" data-filename="${filename}" loading="lazy">
             <div class="filename">${filename}</div>
             <button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button>
