@@ -10,7 +10,7 @@
     <%= link_to 'ユーザーを追加', new_admin_user_path, class: 'btn btn-primary' %>
     <%# ***** 「link_to 'ユーザーを追加', new_admin_user_path, class: 'btn btn-primary'」：画面へ値を出力する式 ***** %>
   </div>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
   <%= search_form_for @q, url: admin_users_path do |f| %>
   <%# ***** 「search_form_for @q, url: admin_users_path do |f|」：画面へ値を出力する式 ***** %>
@@ -26,7 +26,7 @@
         <%= f.search_field :name_cont, class: 'form-control', placeholder: '名前で検索' %>
         <%# ***** 「f.search_field :name_cont, class: 'form-control', placeholder: '名前で検索'」：画面へ値を出力する式 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <div class="col-md-4">
       <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
       <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -35,7 +35,7 @@
         <%= f.search_field :email_cont, class: 'form-control', placeholder: 'メールで検索' %>
         <%# ***** 「f.search_field :email_cont, class: 'form-control', placeholder: 'メールで検索'」：画面へ値を出力する式 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <div class="col-md-4">
       <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
       <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -44,9 +44,9 @@
         <%= f.select :role_eq, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, { include_blank: '全て' }, class: 'form-control' %>
         <%# ***** 「f.select :role_eq, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, { include_blank: '全て' }, class: 'form-control'」：画面へ値を出力する式 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     <div class="mb-3">
     <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
     <%# ***** 送信ボタンセクション ***** %>
@@ -56,7 +56,7 @@
       <%= link_to 'リセット', admin_users_path, class: 'btn btn-secondary' %>
       <%# ***** 「link_to 'リセット', admin_users_path, class: 'btn btn-secondary'」：画面へ値を出力する式 ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   <% end %>
   <%# ***** 「end」：Ruby式を実行する処理 ***** %>
   <%# ***** 一覧テーブルセクション ***** %>
@@ -80,9 +80,9 @@
         <th>操作</th>
         <%# ***** 「<th>【内容】</th>」：テーブル見出しセル要素 ***** %>
       </tr>
-      <%# ***** 「</tr>」：trタグ（テーブル行要素）の終了 ***** %>
+      <%# ***** 「<tr>【内容】</tr>」：表の行要素 ***** %>
     </thead>
-    <%# ***** 「</thead>」：theadタグ（テーブル見出し要素）の終了 ***** %>
+    <%# ***** 「<thead>【内容】</thead>」：表ヘッダー要素 ***** %>
     <tbody>
     <%# ***** 「<tbody>」：テーブル本文要素 ***** %>
     <%# ***** 一覧ループセクション ***** %>
@@ -107,9 +107,9 @@
               <%= I18n.t("enums.user.role.#{user.role}") %>
               <%# ***** 「I18n.t("enums.user.role.#{user.role}")」：画面へ値を出力する式 ***** %>
             </span>
-            <%# ***** 「</span>」：spanタグ（インライン要素）の終了 ***** %>
+            <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
           </td>
-          <%# ***** 「</td>」：tdタグ（テーブルデータセル要素）の終了 ***** %>
+          <%# ***** 「<td>【内容】</td>」：表のデータセル要素 ***** %>
           <td><%= user.created_at.strftime('%Y/%m/%d') %></td>
           <%# ***** 「<td>【内容】</td>」：テーブルデータセル要素 ***** %>
           <td>
@@ -127,17 +127,17 @@
             <% end %>
             <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
           </td>
-          <%# ***** 「</td>」：tdタグ（テーブルデータセル要素）の終了 ***** %>
+          <%# ***** 「<td>【内容】</td>」：表のデータセル要素 ***** %>
         </tr>
-        <%# ***** 「</tr>」：trタグ（テーブル行要素）の終了 ***** %>
+        <%# ***** 「<tr>【内容】</tr>」：表の行要素 ***** %>
       <% end %>
       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </tbody>
-    <%# ***** 「</tbody>」：tbodyタグ（テーブル本文要素）の終了 ***** %>
+    <%# ***** 「<tbody>【内容】</tbody>」：表本体要素 ***** %>
   </table>
-  <%# ***** 「</table>」：tableタグ（テーブル要素）の終了 ***** %>
+  <%# ***** 「<table>【内容】</table>」：表要素 ***** %>
 
   <%= paginate @users %>
   <%# ***** 「paginate @users」：画面へ値を出力する式 ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>

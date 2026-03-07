@@ -36,9 +36,9 @@
         };
         <%# ***** imageUrlMapの定義終了 ***** %>
       </script>
-      <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
+      <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
 
-      <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
+      <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
       <%# ***** 入力フォームセクション ***** %>
       <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
       <%# ***** 「form_with(model: @post, local: true, html: { multipart: true }) do |form|」：画面へ値を出力する式 ***** %>
@@ -49,10 +49,9 @@
       <%# ***** エラーメッセージ表示セクション ***** %>
       <%# ***** 条件分岐セクション ***** %>
         <% if @post.errors.any? %>
-        <%# ***** 「if @post.errors.any?」：Ruby式を実行する処理 ***** %>
-        <%# ***** 「if (@post.errors.any?)」: @post.errors.any?を判定する条件分岐 ***** %>
+        <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
 
-        <%# ***** 「if」：投稿にエラーがある場合の条件 ***** %>
+        <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
         <%# ***** @post.errors.any?：1つ以上のエラーが存在するか判定 ***** %>
           <div class="alert alert-danger">
           <%# ***** 「<div>」：エラーメッセージを囲む警告アラート ***** %>
@@ -78,9 +77,9 @@
               <% end %>
               <%# ***** 「end」：eachループの終了 ***** %>
             </ul>
-            <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
+            <%# ***** 「<ul>【内容】</ul>」：順序なしリスト要素 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
         <% end %>
         <%# ***** 「end」：if文の終了 ***** %>
 
@@ -100,7 +99,7 @@
           <%# ***** :title：投稿タイトル属性を対象 ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：本文入力フォームグループ ***** %>
@@ -151,7 +150,7 @@
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               テキストカードを追加
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
             <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
@@ -159,7 +158,7 @@
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               URLカードを追加
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
             <%# ***** 「<button>」：本文中へ画像記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -171,7 +170,7 @@
               画像を挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="insert-code-button">
             <%# ***** 「<button>」：本文中へコードブロック記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -183,7 +182,7 @@
               コードを挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-info" id="insert-formula-button">
             <%# ***** 「<button>」：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
@@ -195,7 +194,7 @@
               数式を挿入
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
             <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
@@ -203,11 +202,11 @@
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               全体プレビュー
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
           <style>
           <%# ***** 「<style>」：本文内のカード/モーダルのCSS定義 ***** %>
@@ -677,10 +676,10 @@
               <%# ***** gap: 8px：ボタン間の間隔 ***** %>
             }
           </style>
-          <%# ***** 「</style>」：styleタグ（スタイル定義要素）の終了 ***** %>
+          <%# ***** 「<style>【内容】</style>」：スタイル定義要素 ***** %>
           <%# ***** /style：本文内スタイル定義の終了 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
         <%= form.file_field :images, multiple: true, accept: "image/*", style: "display: none;" %>
         <%# ***** 「form.file_field :images, multiple: true, accept: "image/*", style: "display: none;"」：画面へ値を出力する式 ***** %>
@@ -720,7 +719,7 @@
               タグを選択
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">
             <%# ***** 「<button>」：新規タグ作成ボタン ***** %>
             <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
@@ -732,7 +731,7 @@
               タグを作成
               <%# ***** ボタンの表示テキスト ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <span id="selected-tags" class="ml-3 text-muted"></span>
             <%# ***** 「<span>【内容】</span>」：選択されたタグを表示するセクション ***** %>
             <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
@@ -740,9 +739,9 @@
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
             <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：公開状態選択フォームグループ ***** %>
@@ -761,7 +760,7 @@
           <%# ***** {}：HTMLオプション（プレースホルダーなど） ***** %>
           <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group">
         <%# ***** 「<div>」：送信・キャンセルボタングループ ***** %>
@@ -780,7 +779,7 @@
           <%# ***** @post：表示対象の投稿詳細ページへのパス ***** %>
           <%# ***** class: "btn btn-outline-secondary"：グレー枠線のボタンスタイル ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
         <%# ***** 「<div>」：タグ選択用Bootstrapモーダル ***** %>
@@ -835,18 +834,17 @@
                   <%# ***** &times；：× 記号のHTML実体参照 ***** %>
                   <%# ***** 「aria-hidden ="【設定値】"」：支援技術向け情報を指定する属性 ***** %>
                 </button>
-                <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+                <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <div class="modal-body">
               <%# ***** 「<div>」：モーダルボディ（コンテンツ） ***** %>
               <%# ***** modal-body：モーダルボディのスタイル ***** %>
               <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <% if @available_tags.any? %>
-                <%# ***** 「if @available_tags.any?」：Ruby式を実行する処理 ***** %>
-                <%# ***** 「if (@available_tags.any?)」: @available_tags.any?を判定する条件分岐 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
 
-                <%# ***** 「if」：利用可能なタグが存在するか判定 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 <%# ***** @available_tags.any?：1つ以上のタグが存在するか確認 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes">
                   <%# ***** 「<div>」：タグチェックボックスを囲むセクション ***** %>
@@ -883,11 +881,11 @@
                         <%# ***** class: "custom-control-label"：Bootstrapのカスタムラベルスタイル ***** %>
                         <%# ***** for: "tag_#{tag.id}"：関連付けるチェックボックスのID ***** %>
                       </div>
-                      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                     <% end %>
                     <%# ***** 「end」：eachループの終了 ***** %>
                   </div>
-                  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                 <% else %>
                 <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
 
@@ -905,7 +903,7 @@
                 <% end %>
                 <%# ***** 「end」：if文の終了 ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <div class="modal-footer">
               <%# ***** 「<div>」：モーダルフッター ***** %>
               <%# ***** modal-footer：モーダルフッターのスタイル ***** %>
@@ -919,13 +917,13 @@
                 <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <%# ***** 「data-dismiss ="【設定値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
             </div>
-            <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+            <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <%# ***** スクリプトセクション ***** %>
         <script>
         <%# ***** 「<script>」：タグ選択・作成のJavaScriptロジック ***** %>
@@ -959,12 +957,12 @@
             const resolveImageUrl = (filename) => {
             <%# ***** resolveImageUrl()：サムネイル表示用の画像URLを解決 ***** %>
               if (window.localImageUrlMap && window.localImageUrlMap.has(filename)) {
-              <%# ***** 「if」：ローカル選択画像のURLが存在する場合 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 return window.localImageUrlMap.get(filename);
                 <%# ***** return：ローカルURLを返す ***** %>
               }
               if (window.imageUrlMap && window.imageUrlMap[filename]) {
-              <%# ***** 「if」：サーバー側の画像URLが存在する場合 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 return window.imageUrlMap[filename];
                 <%# ***** return：サーバー側URLを返す ***** %>
               }
@@ -1018,7 +1016,7 @@
             };
 
             if (insertImageButton && !hasContentEditable) {
-            <%# ***** 「if」：画像挿入ボタンが存在する場合 ***** %>
+            <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               insertImageButton.addEventListener('click', function () {
               <%# ***** addEventListener：クリック時の処理を登録 ***** %>
                 if (!imageInput) return;
@@ -1032,11 +1030,11 @@
             <%# ***** allFiles：すべての選択済み画像ファイルを保持する配列 ***** %>
 
             if (imageInput && !hasContentEditable) {
-            <%# ***** 「if」：画像入力が存在する場合 ***** %>
+            <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               imageInput.addEventListener('change', function () {
               <%# ***** change：ファイル選択時の処理 ***** %>
                 if (!imageInput.files || imageInput.files.length === 0) return;
-                <%# ***** 「if」：未選択なら終了 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 const newFiles = Array.from(imageInput.files);
                 <%# ***** newFiles：今回選択したファイルのみを取得 ***** %>
                 newFiles.forEach((file) => {
@@ -1066,7 +1064,7 @@
             }
 
             if (insertCodeButton && !hasContentEditable) {
-            <%# ***** 「if」：コード挿入ボタンが存在する場合 ***** %>
+            <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               insertCodeButton.addEventListener('click', function () {
               <%# ***** addEventListener：クリック時の処理を登録 ***** %>
                 insertAtCursor(codeTemplate);
@@ -1077,13 +1075,13 @@
             }
 
             if (bodyEditor) {
-            <%# ***** 「if」：本文欄が存在する場合 ***** %>
+            <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               bodyEditor.addEventListener('input', updateMediaDisplay);
               <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
             }
 
             if (bodyHidden) {
-            <%# ***** 「if」：本文隠しフィールドが存在する場合 ***** %>
+            <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               bodyHidden.addEventListener('input', updateMediaDisplay);
               <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
             }
@@ -1213,13 +1211,13 @@
           document.addEventListener('turbolinks:load', initPostForm);
           <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
         </script>
-        <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
+        <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
       <% end %>
       <%# ***** 「end」：form_withブロックの終了 ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   </div>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 <%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

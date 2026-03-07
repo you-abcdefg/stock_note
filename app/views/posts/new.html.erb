@@ -20,7 +20,7 @@
       <%# ***** 「<script>」：スクリプト要素 ***** %>
       <%# ***** 画像URLマップをJavaScriptで利用できるようにする ***** %>
         window.imageUrlMap = {
-        <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
+        <%# ***** 「window.imageUrlMap = {」：スタイルルールの開始 ***** %>
 <%# ***** 一覧ループセクション ***** %>
           <% @post.images.each do |image| %>
           <%# ***** 「@post.images.each do |image|」：Ruby式を実行する処理 ***** %>
@@ -33,9 +33,9 @@
           <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
         };
       </script>
-      <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
+      <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
 
-      <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
+      <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
       <%# ***** 入力フォームセクション ***** %>
       <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
       <%# ***** 「form_with(model: @post, local: true, html: { multipart: true }) do |form|」：画面へ値を出力する式 ***** %>
@@ -46,10 +46,9 @@
       <%# ***** エラーメッセージ表示セクション ***** %>
       <%# ***** 条件分岐セクション ***** %>
         <% if @post.errors.any? %>
-        <%# ***** 「if @post.errors.any?」：Ruby式を実行する処理 ***** %>
-        <%# ***** 「if (@post.errors.any?)」: @post.errors.any?を判定する条件分岐 ***** %>
+        <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
 
-        <%# ***** 「if」：投稿にエラーがある場合の条件 ***** %>
+        <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
           <div class="alert alert-danger">
           <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
           <%# ***** @post.errors.any?：1つ以上のエラーが存在するか判定 ***** %>
@@ -77,11 +76,11 @@
               <% end %>
               <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </ul>
-            <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
+            <%# ***** 「<ul>【内容】</ul>」：順序なしリスト要素 ***** %>
             <%# ***** 「end」：eachループの終了 ***** %>
           </div>
-          <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<ul>【内容】</ul>」：順序なしリスト要素 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
         <% end %>
         <%# ***** 「end」：if文の終了 ***** %>
 
@@ -101,7 +100,7 @@
           <%# ***** :title：投稿タイトル属性を対象 ***** %>
         </div>
         <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：本文入力フォームグループ ***** %>
@@ -149,21 +148,17 @@
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               テキストを挿入
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
             <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               URLを挿入
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「<button>【内容】</button>」：本文中へ画像記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-primary mr-2"：小さめの青枠ボタン + 右マージン ***** %>
@@ -173,11 +168,10 @@
               画像を挿入
               <%# ***** id="insert-image-button"：JavaScriptで参照するID ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="insert-code-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「<button>【内容】</button>」：本文中へコードブロック記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-secondary"：小さめのグレー枠ボタン ***** %>
@@ -187,11 +181,10 @@
               コードを挿入
               <%# ***** id="insert-code-button"：JavaScriptで参照するID ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-sm btn-outline-info" id="insert-formula-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「<button>【内容】</button>」：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-info"：小さめの水色枠ボタン ***** %>
@@ -201,188 +194,246 @@
               数式を挿入
               <%# ***** id="insert-formula-button"：JavaScriptで参照するID ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
             <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               全体プレビュー
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-          <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           <style>
           <%# ***** 「<style>」：スタイル定義要素 ***** %>
-          <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
+          <%# ***** ==== 本文内メディア表示用スタイル(#body-editor) ==== ***** %>
             #body-editor {
-            <%# ***** 「<style>【内容】</style>」：スタイル定義要素 ***** %>
+            <%# ***** 「#body-editor { 【CSS宣言ブロック】 }」：id="body-editor" を持つ要素に適用するCSSルール ***** %>
               overflow-y: auto;
-              <%# ***** overflow-y: auto：縦方向のスクロールを許可 ***** %>
+              <%# ***** 「overflow-y: auto;」：内容が縦方向にはみ出した場合、自動で縦スクロールバーを表示するよう設定するCSS宣言 ***** %>
               overflow-x: hidden;
-              <%# ***** overflow-x: hidden：横方向のはみ出しを隠す ***** %>
+              <%# ***** 「overflow-x: hidden;」：内容が横方向にはみ出した場合、表示を隠すよう設定するCSS宣言 ***** %>
               word-break: break-word;
-              <%# ***** word-break: break-word：単語途中での改行を許可 ***** %>
+              <%# ***** 「word-break: 【値】;」：単語や文字列をどこで改行するかを指定するCSSプロパティ ***** %>
+              <%# ***** 「break-word」：長い単語や文字列が要素の幅を超える場合に、途中で改行して折り返す設定 ***** %>
               word-wrap: break-word;
-              <%# ***** word-wrap: break-word：長い単語を折り返す ***** %>
+              <%# ***** 「word-wrap: 【値】;」：長い単語や文字列の折り返し方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「break-word」：長い単語や文字列が要素の幅を超える場合に、途中で改行して折り返す設定 ***** %>
               line-height: 1.6;
-              <%# ***** line-height: 1.6：行の高さを広めに設定 ***** %>
+              <%# ***** 「line-height: 【値】;」：行の高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「1.6」：行間の広さ（1行の高さ）を決める値 ***** %>
               padding: 10px 12px;
-              <%# ***** padding: 10px 12px：内側余白を上下左右に付与 ***** %>
+              <%# ***** 「padding: 10px 12px;」：要素の内側の余白を設定するCSS(上下10px、左右12px) ***** %>
               box-sizing: border-box;
-              <%# ***** box-sizing: border-box：paddingを幅/高さに含める ***** %>
+              <%# ***** 「box-sizing: 【値】;」：要素のボックスサイズの計算方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「border-box」：要素の幅と高さにpaddingとborderを含めてサイズを計算する設定 ***** %>
               text-align: left;
-              <%# ***** text-align: left：テキストを左寄せ ***** %>
+              <%# ***** 「text-align: 【値】;」：テキストの水平方向の揃え位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「left」：テキストを左揃えで表示する設定 ***** %>
             }
             #body-editor .card-spacer {
-            <%# ***** .card-spacer：カードとテキストの間隔調整用スペーサー ***** %>
+            <%# ***** 「#body-editor .card-spacer { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .card-spacer」に一致する要素へ適用するCSSルール ***** %>
               display: inline-block;
-              <%# ***** display: inline-block：インライン要素として配置 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「inline-block」：インライン要素として並びつつブロックのサイズ指定を可能にする設定 ***** %>
               width: 12px;
-              <%# ***** width: 12px：横方向の空白幅 ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「12px」：要素の横幅を指定する値 ***** %>
               height: 1px;
-              <%# ***** height: 1px：高さを最小化 ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「1px」：要素の高さを指定する値 ***** %>
             }
             #body-editor .media-card {
-            <%# ***** .media-card：画像カードのコンテナ ***** %>
+            <%# ***** 「#body-editor .media-card { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .media-card」に一致する要素へ適用するCSSルール ***** %>
               display: inline-flex;
-              <%# ***** display: inline-flex：インラインでフレックス配置 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「inline-flex」：インライン要素として並びつつ内部をフレックスレイアウトにする設定 ***** %>
               margin: 0 0 8px 0;
-              <%# ***** margin: 0 12px 8px 0：外側余白を調整 ***** %>
+              <%# ***** 「margin: 【値】;」：外側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 0 8px 0」：要素の外側余白を指定する値 ***** %>
               vertical-align: top;
-              <%# ***** vertical-align: top：上端揃え ***** %>
+              <%# ***** 「vertical-align: 【値】;」：vertical-alignプロパティに設定する値を指定するCSSプロパティ ***** %>
+              <%# ***** 「top」：インライン要素やテーブルセルの縦位置を指定する値 ***** %>
               cursor: pointer;
-              <%# ***** cursor: pointer：ホバー時にポインタ表示 ***** %>
+              <%# ***** 「cursor: 【値】;」：マウスカーソルの表示形状を指定するCSSプロパティ ***** %>
+              <%# ***** 「pointer」：クリック可能であることを示すポインター形状で表示する設定 ***** %>
               border: 1px solid #000;
-              <%# ***** border: 1px solid #e9ecef：枠線を薄く表示 ***** %>
+              <%# ***** 「border: 【値】;」：要素の枠線を指定するCSSプロパティ ***** %>
+              <%# ***** 「1px solid #000」：枠線の太さ・線種・色をまとめて指定する値 ***** %>
               border-radius: 3px;
-              <%# ***** border-radius: 3px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「3px」：角丸の半径を指定する値 ***** %>
               background: white;
-              <%# ***** background: white：背景色を白に設定 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「white」：背景色を色名で指定する値（白） ***** %>
               position: relative;
-              <%# ***** position: relative：絶対配置ボタンの基準 ***** %>
+              <%# ***** 「position: 【値】;」：要素の配置方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「relative」：通常位置を基準に相対配置する設定 ***** %>
               transition: all 0.2s;
-              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
+              <%# ***** 「transition: 【値】;」：変化時のアニメーション効果を指定するCSSプロパティ ***** %>
+              <%# ***** 「all 0.2s」：変化対象・変化時間・変化速度を指定する値 ***** %>
               width: 100%;
-              <%# ***** width: 100px：カードの横幅 ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の横幅を指定する値 ***** %>
               height: auto;
-              <%# ***** height: 72px：カードの縦幅 ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「auto」：内容や環境に応じて自動的に値を決定する設定 ***** %>
               aspect-ratio: 25 / 18;
-              <%# ***** aspect-ratio: 25 / 18：サムネイル比率を維持 ***** %>
+              <%# ***** 「aspect-ratio: 【値】;」：縦横比を指定するCSSプロパティ ***** %>
+              <%# ***** 「25 / 18」：要素の縦横比を指定する値 ***** %>
               overflow: hidden;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              <%# ***** 「overflow: 【値】;」：要素からはみ出した内容の表示方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「hidden」：はみ出した内容を表示しない設定 ***** %>
               top: 0;
-              <%# ***** top: 0：上方向の位置調整 ***** %>
+              <%# ***** 「top: 【値】;」：上端からの位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「0」：上端からのオフセット距離を指定する値 ***** %>
               font-size: 0;
-              <%# ***** font-size: 0：余白文字の影響を防止 ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「0」：文字サイズを指定する値 ***** %>
               align-items: stretch;
-              <%# ***** align-items: stretch：子要素を高さに合わせる ***** %>
+              <%# ***** 「align-items: 【値】;」：交差軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「stretch」：利用可能な領域いっぱいに要素を引き伸ばして配置する設定 ***** %>
             }
             #body-editor .media-card:hover {
-            <%# ***** .media-card:hover：ホバー時の装飾 ***** %>
+            <%# ***** 「#body-editor .media-card:hover { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .media-card:hover」に一致する要素へ適用するCSSルール ***** %>
               border-color: #000;
-              <%# ***** border-color: #0d6efd：枠線色を強調 ***** %>
+              <%# ***** 「border-color: 【値】;」：枠線の色を指定するCSSプロパティ ***** %>
+              <%# ***** 「#000」：枠線の色を指定する値 ***** %>
               box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-              <%# ***** box-shadow：影を付けて浮き上がり感を出す ***** %>
+              <%# ***** 「box-shadow: 【値】;」：要素の周囲に表示する影の位置・ぼかし・色などを設定するCSSプロパティ ***** %>
+              <%# ***** 「0 1px 4px rgba(0, 0, 0, 0.1)」：横方向のずれ、縦方向のずれ、ぼかしの強さ、影の色と透明度を指定する値 ***** %>
             }
             #body-editor .media-card img {
-            <%# ***** .media-card img：画像の表示設定 ***** %>
+            <%# ***** 「#body-editor .media-card img { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .media-card img」に一致する要素へ適用するCSSルール ***** %>
               width: 100%;
-              <%# ***** width: 100%：横幅をカードに合わせる ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の横幅を指定する値 ***** %>
               height: 100%;
-              <%# ***** height: 100%：縦幅をカードに合わせる ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の高さを指定する値 ***** %>
               object-fit: contain;
-              <%# ***** object-fit: contain：縦横比を保ち全体表示（トリミングしない） ***** %>
+              <%# ***** 「object-fit: 【値】;」：置換要素の表示方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「contain」：縦横比を維持しながら要素内に収まるよう表示する設定 ***** %>
               object-position: left center;
-              <%# ***** object-position: left center：左寄せで中央高さに配置 ***** %>
+              <%# ***** 「object-position: 【値】;」：置換要素の表示位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「left center」：要素内容を水平方向は左、垂直方向は中央に配置する設定 ***** %>
               border-radius: 2px;
-              <%# ***** border-radius: 2px：画像の角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「2px」：角丸の半径を指定する値 ***** %>
               display: block;
-              <%# ***** display: block：余白のないブロック表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「block」：ブロック要素として表示する設定 ***** %>
             }
             #body-editor .media-card .filename {
-            <%# ***** .media-card .filename：ファイル名表示（現在は非表示） ***** %>
+            <%# ***** 「#body-editor .media-card .filename { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .media-card .filename」に一致する要素へ適用するCSSルール ***** %>
               display: none;
-              <%# ***** display: none：ファイル名を非表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「none」：該当機能を無効化する設定 ***** %>
             }
             #body-editor .code-card,
             <%# ***** .code-card：コードカードのコンテナ ***** %>
             #body-editor .url-card {
               display: block;
-              <%# ***** display: block：ブロック要素として配置 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「block」：ブロック要素として表示する設定 ***** %>
               margin: 0 !important;
-              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
+              <%# ***** 「margin: 【値】;」：外側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 !important」：要素の外側余白を指定する値 ***** %>
               margin-top: 0 !important;
-              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
+              <%# ***** 「margin-top: 【値】;」：上側の外側余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 !important」：要素の上側余白を指定する値 ***** %>
               padding: 0 !important;
-              <%# ***** padding: 0：全padding削除 ***** %>
+              <%# ***** 「padding: 0 !important;」：要素の内側の余白を設定するCSS(上下0、左右!important) ***** %>
               background: #f8f9fa;
-              <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「#f8f9fa」：背景色を16進カラーコードで指定する値 ***** %>
               border: 1px solid #000;
-              <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
+              <%# ***** 「border: 【値】;」：要素の枠線を指定するCSSプロパティ ***** %>
+              <%# ***** 「1px solid #000」：枠線の太さ・線種・色をまとめて指定する値 ***** %>
               border-radius: 3px;
-              <%# ***** border-radius: 3px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「3px」：角丸の半径を指定する値 ***** %>
               cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** 「cursor: 【値】;」：マウスカーソルの表示形状を指定するCSSプロパティ ***** %>
+              <%# ***** 「pointer」：クリック可能であることを示すポインター形状で表示する設定 ***** %>
               position: relative;
-              <%# ***** position: relative：ボタン配置の基準 ***** %>
+              <%# ***** 「position: 【値】;」：要素の配置方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「relative」：通常位置を基準に相対配置する設定 ***** %>
               overflow: hidden;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
+              <%# ***** 「overflow: 【値】;」：要素からはみ出した内容の表示方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「hidden」：はみ出した内容を表示しない設定 ***** %>
               transition: all 0.2s;
-              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
+              <%# ***** 「transition: 【値】;」：変化時のアニメーション効果を指定するCSSプロパティ ***** %>
+              <%# ***** 「all 0.2s」：変化対象・変化時間・変化速度を指定する値 ***** %>
               height: 100px;
-              <%# ***** height: 100px：高さを統一 ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「100px」：要素の高さを指定する値 ***** %>
             }
             #body-editor .code-card:hover,
             <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
             #body-editor .url-card:hover {
               background: #e7f1ff;
-              <%# ***** background: #e7f1ff：背景色を強調 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「#e7f1ff」：背景色を16進カラーコードで指定する値 ***** %>
               border-color: #000;
-              <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
+              <%# ***** 「border-color: 【値】;」：枠線の色を指定するCSSプロパティ ***** %>
+              <%# ***** 「#000」：枠線の色を指定する値 ***** %>
             }
             #body-editor .code-card pre,
             <%# ***** .code-card pre：コード表示のテキスト領域 ***** %>
             #body-editor .url-card pre {
               margin: 0;
-              <%# ***** margin: 0：余白をリセット ***** %>
+              <%# ***** 「margin: 【値】;」：外側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0」：要素の外側余白を指定する値 ***** %>
               font-size: 12px;
-              <%# ***** font-size: 12px：文字サイズを調整 ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「12px」：文字サイズを指定する値 ***** %>
               line-height: 1.5;
-              <%# ***** line-height: 1.5：行の高さ ***** %>
+              <%# ***** 「line-height: 【値】;」：行の高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「1.5」：行間の広さ（1行の高さ）を決める値 ***** %>
               white-space: pre-wrap;
-              <%# ***** white-space: pre-wrap：折り返し表示を許可 ***** %>
+              <%# ***** 「white-space: 【値】;」：空白文字と改行の扱いを指定するCSSプロパティ ***** %>
+              <%# ***** 「pre-wrap」：改行を保持しつつ必要に応じて自動折り返しする設定 ***** %>
               word-break: break-word;
-              <%# ***** word-break: break-word：単語途中での折り返し ***** %>
+              <%# ***** 「word-break: 【値】;」：単語や文字列をどこで改行するかを指定するCSSプロパティ ***** %>
+              <%# ***** 「break-word」：長い単語や文字列が要素の幅を超える場合に、途中で改行して折り返す設定 ***** %>
               overflow: auto;
-              <%# ***** overflow: auto：はみ出しをスクロール表示 ***** %>
+              <%# ***** 「overflow: 【値】;」：要素からはみ出した内容の表示方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「auto」：内容や環境に応じて自動的に値を決定する設定 ***** %>
               height: 100%;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の高さを指定する値 ***** %>
             }
             #body-editor .formula-card {
-            <%# ***** .formula-card：数式カード ***** %>
+            <%# ***** 「#body-editor .formula-card { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .formula-card」に一致する要素へ適用するCSSルール ***** %>
               display: block;
-              <%# ***** display: block：ブロック要素として配置 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「block」：ブロック要素として表示する設定 ***** %>
               width: 100%;
-              <%# ***** width: 100%：横幅を100%に統一 ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の横幅を指定する値 ***** %>
               margin: 0 !important;
-              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
+              <%# ***** 「margin: 【値】;」：外側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 !important」：要素の外側余白を指定する値 ***** %>
               margin-top: 0 !important;
-              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
+              <%# ***** 「margin-top: 【値】;」：上側の外側余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 !important」：要素の上側余白を指定する値 ***** %>
               padding: 0 !important;
-              <%# ***** padding: 0：内側余白も0に ***** %>
+              <%# ***** 「padding: 0 !important;」：要素の内側の余白を設定するCSS(上下0、左右!important) ***** %>
               text-align: left;
-              <%# ***** text-align: left：左寄せを明示的に設定 ***** %>
+              <%# ***** 「text-align: 【値】;」：テキストの水平方向の揃え位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「left」：テキストを左揃えで表示する設定 ***** %>
               height: 100px;
-              <%# ***** height: 100px：高さを統一 ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「100px」：要素の高さを指定する値 ***** %>
               position: relative;
-              <%# ***** position: relative：配置基準 ***** %>
+              <%# ***** 「position: 【値】;」：要素の配置方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「relative」：通常位置を基準に相対配置する設定 ***** %>
               float: none;
-              <%# ***** float: none：浮動を無効化 ***** %>
+              <%# ***** 「float: 【値】;」：回り込みの方向を指定するCSSプロパティ ***** %>
+              <%# ***** 「none」：該当機能を無効化する設定 ***** %>
               border: 1px solid #000;
             }
             #body-editor .text-card {
@@ -392,6 +443,8 @@
               margin-top: 0 !important;
               padding: 0 !important;
               text-align: left;
+              <%# ***** 「text-align: 【値】;」：テキストの水平方向の揃え位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「left」：テキストを左揃えで表示する設定 ***** %>
               height: 100px;
               position: relative;
               float: none;
@@ -400,30 +453,40 @@
               border-radius: 3px;
             }
             #body-editor .code-card-body {
-            <%# ***** .code-card-body：コードカード本体 ***** %>
+            <%# ***** 「#body-editor .code-card-body { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .code-card-body」に一致する要素へ適用するCSSルール ***** %>
               padding: 3px 4px 0 4px !important;
-              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
+              <%# ***** 「padding: 【値】;」：内側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「3px 4px 0 4px !important」：要素の内側余白を指定する値 ***** %>
               margin: 0 !important;
-              <%# ***** margin: 0：余白なし ***** %>
+              <%# ***** 「margin: 【値】;」：外側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 !important」：要素の外側余白を指定する値 ***** %>
               height: 100%;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の高さを指定する値 ***** %>
               display: block !important;
-              <%# ***** display: block：ブロック要素 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「block !important」：要素の表示形式を指定する値 ***** %>
               line-height: 1.2 !important;
-              <%# ***** line-height: 1.2：行の高さ ***** %>
+              <%# ***** 「line-height: 【値】;」：行の高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「1.2 !important」：行間の広さ（1行の高さ）を決める値 ***** %>
             }
             #body-editor .formula-card-body {
-            <%# ***** .formula-card-body：数式カード本体 ***** %>
+            <%# ***** 「#body-editor .formula-card-body { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .formula-card-body」に一致する要素へ適用するCSSルール ***** %>
               padding: 3px 4px 0 4px !important;
-              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
+              <%# ***** 「padding: 【値】;」：内側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「3px 4px 0 4px !important」：要素の内側余白を指定する値 ***** %>
               margin: 0 !important;
-              <%# ***** margin: 0：余白なし ***** %>
+              <%# ***** 「margin: 【値】;」：外側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「0 !important」：要素の外側余白を指定する値 ***** %>
               height: 100%;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の高さを指定する値 ***** %>
               display: block !important;
-              <%# ***** display: block：ブロック要素 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「block !important」：要素の表示形式を指定する値 ***** %>
               line-height: 1.2 !important;
-              <%# ***** line-height: 1.2：行の高さ ***** %>
+              <%# ***** 「line-height: 【値】;」：行の高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「1.2 !important」：行間の広さ（1行の高さ）を決める値 ***** %>
             }
             #body-editor .text-card-body {
               padding: 10px 12px 8px 8px !important;
@@ -433,6 +496,8 @@
               line-height: 1.5 !important;
               white-space: pre-wrap;
               word-break: break-word;
+              <%# ***** 「word-break: 【値】;」：単語や文字列をどこで改行するかを指定するCSSプロパティ ***** %>
+              <%# ***** 「break-word」：長い単語や文字列が要素の幅を超える場合に、途中で改行して折り返す設定 ***** %>
             }
             #body-editor .url-card-body {
               padding: 3px 4px 0 4px !important;
@@ -442,258 +507,348 @@
               line-height: 1.2 !important;
               white-space: pre-wrap;
               word-break: break-word;
+              <%# ***** 「word-break: 【値】;」：単語や文字列をどこで改行するかを指定するCSSプロパティ ***** %>
+              <%# ***** 「break-word」：長い単語や文字列が要素の幅を超える場合に、途中で改行して折り返す設定 ***** %>
               overflow: auto;
             }
             #body-editor .card-delete-btn {
-            <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
+            <%# ***** 「#body-editor .card-delete-btn { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .card-delete-btn」に一致する要素へ適用するCSSルール ***** %>
               position: absolute;
-              <%# ***** position: absolute：カード右上に配置 ***** %>
+              <%# ***** 「position: 【値】;」：要素の配置方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「absolute」：位置指定された祖先要素を基準に絶対配置する設定 ***** %>
               top: 0;
-              <%# ***** top: 0：上からの位置を0に ***** %>
+              <%# ***** 「top: 【値】;」：上端からの位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「0」：上端からのオフセット距離を指定する値 ***** %>
               right: 2px;
-              <%# ***** right: 2px：右からの位置 ***** %>
+              <%# ***** 「right: 【値】;」：右端からの位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「2px」：右端からのオフセット距離を指定する値 ***** %>
               padding: 1px 3px;
-              <%# ***** padding: 1px 3px：内側余白 ***** %>
+              <%# ***** 「padding: 1px 3px;」：要素の内側の余白を設定するCSS(上下1px、左右3px) ***** %>
               font-size: 9px;
-              <%# ***** font-size: 9px：文字サイズ ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「9px」：文字サイズを指定する値 ***** %>
               background: #dc3545;
-              <%# ***** background: #dc3545：背景色（赤） ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「#dc3545」：背景色を16進カラーコードで指定する値 ***** %>
               color: white;
-              <%# ***** color: white：文字色 ***** %>
+              <%# ***** 「color: 【値】;」：文字色を指定するCSSプロパティ ***** %>
+              <%# ***** 「white」：文字色を指定する値 ***** %>
               border: none;
-              <%# ***** border: none：枠線なし ***** %>
+              <%# ***** 「border: 【値】;」：要素の枠線を指定するCSSプロパティ ***** %>
+              <%# ***** 「none」：該当機能を無効化する設定 ***** %>
               border-radius: 2px;
-              <%# ***** border-radius: 2px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「2px」：角丸の半径を指定する値 ***** %>
               cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** 「cursor: 【値】;」：マウスカーソルの表示形状を指定するCSSプロパティ ***** %>
+              <%# ***** 「pointer」：クリック可能であることを示すポインター形状で表示する設定 ***** %>
               z-index: 10;
-              <%# ***** z-index: 10：前面表示 ***** %>
+              <%# ***** 「z-index: 【値】;」：重なり順を指定するCSSプロパティ ***** %>
+              <%# ***** 「10」：重なり順の優先度を指定する値 ***** %>
             }
             #body-editor .media-card .card-delete-btn {
-            <%# ***** .media-card .card-delete-btn：画像カードの削除ボタン ***** %>
+            <%# ***** 「#body-editor .media-card .card-delete-btn { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .media-card .card-delete-btn」に一致する要素へ適用するCSSルール ***** %>
               z-index: 20;
-              <%# ***** z-index: 20：画像の上に表示 ***** %>
+              <%# ***** 「z-index: 【値】;」：重なり順を指定するCSSプロパティ ***** %>
+              <%# ***** 「20」：重なり順の優先度を指定する値 ***** %>
               opacity: 0.95;
-              <%# ***** opacity: 0.95：少しだけ透過 ***** %>
+              <%# ***** 「opacity: 【値】;」：不透明度を指定するCSSプロパティ ***** %>
+              <%# ***** 「0.95」：不透明度（0〜1）を指定する値 ***** %>
               display: inline-block;
-              <%# ***** display: inline-block：ボタンを表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「inline-block」：インライン要素として並びつつブロックのサイズ指定を可能にする設定 ***** %>
             }
             #body-editor .card-delete-btn:hover {
-            <%# ***** .card-delete-btn:hover：削除ボタンのホバー色 ***** %>
+            <%# ***** 「#body-editor .card-delete-btn:hover { 【CSS宣言ブロック】 }」：セレクタ「#body-editor .card-delete-btn:hover」に一致する要素へ適用するCSSルール ***** %>
               background: #bb2d3b;
-              <%# ***** background: #bb2d3b：ホバー時の色 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「#bb2d3b」：背景色を16進カラーコードで指定する値 ***** %>
             }
             .code-editor-overlay {
-            <%# ***** .code-editor-overlay：コード編集モーダルの背景 ***** %>
+            <%# ***** 「.code-editor-overlay { 【CSS宣言ブロック】 }」：.code-editor-overlay を持つ要素に適用するCSSルール ***** %>
               position: fixed;
-              <%# ***** position: fixed：画面全体に固定 ***** %>
+              <%# ***** 「position: 【値】;」：要素の配置方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「fixed」：ビューポートを基準に固定配置する設定 ***** %>
               inset: 0;
-              <%# ***** inset: 0：上下左右を0に設定 ***** %>
+              <%# ***** 「inset: 【値】;」：上下左右の位置を一括指定するCSSプロパティ ***** %>
+              <%# ***** 「0」：上下左右のオフセット距離を一括指定する値 ***** %>
               background: rgba(0, 0, 0, 0.4);
-              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「rgba(0, 0, 0, 0.4)」：色と透明度を指定する値（赤0、緑0、青0、透明度0.4） ***** %>
               display: none;
-              <%# ***** display: none：初期状態は非表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「none」：該当機能を無効化する設定 ***** %>
               align-items: center;
-              <%# ***** align-items: center：縦中央揃え ***** %>
+              <%# ***** 「align-items: 【値】;」：交差軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「center」：中央揃えで配置する設定 ***** %>
               justify-content: center;
-              <%# ***** justify-content: center：横中央揃え ***** %>
+              <%# ***** 「justify-content: 【値】;」：主軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「center」：中央揃えで配置する設定 ***** %>
               z-index: 9999;
-              <%# ***** z-index: 9999：最前面表示 ***** %>
+              <%# ***** 「z-index: 【値】;」：重なり順を指定するCSSプロパティ ***** %>
+              <%# ***** 「9999」：重なり順の優先度を指定する値 ***** %>
             }
             .code-editor-overlay.is-open {
-            <%# ***** .code-editor-overlay.is-open：モーダル表示時 ***** %>
+            <%# ***** 「.code-editor-overlay.is-open { 【CSS宣言ブロック】 }」：.code-editor-overlay.is-open を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：フレックスで表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
             }
             .code-editor-modal {
-            <%# ***** .code-editor-modal：モーダル本体 ***** %>
+            <%# ***** 「.code-editor-modal { 【CSS宣言ブロック】 }」：.code-editor-modal を持つ要素に適用するCSSルール ***** %>
               background: #fff;
-              <%# ***** background: #fff：背景色を白 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「#fff」：背景色を16進カラーコードで指定する値 ***** %>
               width: 90%;
-              <%# ***** width: 90%：横幅を SCSS と統一 ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「90%」：要素の横幅を指定する値 ***** %>
               max-width: 1200px;
-              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
+              <%# ***** 「max-width: 【値】;」：横幅の最大値を指定するCSSプロパティ ***** %>
+              <%# ***** 「1200px」：横幅の上限を指定する値 ***** %>
               height: min(70vh, 600px);
-              <%# ***** height: min(70vh, 600px)：高さを制限 ***** %>
+              <%# ***** 「height: 【値】;」：高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「min(70vh, 600px)」：要素の高さを指定する値 ***** %>
               border-radius: 8px;
-              <%# ***** border-radius: 8px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：角丸の半径を指定する値 ***** %>
               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-              <%# ***** box-shadow：影を付ける ***** %>
+              <%# ***** 「box-shadow: 【値】;」：要素の周囲に表示する影の位置・ぼかし・色などを設定するCSSプロパティ ***** %>
+              <%# ***** 「0 10px 30px rgba(0, 0, 0, 0.2)」：横方向のずれ、縦方向のずれ、ぼかしの強さ、影の色と透明度を指定する値 ***** %>
               display: flex;
-              <%# ***** display: flex：縦並びレイアウト ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** 「flex-direction: 【値】;」：フレックス項目の並ぶ方向を指定するCSSプロパティ ***** %>
+              <%# ***** 「column」：フレックス要素を並べる方向を指定する値 ***** %>
               padding: 12px;
-              <%# ***** padding: 12px：内側余白 ***** %>
+              <%# ***** 「padding: 【値】;」：内側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「12px」：要素の内側余白を指定する値 ***** %>
             }
             .code-editor-header {
-            <%# ***** .code-editor-header：モーダルの見出し ***** %>
+            <%# ***** 「.code-editor-header { 【CSS宣言ブロック】 }」：.code-editor-header を持つ要素に適用するCSSルール ***** %>
               font-weight: 600;
-              <%# ***** font-weight: 600：太字指定 ***** %>
+              <%# ***** 「font-weight: 【値】;」：文字の太さを指定するCSSプロパティ ***** %>
+              <%# ***** 「600」：文字の太さを指定する値 ***** %>
               margin-bottom: 8px;
-              <%# ***** margin-bottom: 8px：下余白 ***** %>
+              <%# ***** 「margin-bottom: 【値】;」：下側の外側余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：要素の下側に確保する外側余白の幅を指定する値 ***** %>
             }
             .code-editor-textarea {
-            <%# ***** .code-editor-textarea：コード入力欄 ***** %>
+            <%# ***** 「.code-editor-textarea { 【CSS宣言ブロック】 }」：.code-editor-textarea を持つ要素に適用するCSSルール ***** %>
               flex: 1;
-              <%# ***** flex: 1：高さを埋める ***** %>
+              <%# ***** 「flex: 【値】;」：フレックス項目の伸縮比や基準サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「1」：伸縮比や基準サイズをまとめて指定する値 ***** %>
               width: 100%;
-              <%# ***** width: 100%：横幅100% ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の横幅を指定する値 ***** %>
               resize: none;
-              <%# ***** resize: none：サイズ変更不可 ***** %>
+              <%# ***** 「resize: 【値】;」：リサイズ可否を指定するCSSプロパティ ***** %>
+              <%# ***** 「none」：該当機能を無効化する設定 ***** %>
               font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-              <%# ***** font-family：等幅フォントを指定 ***** %>
+              <%# ***** 「font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;」：使用するフォントファミリーを設定するCSS宣言 ***** %>
               font-size: 13px;
-              <%# ***** font-size: 13px：文字サイズ ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「13px」：文字サイズを指定する値 ***** %>
               line-height: 1.5;
-              <%# ***** line-height: 1.5：行の高さ ***** %>
+              <%# ***** 「line-height: 【値】;」：行の高さを指定するCSSプロパティ ***** %>
+              <%# ***** 「1.5」：行間の広さ（1行の高さ）を決める値 ***** %>
               border: 1px solid #dee2e6;
-              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
+              <%# ***** 「border: 【値】;」：要素の枠線を指定するCSSプロパティ ***** %>
+              <%# ***** 「1px solid #dee2e6」：枠線の太さ・線種・色をまとめて指定する値 ***** %>
               border-radius: 6px;
-              <%# ***** border-radius: 6px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「6px」：角丸の半径を指定する値 ***** %>
               padding: 10px;
-              <%# ***** padding: 10px：内側余白 ***** %>
+              <%# ***** 「padding: 【値】;」：内側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「10px」：要素の内側余白を指定する値 ***** %>
             }
             .code-editor-actions {
-            <%# ***** .code-editor-actions：モーダル下部のボタン領域 ***** %>
+            <%# ***** 「.code-editor-actions { 【CSS宣言ブロック】 }」：.code-editor-actions を持つ要素に適用するCSSルール ***** %>
               margin-top: 10px;
-              <%# ***** margin-top: 10px：上余白 ***** %>
+              <%# ***** 「margin-top: 【値】;」：上側の外側余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「10px」：要素の上側余白を指定する値 ***** %>
               display: flex;
-              <%# ***** display: flex：横並び ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               justify-content: flex-end;
-              <%# ***** justify-content: flex-end：右寄せ ***** %>
+              <%# ***** 「justify-content: 【値】;」：主軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex-end」：主軸の終端側に要素を寄せて配置する設定 ***** %>
               gap: 8px;
-              <%# ***** gap: 8px：ボタン間の余白 ***** %>
+              <%# ***** 「gap: 【値】;」：要素間の間隔を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：要素間の間隔を指定する値 ***** %>
             }
             .formula-editor-overlay {
-            <%# ***** .formula-editor-overlay：数式編集モーダルの背景 ***** %>
+            <%# ***** 「.formula-editor-overlay { 【CSS宣言ブロック】 }」：.formula-editor-overlay を持つ要素に適用するCSSルール ***** %>
               position: fixed;
-              <%# ***** position: fixed：画面全体に固定 ***** %>
+              <%# ***** 「position: 【値】;」：要素の配置方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「fixed」：ビューポートを基準に固定配置する設定 ***** %>
               inset: 0;
-              <%# ***** inset: 0：上下左右を0に設定 ***** %>
+              <%# ***** 「inset: 【値】;」：上下左右の位置を一括指定するCSSプロパティ ***** %>
+              <%# ***** 「0」：上下左右のオフセット距離を一括指定する値 ***** %>
               background: rgba(0, 0, 0, 0.4);
-              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「rgba(0, 0, 0, 0.4)」：色と透明度を指定する値（赤0、緑0、青0、透明度0.4） ***** %>
               display: none;
-              <%# ***** display: none：初期状態は非表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「none」：該当機能を無効化する設定 ***** %>
               align-items: center;
-              <%# ***** align-items: center：縦中央揃え ***** %>
+              <%# ***** 「align-items: 【値】;」：交差軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「center」：中央揃えで配置する設定 ***** %>
               justify-content: center;
-              <%# ***** justify-content: center：横中央揃え ***** %>
+              <%# ***** 「justify-content: 【値】;」：主軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「center」：中央揃えで配置する設定 ***** %>
               z-index: 9999;
-              <%# ***** z-index: 9999：最前面表示 ***** %>
+              <%# ***** 「z-index: 【値】;」：重なり順を指定するCSSプロパティ ***** %>
+              <%# ***** 「9999」：重なり順の優先度を指定する値 ***** %>
             }
             .formula-editor-overlay.is-open {
-            <%# ***** .formula-editor-overlay.is-open：モーダル表示時 ***** %>
+            <%# ***** 「.formula-editor-overlay.is-open { 【CSS宣言ブロック】 }」：.formula-editor-overlay.is-open を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：フレックスで表示 ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
             }
             .formula-editor-modal {
-            <%# ***** .formula-editor-modal：モーダル本体 ***** %>
+            <%# ***** 「.formula-editor-modal { 【CSS宣言ブロック】 }」：.formula-editor-modal を持つ要素に適用するCSSルール ***** %>
               background: #fff;
-              <%# ***** background: #fff：背景色を白 ***** %>
+              <%# ***** 「background: 【値】;」：要素の背景の見た目（背景色や背景画像など）を指定するCSSプロパティ ***** %>
+              <%# ***** 「#fff」：背景色を16進カラーコードで指定する値 ***** %>
               width: 90%;
-              <%# ***** width: 90%：横幅をコードモーダルと統一 ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「90%」：要素の横幅を指定する値 ***** %>
               max-width: 1200px;
-              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
+              <%# ***** 「max-width: 【値】;」：横幅の最大値を指定するCSSプロパティ ***** %>
+              <%# ***** 「1200px」：横幅の上限を指定する値 ***** %>
               border-radius: 8px;
-              <%# ***** border-radius: 8px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：角丸の半径を指定する値 ***** %>
               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-              <%# ***** box-shadow：影を付ける ***** %>
+              <%# ***** 「box-shadow: 【値】;」：要素の周囲に表示する影の位置・ぼかし・色などを設定するCSSプロパティ ***** %>
+              <%# ***** 「0 10px 30px rgba(0, 0, 0, 0.2)」：横方向のずれ、縦方向のずれ、ぼかしの強さ、影の色と透明度を指定する値 ***** %>
               display: flex;
-              <%# ***** display: flex：縦並びレイアウト ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** 「flex-direction: 【値】;」：フレックス項目の並ぶ方向を指定するCSSプロパティ ***** %>
+              <%# ***** 「column」：フレックス要素を並べる方向を指定する値 ***** %>
               padding: 24px;
-              <%# ***** padding: 24px：内側余白 ***** %>
+              <%# ***** 「padding: 【値】;」：内側の余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「24px」：要素の内側余白を指定する値 ***** %>
             }
             .formula-editor-header {
-            <%# ***** .formula-editor-header：モーダルの見出し ***** %>
+            <%# ***** 「.formula-editor-header { 【CSS宣言ブロック】 }」：.formula-editor-header を持つ要素に適用するCSSルール ***** %>
               font-weight: 600;
-              <%# ***** font-weight: 600：太字指定 ***** %>
+              <%# ***** 「font-weight: 【値】;」：文字の太さを指定するCSSプロパティ ***** %>
+              <%# ***** 「600」：文字の太さを指定する値 ***** %>
               font-size: 16px;
-              <%# ***** font-size: 16px：文字サイズ ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「16px」：文字サイズを指定する値 ***** %>
               margin-bottom: 16px;
-              <%# ***** margin-bottom: 16px：下余白 ***** %>
+              <%# ***** 「margin-bottom: 【値】;」：下側の外側余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「16px」：要素の下側に確保する外側余白の幅を指定する値 ***** %>
             }
             .formula-editor-content {
-            <%# ***** .formula-editor-content：モーダルコンテンツエリア ***** %>
+            <%# ***** 「.formula-editor-content { 【CSS宣言ブロック】 }」：.formula-editor-content を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：縦並び ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** 「flex-direction: 【値】;」：フレックス項目の並ぶ方向を指定するCSSプロパティ ***** %>
+              <%# ***** 「column」：フレックス要素を並べる方向を指定する値 ***** %>
               gap: 16px;
-              <%# ***** gap: 16px：要素間の間隔 ***** %>
+              <%# ***** 「gap: 【値】;」：要素間の間隔を指定するCSSプロパティ ***** %>
+              <%# ***** 「16px」：要素間の間隔を指定する値 ***** %>
               margin-bottom: 20px;
-              <%# ***** margin-bottom: 20px：下余白 ***** %>
+              <%# ***** 「margin-bottom: 【値】;」：下側の外側余白を指定するCSSプロパティ ***** %>
+              <%# ***** 「20px」：要素の下側に確保する外側余白の幅を指定する値 ***** %>
             }
             .formula-input-group {
-            <%# ***** .formula-input-group：上付き・下付き入力フィールドグループ ***** %>
+            <%# ***** 「.formula-input-group { 【CSS宣言ブロック】 }」：.formula-input-group を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：縦並び ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
+              <%# ***** 「flex-direction: 【値】;」：フレックス項目の並ぶ方向を指定するCSSプロパティ ***** %>
+              <%# ***** 「column」：フレックス要素を並べる方向を指定する値 ***** %>
               gap: 8px;
-              <%# ***** gap: 8px：要素間の間隔 ***** %>
+              <%# ***** 「gap: 【値】;」：要素間の間隔を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：要素間の間隔を指定する値 ***** %>
             }
             .formula-input-group label {
-            <%# ***** .formula-input-group label：入力フィールドのラベル ***** %>
+            <%# ***** 「.formula-input-group label { 【CSS宣言ブロック】 }」：.formula-input-group label を持つ要素に適用するCSSルール ***** %>
               font-weight: 500;
-              <%# ***** font-weight: 500：太字 ***** %>
+              <%# ***** 「font-weight: 【値】;」：文字の太さを指定するCSSプロパティ ***** %>
+              <%# ***** 「500」：文字の太さを指定する値 ***** %>
               font-size: 13px;
-              <%# ***** font-size: 13px：小さめのフォント ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「13px」：文字サイズを指定する値 ***** %>
             }
             .formula-type-selector {
-            <%# ***** .formula-type-selector：上付き・下付き選択ラジオボタン ***** %>
+            <%# ***** 「.formula-type-selector { 【CSS宣言ブロック】 }」：.formula-type-selector を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：横並び ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               gap: 20px;
-              <%# ***** gap: 20px：選択肢間の間隔 ***** %>
+              <%# ***** 「gap: 【値】;」：要素間の間隔を指定するCSSプロパティ ***** %>
+              <%# ***** 「20px」：要素間の間隔を指定する値 ***** %>
             }
             .formula-type-selector label {
-            <%# ***** .formula-type-selector label：ラジオボタンのラベル ***** %>
+            <%# ***** 「.formula-type-selector label { 【CSS宣言ブロック】 }」：.formula-type-selector label を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：フレックスで並べる ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               align-items: center;
-              <%# ***** align-items: center：垂直中央揃え ***** %>
+              <%# ***** 「align-items: 【値】;」：交差軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「center」：中央揃えで配置する設定 ***** %>
               gap: 8px;
-              <%# ***** gap: 8px：チェックボックスとテキストの間隔 ***** %>
+              <%# ***** 「gap: 【値】;」：要素間の間隔を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：要素間の間隔を指定する値 ***** %>
               cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** 「cursor: 【値】;」：マウスカーソルの表示形状を指定するCSSプロパティ ***** %>
+              <%# ***** 「pointer」：クリック可能であることを示すポインター形状で表示する設定 ***** %>
             }
             .formula-type-selector input {
-            <%# ***** .formula-type-selector input：ラジオボタン ***** %>
+            <%# ***** 「.formula-type-selector input { 【CSS宣言ブロック】 }」：.formula-type-selector input を持つ要素に適用するCSSルール ***** %>
               cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
+              <%# ***** 「cursor: 【値】;」：マウスカーソルの表示形状を指定するCSSプロパティ ***** %>
+              <%# ***** 「pointer」：クリック可能であることを示すポインター形状で表示する設定 ***** %>
             }
             .formula-editor-input {
-            <%# ***** .formula-editor-input：数式入力フィールド ***** %>
+            <%# ***** 「.formula-editor-input { 【CSS宣言ブロック】 }」：.formula-editor-input を持つ要素に適用するCSSルール ***** %>
               width: 100%;
-              <%# ***** width: 100%：横幅100% ***** %>
+              <%# ***** 「width: 【値】;」：横幅を指定するCSSプロパティ ***** %>
+              <%# ***** 「100%」：要素の横幅を指定する値 ***** %>
               padding: 10px 12px;
-              <%# ***** padding: 10px 12px：内側余白 ***** %>
+              <%# ***** 「padding: 10px 12px;」：要素の内側の余白を設定するCSS(上下10px、左右12px) ***** %>
               border: 1px solid #dee2e6;
-              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
+              <%# ***** 「border: 【値】;」：要素の枠線を指定するCSSプロパティ ***** %>
+              <%# ***** 「1px solid #dee2e6」：枠線の太さ・線種・色をまとめて指定する値 ***** %>
               border-radius: 6px;
-              <%# ***** border-radius: 6px：角丸 ***** %>
+              <%# ***** 「border-radius: 【値】;」：要素の角丸を指定するCSSプロパティ ***** %>
+              <%# ***** 「6px」：角丸の半径を指定する値 ***** %>
               font-size: 14px;
-              <%# ***** font-size: 14px：文字サイズ ***** %>
+              <%# ***** 「font-size: 【値】;」：文字サイズを指定するCSSプロパティ ***** %>
+              <%# ***** 「14px」：文字サイズを指定する値 ***** %>
               box-sizing: border-box;
-              <%# ***** box-sizing: border-box：padding を幅に含める ***** %>
+              <%# ***** 「box-sizing: 【値】;」：要素のボックスサイズの計算方法を指定するCSSプロパティ ***** %>
+              <%# ***** 「border-box」：要素の幅と高さにpaddingとborderを含めてサイズを計算する設定 ***** %>
             }
             .formula-editor-actions {
-            <%# ***** .formula-editor-actions：モーダル下部のボタン領域 ***** %>
+            <%# ***** 「.formula-editor-actions { 【CSS宣言ブロック】 }」：.formula-editor-actions を持つ要素に適用するCSSルール ***** %>
               display: flex;
-              <%# ***** display: flex：横並び ***** %>
+              <%# ***** 「display: 【値】;」：要素の表示形式を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex」：フレックスレイアウトとして表示する設定 ***** %>
               justify-content: flex-end;
-              <%# ***** justify-content: flex-end：右寄せ ***** %>
+              <%# ***** 「justify-content: 【値】;」：主軸方向の配置位置を指定するCSSプロパティ ***** %>
+              <%# ***** 「flex-end」：主軸の終端側に要素を寄せて配置する設定 ***** %>
               gap: 8px;
-              <%# ***** gap: 8px：ボタン間の間隔 ***** %>
+              <%# ***** 「gap: 【値】;」：要素間の間隔を指定するCSSプロパティ ***** %>
+              <%# ***** 「8px」：要素間の間隔を指定する値 ***** %>
             }
           </style>
-          <%# ***** 「</style>」：styleタグ（スタイル定義要素）の終了 ***** %>
+          <%# ***** 「<style>【内容】</style>」：スタイル定義要素 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-        <%# ***** 「</style>」：styleタグ（スタイル定義要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
+        <%# ***** 「<style>【内容】</style>」：スタイル定義要素 ***** %>
         <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
         <%= form.file_field :images, multiple: true, accept: "image/*", style: "display: none;" %>
         <%# ***** 「form.file_field :images, multiple: true, accept: "image/*", style: "display: none;"」：画面へ値を出力する式 ***** %>
@@ -730,14 +885,14 @@
             <%# ***** 「data-target ="【対象セレクタ】"」：JavaScript動作対象を指定するデータ属性 ***** %>
             <%# ***** 「data-toggle ="【設定値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
             <%# ***** 「data-target ="【設定値】"」：JavaScript動作対象を指定するデータ属性 ***** %>
+            <%# ***** 「data-target ="【設定値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
               タグを選択
               <%# ***** data-target="#tagSelectModal"：開閉対象のモーダルIDを指定 ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">
             <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「<button>【内容】</button>」：新規タグ作成ボタン ***** %>
             <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
             <%# ***** class: "btn btn-outline-secondary ml-2"：グレー枠線のボタンのスタイル + 左マージン ***** %>
@@ -747,19 +902,18 @@
               タグを作成
               <%# ***** id="add-tag-button"：JavaScriptで参照するID ***** %>
             </button>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <span id="selected-tags" class="ml-3 text-muted"></span>
-            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** 「<span>【内容】</span>」：選択されたタグを表示するセクション ***** %>
             <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
             <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
             <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：公開状態選択フォームグループ ***** %>
@@ -778,7 +932,7 @@
           <%# ***** {}：HTMLオプション（プレースホルダーなど） ***** %>
         </div>
         <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group">
         <%# ***** 「<div>」：送信・キャンセルボタングループ ***** %>
@@ -797,7 +951,7 @@
           <%# ***** posts_path：投稿一覧へのパス ***** %>
         </div>
         <%# ***** class: "btn btn-outline-secondary"：グレー枠線のボタンスタイル ***** %>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
         <%# ***** 「<div>」：タグ選択用Bootstrapモーダル ***** %>
@@ -854,22 +1008,20 @@
                   <%# ***** aria-hidden="true"：スクリーンリーダーから隠す ***** %>
                   <%# ***** 「aria-hidden ="【設定値】"」：支援技術向け情報を指定する属性 ***** %>
                 </button>
-                <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+                <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
                 <%# ***** &times；：× 記号のHTML実体参照 ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-              <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <div class="modal-body">
               <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <%# ***** 「<div>【内容】</div>」：モーダルボディ（コンテンツ） ***** %>
               <%# ***** modal-body：モーダルボディのスタイル ***** %>
               <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <% if @available_tags.any? %>
-                <%# ***** 「if @available_tags.any?」：Ruby式を実行する処理 ***** %>
-                <%# ***** 「if (@available_tags.any?)」: @available_tags.any?を判定する条件分岐 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
 
-                <%# ***** 「if」：利用可能なタグが存在するか判定 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes">
                   <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
                   <%# ***** @available_tags.any?：1つ以上のタグが存在するか確認 ***** %>
@@ -907,12 +1059,12 @@
                         <%# ***** class: "custom-control-label"：Bootstrapのカスタムラベルスタイル ***** %>
                       </div>
                       <%# ***** for: "tag_#{tag.id}"：関連付けるチェックボックスのID ***** %>
-                      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                     <% end %>
                     <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                   </div>
                   <%# ***** 「end」：eachループの終了 ***** %>
-                  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                 <% else %>
                 <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes"></div>
@@ -929,11 +1081,11 @@
                 <% end %>
                 <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <%# ***** 「end」：if文の終了 ***** %>
               <div class="modal-footer">
               <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <%# ***** 「<div>【内容】</div>」：モーダルフッター ***** %>
               <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
@@ -945,61 +1097,61 @@
                 <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <%# ***** 「data-dismiss ="【設定値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
             </div>
-            <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+            <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <script>
         <%# ***** 「<script>」：スクリプト要素 ***** %>
         <%# ***** スクリプトセクション ***** %>
           const initPostForm = () => {
-          <%# ***** タグ選択・作成のJavaScriptロジック ***** %>
+          <%# ***** 「const initPostForm = () => {」：スタイルルールの開始 ***** %>
             const bodyEditor = document.getElementById('body-editor');
-            <%# ***** initPostForm()：投稿フォーム用の初期化処理 ***** %>
+            <%# ***** 「const bodyEditor = document.getElementById('body-editor')」：JavaScriptで定数を宣言する処理 ***** %>
             const bodyHidden = document.getElementById('body-hidden');
-            <%# ***** bodyEditor：本文contenteditable領域を取得 ***** %>
+            <%# ***** 「const bodyHidden = document.getElementById('body-hidden')」：JavaScriptで定数を宣言する処理 ***** %>
             if (!bodyEditor || bodyEditor.dataset.insertBindings === 'true') return;
-            <%# ***** bodyHidden：本文の隠しフィールドを取得 ***** %>
+            <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
             bodyEditor.dataset.insertBindings = 'true';
-            <%# ***** 既に初期化済みの場合は二重登録を防止 ***** %>
+            <%# ***** 「bodyEditor.dataset.insertBindings = 'true'」：JavaScriptで値を代入する処理 ***** %>
             const insertImageButton = document.getElementById('insert-image-button');
-            <%# ***** data属性で初期化済みフラグを保存 ***** %>
+            <%# ***** 「const insertImageButton = document.getElementById('insert-image-button')」：JavaScriptで定数を宣言する処理 ***** %>
             const insertCodeButton = document.getElementById('insert-code-button');
-            <%# ***** insertImageButton：画像挿入ボタンを取得 ***** %>
+            <%# ***** 「const insertCodeButton = document.getElementById('insert-code-button')」：JavaScriptで定数を宣言する処理 ***** %>
             const imageInput = document.getElementById('post_images');
-            <%# ***** insertCodeButton：コード挿入ボタンを取得 ***** %>
+            <%# ***** 「const imageInput = document.getElementById('post_images')」：JavaScriptで定数を宣言する処理 ***** %>
             const selectedTags = document.getElementById('selected-tags');
-            <%# ***** imageInput：画像アップロード入力を取得 ***** %>
+            <%# ***** 「const selectedTags = document.getElementById('selected-tags')」：JavaScriptで定数を宣言する処理 ***** %>
             const checkboxContainer = document.getElementById('tag-checkboxes');
-            <%# ***** selectedTags：選択済みタグを表示する要素を取得 ***** %>
+            <%# ***** 「const checkboxContainer = document.getElementById('tag-checkboxes')」：JavaScriptで定数を宣言する処理 ***** %>
             const getCheckboxes = () => checkboxContainer.querySelectorAll('input[type="checkbox"]');
-            <%# ***** checkboxContainer：チェックボックスを囲むコンテナを取得 ***** %>
+            <%# ***** 「const getCheckboxes = () => checkboxContainer.querySelectorAll('input[type="checkbox"]')」：JavaScriptで定数を宣言する処理 ***** %>
             <%# ***** getCheckboxes()：コンテナ内のすべてのチェックボックスを取得する関数 ***** %>
 
             const imageObjectsContainer = document.getElementById('image-objects');
             const codeObjectsContainer = document.getElementById('code-objects');
-            <%# ***** imageObjectsContainer：画像オブジェクト表示エリアを取得 ***** %>
+            <%# ***** 「const codeObjectsContainer = document.getElementById('code-objects')」：JavaScriptで定数を宣言する処理 ***** %>
             const imageCountSpan = document.getElementById('image-count');
-            <%# ***** codeObjectsContainer：コードオブジェクト表示エリアを取得 ***** %>
+            <%# ***** 「const imageCountSpan = document.getElementById('image-count')」：JavaScriptで定数を宣言する処理 ***** %>
             const codeCountSpan = document.getElementById('code-count');
-            <%# ***** imageCountSpan：画像数表示エリアを取得 ***** %>
+            <%# ***** 「const codeCountSpan = document.getElementById('code-count')」：JavaScriptで定数を宣言する処理 ***** %>
             const noImagesMessage = document.getElementById('no-images-message');
-            <%# ***** codeCountSpan：コード数表示エリアを取得 ***** %>
+            <%# ***** 「const noImagesMessage = document.getElementById('no-images-message')」：JavaScriptで定数を宣言する処理 ***** %>
             const noCodeMessage = document.getElementById('no-code-message');
-            <%# ***** noImagesMessage：画像がない場合のメッセージを取得 ***** %>
+            <%# ***** 「const noCodeMessage = document.getElementById('no-code-message')」：JavaScriptで定数を宣言する処理 ***** %>
             <%# ***** noCodeMessage：コードがない場合のメッセージを取得 ***** %>
 
             const codeTemplate = "\n```ruby\n\n```\n";
-            <%# ***** codeTemplate：コードブロックのテンプレート文字列 ***** %>
+            <%# ***** 「const codeTemplate = "\n```ruby\n\n```\n"」：JavaScriptで定数を宣言する処理 ***** %>
 
             const resolveImageUrl = (filename) => {
               if (window.localImageUrlMap && window.localImageUrlMap.has(filename)) {
-              <%# ***** resolveImageUrl()：サムネイル表示用の画像URLを解決 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 return window.localImageUrlMap.get(filename);
               }
               if (window.imageUrlMap && window.imageUrlMap[filename]) {
@@ -1009,111 +1161,111 @@
             };
 
             const hasContentEditable = !!bodyEditor;
-            <%# ***** hasContentEditable：contenteditableの有無を判定 ***** %>
+            <%# ***** 「const hasContentEditable = !!bodyEditor」：JavaScriptで定数を宣言する処理 ***** %>
 
             const setBodyText = (text) => {
               if (bodyEditor) {
-              <%# ***** setBodyText()：本文を更新して同期イベントを発火 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 bodyEditor.textContent = text;
-                <%# ***** 「if」：contenteditable本文欄が存在する場合 ***** %>
+                <%# ***** 「bodyEditor.textContent = text」：JavaScriptで値を代入する処理 ***** %>
                 bodyEditor.dispatchEvent(new Event('input'));
-                <%# ***** textContent：本文を差し替え ***** %>
+                <%# ***** 「bodyEditor.dispatchEvent(new Event('input'))」：イベントを発火する処理 ***** %>
                 return;
-                <%# ***** dispatchEvent()：入力イベントを発火して同期処理を走らせる ***** %>
+                <%# ***** 「return」：関数の処理を終了して値を返す処理 ***** %>
               }
-              <%# ***** return：contenteditable側の更新で終了 ***** %>
+              <%# ***** 「}」：スタイルルールの終了 ***** %>
               if (bodyHidden) {
                 bodyHidden.value = text;
-                <%# ***** 「if」：隠しフィールド本文が存在する場合 ***** %>
+                <%# ***** 「bodyHidden.value = text」：JavaScriptで値を代入する処理 ***** %>
                 bodyHidden.dispatchEvent(new Event('input'));
-                <%# ***** value：隠しフィールドの本文を更新 ***** %>
+                <%# ***** 「bodyHidden.dispatchEvent(new Event('input'))」：イベントを発火する処理 ***** %>
               }
-              <%# ***** dispatchEvent()：入力イベントを発火して同期処理を走らせる ***** %>
+              <%# ***** 「}」：スタイルルールの終了 ***** %>
             };
 
             const insertAtCursor = (text) => {
               if (!bodyHidden) return;
-              <%# ***** insertAtCursor()：カーソル位置に文字列を挿入する関数 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               const start = bodyHidden.selectionStart || 0;
-              <%# ***** if (!bodyHidden)：本文欄が存在しない場合は終了 ***** %>
+              <%# ***** 「const start = bodyHidden.selectionStart || 0」：JavaScriptで定数を宣言する処理 ***** %>
               const end = bodyHidden.selectionEnd || 0;
-              <%# ***** selectionStart：カーソル開始位置を取得 ***** %>
+              <%# ***** 「const end = bodyHidden.selectionEnd || 0」：JavaScriptで定数を宣言する処理 ***** %>
               const before = bodyHidden.value.slice(0, start);
-              <%# ***** selectionEnd：カーソル終了位置を取得 ***** %>
+              <%# ***** 「const before = bodyHidden.value.slice(0, start)」：JavaScriptで定数を宣言する処理 ***** %>
               const after = bodyHidden.value.slice(end);
-              <%# ***** slice(0, start)：カーソルより前の文字列を取得 ***** %>
+              <%# ***** 「const after = bodyHidden.value.slice(end)」：JavaScriptで定数を宣言する処理 ***** %>
               bodyHidden.value = `${before}${text}${after}`;
-              <%# ***** slice(end)：カーソルより後の文字列を取得 ***** %>
+              <%# ***** 「bodyHidden.value = `${before}${text}${after}`」：JavaScriptで値を代入する処理 ***** %>
               bodyHidden.dispatchEvent(new Event('input'));
-              <%# ***** テンプレートリテラルで本文を再構成 ***** %>
+              <%# ***** 「bodyHidden.dispatchEvent(new Event('input'))」：イベントを発火する処理 ***** %>
             };
 
             const updateMediaDisplay = () => {
-            <%# ***** updateMediaDisplay()：メディアオブジェクトの表示を更新 ***** %>
+            <%# ***** 「const updateMediaDisplay = () => {」：スタイルルールの開始 ***** %>
             };
-            <%# ***** 新規投稿ではメディア管理UIを使わないため処理なし ***** %>
+            <%# ***** 「}」：スタイルルールの終了 ***** %>
 
             if (insertImageButton && !hasContentEditable) {
               insertImageButton.addEventListener('click', function () {
-              <%# ***** 「if」：画像挿入ボタンが存在する場合 ***** %>
+              <%# ***** 「insertImageButton.addEventListener('click', function () {」：スタイルルールの開始 ***** %>
                 if (!imageInput) return;
-                <%# ***** addEventListener：クリック時の処理を登録 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 imageInput.click();
-                <%# ***** if (!imageInput)：画像入力が存在しない場合は終了 ***** %>
+                <%# ***** 「imageInput.click()」：クリック動作を実行する処理 ***** %>
               });
-              <%# ***** click()：ファイル選択ダイアログを開く ***** %>
+              <%# ***** 「})」：JavaScriptのブロックを終了する処理 ***** %>
             }
 
             const allFiles = [];
-            <%# ***** allFiles：すべての選択済み画像ファイルを保持する配列 ***** %>
+            <%# ***** 「const allFiles = []」：JavaScriptで定数を宣言する処理 ***** %>
 
             if (imageInput && !hasContentEditable) {
               imageInput.addEventListener('change', function () {
-              <%# ***** 「if」：画像入力が存在する場合 ***** %>
+              <%# ***** 「imageInput.addEventListener('change', function () {」：スタイルルールの開始 ***** %>
                 if (!imageInput.files || imageInput.files.length === 0) return;
-                <%# ***** change：ファイル選択時の処理 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 const newFiles = Array.from(imageInput.files);
-                <%# ***** 「if」：未選択なら終了 ***** %>
+                <%# ***** 「const newFiles = Array.from(imageInput.files)」：JavaScriptで定数を宣言する処理 ***** %>
                 newFiles.forEach((file) => {
-                <%# ***** newFiles：今回選択したファイルのみを取得 ***** %>
+                <%# ***** 「newFiles.forEach((file) => {」：スタイルルールの開始 ***** %>
                   if (!allFiles.find((f) => f.name === file.name && f.size === file.size)) {
-                  <%# ***** forEach()：新規選択の各ファイルを処理 ***** %>
+                  <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                     allFiles.push(file);
-                    <%# ***** find()：同じ名前かつサイズのファイルがすでに存在するか確認 ***** %>
+                    <%# ***** 「allFiles.push(file)」：JavaScriptの処理を実行する式 ***** %>
                   }
-                  <%# ***** push()：新規ファイルを配列に追加（フォーム送信用） ***** %>
+                  <%# ***** 「}」：スタイルルールの終了 ***** %>
                 });
                 const dt = new DataTransfer();
                 allFiles.forEach((file) => {
-                <%# ***** DataTransfer：ファイルリストを作成するAPI ***** %>
+                <%# ***** 「allFiles.forEach((file) => {」：スタイルルールの開始 ***** %>
                   dt.items.add(file);
-                  <%# ***** forEach()：累積ファイルをDataTransferに追加 ***** %>
+                  <%# ***** 「dt.items.add(file)」：JavaScriptの処理を実行する式 ***** %>
                 });
-                <%# ***** items.add()：ファイルを追加 ***** %>
+                <%# ***** 「})」：JavaScriptのブロックを終了する処理 ***** %>
                 imageInput.files = dt.files;
                 const lines = newFiles.map((file) => `![説明](image:${file.name})`);
-                <%# ***** files = dt.files：ファイル入力に累積ファイルを設定（フォーム送信用） ***** %>
+                <%# ***** 「const lines = newFiles.map((file) => `![説明](image:${file.name})`)」：JavaScriptで定数を宣言する処理 ***** %>
                 insertAtCursor(lines.join("\n"));
-                <%# ***** map()：今回選択したファイル名からMarkdown記法を生成 ***** %>
+                <%# ***** 「insertAtCursor(lines.join("\n"))」：JavaScriptの処理を実行する式 ***** %>
                 updateMediaDisplay();
-                <%# ***** join("\n")：改行区切りで本文へ挿入 ***** %>
+                <%# ***** 「updateMediaDisplay()」：JavaScriptの処理を実行する式 ***** %>
               });
-              <%# ***** updateMediaDisplay()：メディア表示を更新 ***** %>
+              <%# ***** 「})」：JavaScriptのブロックを終了する処理 ***** %>
             }
 
             <%# ***** コード挿入ボタンはcontenteditable版でposts_editor.jsに自動処理されます ***** %>
 
             if (bodyEditor) {
               bodyEditor.addEventListener('input', updateMediaDisplay);
-              <%# ***** 「if」：本文欄が存在する場合 ***** %>
+              <%# ***** 「bodyEditor.addEventListener('input', updateMediaDisplay)」：イベントリスナーを登録する処理 ***** %>
             }
-            <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
+            <%# ***** 「}」：スタイルルールの終了 ***** %>
 
             if (bodyHidden) {
               bodyHidden.addEventListener('input', updateMediaDisplay);
-              <%# ***** 「if」：本文隠しフィールドが存在する場合 ***** %>
+              <%# ***** 「bodyHidden.addEventListener('input', updateMediaDisplay)」：イベントリスナーを登録する処理 ***** %>
             }
-            <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
+            <%# ***** 「}」：スタイルルールの終了 ***** %>
 
             const updateSelected = () => {
               const names = Array.from(getCheckboxes())
@@ -1123,131 +1275,131 @@
                 <%# ***** getCheckboxes()：チェックボックスのNodeListを取得 ***** %>
                 <%# ***** .filter()：チェック状態のものだけを抽出 ***** %>
                 .map((cb) => cb.value);
-                <%# ***** (cb) => cb.checked：チェックボックスがチェック済みか判定 ***** %>
+                <%# ***** 「.map((cb) => cb.value)」：JavaScriptで値を代入する処理 ***** %>
                 <%# ***** .map()：値を取り出す処理 ***** %>
               selectedTags.textContent = names.length ? names.join(', ') : '未選択';
-              <%# ***** (cb) => cb.value：チェックボックスの値を取得 ***** %>
+              <%# ***** 「selectedTags.textContent = names.length ? names.join(', ') : '未選択'」：JavaScriptで値を代入する処理 ***** %>
               <%# ***** textContent：要素のテキストを設定 ***** %>
               <%# ***** names.join(', ')：取得した値をカンマ区切りで結合 ***** %>
             };
-            <%# ***** names.length ? ... : '未選択'：三項演算子で条件分岐 ***** %>
+            <%# ***** 「}」：スタイルルールの終了 ***** %>
 
             const bindCheckboxEvents = () => {
               getCheckboxes().forEach((cb) => cb.addEventListener('change', updateSelected));
-              <%# ***** bindCheckboxEvents()：各チェックボックスにイベントリスナーを登録する関数 ***** %>
+              <%# ***** 「getCheckboxes().forEach((cb) => cb.addEventListener('change', updateSelected))」：イベントリスナーを登録する処理 ***** %>
               <%# ***** forEach()：各チェックボックスに対してループ処理 ***** %>
               <%# ***** addEventListener()：イベントリスナーを登録 ***** %>
               <%# ***** 'change'：チェック状態変化時に発火するイベント ***** %>
             };
-            <%# ***** updateSelected：イベント発火時に実行する関数 ***** %>
+            <%# ***** 「}」：スタイルルールの終了 ***** %>
 
             document.getElementById('add-tag-button').addEventListener('click', function () {
-            <%# ***** add-tag-button：新規タグ作成ボタンのクリックイベント ***** %>
+            <%# ***** 「document.getElementById('add-tag-button').addEventListener('click', function () {」：スタイルルールの開始 ***** %>
             <%# ***** addEventListener()：イベントリスナーを登録 ***** %>
               const name = prompt('作成するタグ名を入力してください');
-              <%# ***** 'click'：クリック時に発火するイベント ***** %>
+              <%# ***** 「const name = prompt('作成するタグ名を入力してください')」：JavaScriptで定数を宣言する処理 ***** %>
               <%# ***** prompt()：ユーザーに入力を促すダイアログ表示 ***** %>
               if (!name) return;
-              <%# ***** name：ユーザーが入力した値（キャンセル時はnull） ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               <%# ***** if (!name)：入力がない（またはキャンセル）場合は関数を抜ける ***** %>
 
               const trimmed = name.trim();
-              <%# ***** .trim()：文字列の前後の空白を削除 ***** %>
+              <%# ***** 「const trimmed = name.trim()」：JavaScriptで定数を宣言する処理 ***** %>
               if (!trimmed) return;
-              <%# ***** trimmed：トリミング後のタグ名 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
               <%# ***** if (!trimmed)：空文字列の場合は関数を抜ける ***** %>
 
               const existing = Array.from(getCheckboxes()).find((cb) => cb.value === trimmed);
-              <%# ***** find()：条件に合致する最初の要素を取得 ***** %>
+              <%# ***** 「const existing = Array.from(getCheckboxes()).find((cb) => cb.value === trimmed)」：JavaScriptで定数を宣言する処理 ***** %>
               <%# ***** (cb) => cb.value === trimmed：値が入力したタグ名と一致するか判定 ***** %>
               if (existing) {
-              <%# ***** existing：一致するチェックボックス（存在すればオブジェクト、無ければundefined） ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                 existing.checked = true;
-                <%# ***** if (existing)：同名のタグが既に存在する場合 ***** %>
+                <%# ***** 「existing.checked = true」：JavaScriptで値を代入する処理 ***** %>
                 updateSelected();
-                <%# ***** .checked = true：該当するチェックボックスをチェック状態に設定 ***** %>
+                <%# ***** 「updateSelected()」：JavaScriptの処理を実行する式 ***** %>
                 return;
-                <%# ***** updateSelected()：表示を更新 ***** %>
+                <%# ***** 「return」：関数の処理を終了して値を返す処理 ***** %>
               }
-              <%# ***** return：関数を終了 ***** %>
+              <%# ***** 「}」：スタイルルールの終了 ***** %>
 
               const id = `tag_new_${Date.now()}`;
-              <%# ***** テンプレートリテラル：新規タグ用のユニークなID生成 ***** %>
+              <%# ***** 「const id = `tag_new_${Date.now()}`」：JavaScriptで定数を宣言する処理 ***** %>
               const wrapper = document.createElement('div');
-              <%# ***** Date.now()：現在時刻をミリ秒単位で取得（IDを一意にするため） ***** %>
+              <%# ***** 「const wrapper = document.createElement('div')」：JavaScriptで定数を宣言する処理 ***** %>
               <%# ***** createElement()：新しいHTML要素を作成 ***** %>
               <%# ***** 'div'：作成する要素の名前 ***** %>
               wrapper.className = 'custom-control custom-checkbox mr-3 mb-2';
-              <%# ***** wrapper：作成した要素への参照 ***** %>
+              <%# ***** 「wrapper.className = 'custom-control custom-checkbox mr-3 mb-2'」：JavaScriptで値を代入する処理 ***** %>
               <%# ***** className：要素のクラス属性を設定 ***** %>
 
               const checkbox = document.createElement('input');
-              <%# ***** createElement()：input要素を作成 ***** %>
+              <%# ***** 「const checkbox = document.createElement('input')」：JavaScriptで定数を宣言する処理 ***** %>
               checkbox.type = 'checkbox';
-              <%# ***** checkbox：作成した要素への参照 ***** %>
+              <%# ***** 「checkbox.type = 'checkbox'」：JavaScriptで値を代入する処理 ***** %>
               checkbox.name = 'post[tag_list][]';
-              <%# ***** .type = 'checkbox'：入力タイプをチェックボックスに設定 ***** %>
+              <%# ***** 「checkbox.name = 'post[tag_list][]'」：JavaScriptで値を代入する処理 ***** %>
               checkbox.value = trimmed;
-              <%# ***** .name：フォーム送信時の属性名を設定 ***** %>
+              <%# ***** 「checkbox.value = trimmed」：JavaScriptで値を代入する処理 ***** %>
               checkbox.id = id;
-              <%# ***** .value：チェックボックスの値をタグ名に設定 ***** %>
+              <%# ***** 「checkbox.id = id」：JavaScriptで値を代入する処理 ***** %>
               checkbox.className = 'custom-control-input';
-              <%# ***** .id：要素のIDを設定 ***** %>
+              <%# ***** 「checkbox.className = 'custom-control-input'」：JavaScriptで値を代入する処理 ***** %>
               checkbox.checked = true;
-              <%# ***** .className：要素のクラス属性を設定 ***** %>
+              <%# ***** 「checkbox.checked = true」：JavaScriptで値を代入する処理 ***** %>
               <%# ***** .checked = true：デフォルトでチェック済みに設定 ***** %>
 
               const label = document.createElement('label');
-              <%# ***** createElement()：label要素を作成 ***** %>
+              <%# ***** 「const label = document.createElement('label')」：JavaScriptで定数を宣言する処理 ***** %>
               label.className = 'custom-control-label';
-              <%# ***** 「<label>【内容】</label>」：作成した要素への参照 ***** %>
+              <%# ***** 「label.className = 'custom-control-label'」：JavaScriptで値を代入する処理 ***** %>
               label.setAttribute('for', id);
-              <%# ***** .className：要素のクラス属性を設定 ***** %>
+              <%# ***** 「label.setAttribute('for', id)」：JavaScriptの処理を実行する式 ***** %>
               <%# ***** setAttribute()：HTML属性を設定 ***** %>
               <%# ***** 'for'：設定する属性名 ***** %>
               label.textContent = trimmed;
-              <%# ***** id：属性の値（関連チェックボックスのID） ***** %>
+              <%# ***** 「label.textContent = trimmed」：JavaScriptで値を代入する処理 ***** %>
               <%# ***** .textContent：ラベルのテキストを設定 ***** %>
 
               wrapper.appendChild(checkbox);
-              <%# ***** appendChild()：子要素を追加 ***** %>
+              <%# ***** 「wrapper.appendChild(checkbox)」：JavaScriptの処理を実行する式 ***** %>
               wrapper.appendChild(label);
-              <%# ***** checkbox：追加する要素 ***** %>
+              <%# ***** 「wrapper.appendChild(label)」：JavaScriptの処理を実行する式 ***** %>
               <%# ***** appendChild()：別の子要素を追加 ***** %>
               checkboxContainer.appendChild(wrapper);
-              <%# ***** 「<label>【内容】</label>」：追加する要素 ***** %>
+              <%# ***** 「checkboxContainer.appendChild(wrapper)」：JavaScriptの処理を実行する式 ***** %>
               <%# ***** checkboxContainer.appendChild()：コンテナに新しい行を追加 ***** %>
               <%# ***** wrapper：追加する要素 ***** %>
 
               checkbox.addEventListener('change', updateSelected);
-              <%# ***** addEventListener()：新規チェックボックスにイベントリスナーを登録 ***** %>
+              <%# ***** 「checkbox.addEventListener('change', updateSelected)」：イベントリスナーを登録する処理 ***** %>
               <%# ***** 'change'：チェック状態変化時に発火するイベント ***** %>
               updateSelected();
-              <%# ***** updateSelected：イベント発火時に実行する関数 ***** %>
+              <%# ***** 「updateSelected()」：JavaScriptの処理を実行する式 ***** %>
             });
-            <%# ***** updateSelected()：表示を更新 ***** %>
+            <%# ***** 「})」：JavaScriptのブロックを終了する処理 ***** %>
 
             bindCheckboxEvents();
             updateSelected();
-            <%# ***** bindCheckboxEvents()：初期化時にすべてのチェックボックスにイベントを登録 ***** %>
+            <%# ***** 「updateSelected()」：JavaScriptの処理を実行する式 ***** %>
             updateMediaDisplay();
-            <%# ***** updateSelected()：初期表示状態を設定 ***** %>
+            <%# ***** 「updateMediaDisplay()」：JavaScriptの処理を実行する式 ***** %>
           };
-          <%# ***** updateMediaDisplay()：初期表示を更新 ***** %>
+          <%# ***** 「}」：スタイルルールの終了 ***** %>
 
           document.addEventListener('DOMContentLoaded', initPostForm);
           document.addEventListener('turbolinks:load', initPostForm);
-          <%# ***** DOMContentLoaded：通常のページ読み込み時に初期化 ***** %>
+          <%# ***** 「document.addEventListener('turbolinks:load', initPostForm)」：イベントリスナーを登録する処理 ***** %>
         </script>
         <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
-        <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
+        <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
       <% end %>
       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     <%# ***** 「end」：form_withブロックの終了 ***** %>
   </div>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 <%# ***** /div.container：コンテナレイアウトを閉じる ***** %>

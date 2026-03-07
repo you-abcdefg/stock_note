@@ -19,7 +19,7 @@
         <%= f.search_field :body_cont, class: 'form-control', placeholder: 'コメント内容で検索' %>
         <%# ***** 「f.search_field :body_cont, class: 'form-control', placeholder: 'コメント内容で検索'」：画面へ値を出力する式 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <div class="col-md-4">
       <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
       <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -28,7 +28,7 @@
         <%= f.search_field :user_name_cont, class: 'form-control', placeholder: 'ユーザー名で検索' %>
         <%# ***** 「f.search_field :user_name_cont, class: 'form-control', placeholder: 'ユーザー名で検索'」：画面へ値を出力する式 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <div class="col-md-4">
       <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
       <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -37,9 +37,9 @@
         <%= f.search_field :post_title_cont, class: 'form-control', placeholder: '投稿タイトルで検索' %>
         <%# ***** 「f.search_field :post_title_cont, class: 'form-control', placeholder: '投稿タイトルで検索'」：画面へ値を出力する式 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     <div class="mb-3">
     <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
     <%# ***** 送信ボタンセクション ***** %>
@@ -49,7 +49,7 @@
       <%= link_to 'リセット', admin_comments_path, class: 'btn btn-secondary' %>
       <%# ***** 「link_to 'リセット', admin_comments_path, class: 'btn btn-secondary'」：画面へ値を出力する式 ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   <% end %>
   <%# ***** 「end」：Ruby式を実行する処理 ***** %>
   <%# ***** 一覧テーブルセクション ***** %>
@@ -73,9 +73,9 @@
         <th>操作</th>
         <%# ***** 「<th>【内容】</th>」：テーブル見出しセル要素 ***** %>
       </tr>
-      <%# ***** 「</tr>」：trタグ（テーブル行要素）の終了 ***** %>
+      <%# ***** 「<tr>【内容】</tr>」：表の行要素 ***** %>
     </thead>
-    <%# ***** 「</thead>」：theadタグ（テーブル見出し要素）の終了 ***** %>
+    <%# ***** 「<thead>【内容】</thead>」：表ヘッダー要素 ***** %>
     <tbody>
     <%# ***** 「<tbody>」：テーブル本文要素 ***** %>
     <%# ***** 一覧ループセクション ***** %>
@@ -102,17 +102,17 @@
             <%= link_to '削除', admin_comment_path(comment), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-danger' %>
             <%# ***** 「link_to '削除', admin_comment_path(comment), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'btn btn-sm btn-danger'」：画面へ値を出力する式 ***** %>
           </td>
-          <%# ***** 「</td>」：tdタグ（テーブルデータセル要素）の終了 ***** %>
+          <%# ***** 「<td>【内容】</td>」：表のデータセル要素 ***** %>
         </tr>
-        <%# ***** 「</tr>」：trタグ（テーブル行要素）の終了 ***** %>
+        <%# ***** 「<tr>【内容】</tr>」：表の行要素 ***** %>
       <% end %>
       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </tbody>
-    <%# ***** 「</tbody>」：tbodyタグ（テーブル本文要素）の終了 ***** %>
+    <%# ***** 「<tbody>【内容】</tbody>」：表本体要素 ***** %>
   </table>
-  <%# ***** 「</table>」：tableタグ（テーブル要素）の終了 ***** %>
+  <%# ***** 「<table>【内容】</table>」：表要素 ***** %>
 
   <%= paginate @comments %>
   <%# ***** 「paginate @comments」：画面へ値を出力する式 ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>

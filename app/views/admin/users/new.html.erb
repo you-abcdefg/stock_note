@@ -18,9 +18,7 @@
       <%# ***** エラーメッセージ表示セクション ***** %>
       <%# ***** 条件分岐セクション ***** %>
         <% if @user.errors.any? %>
-        <%# ***** 「if @user.errors.any?」：Ruby式を実行する処理 ***** %>
-        <%# ***** 「if (@user.errors.any?)」: @user.errors.any?を判定する条件分岐 ***** %>
-        <%# ***** 「if」：条件を判定する分岐 ***** %>
+        <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
           <div class="alert alert-danger">
           <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
           <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -40,9 +38,9 @@
               <% end %>
               <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </ul>
-            <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
+            <%# ***** 「<ul>【内容】</ul>」：順序なしリスト要素 ***** %>
           </div>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
         <% end %>
         <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
 
@@ -55,7 +53,7 @@
           <%= form.text_field :name, class: 'form-control', placeholder: 'ユーザー名を入力' %>
           <%# ***** 「form.text_field :name, class: 'form-control', placeholder: 'ユーザー名を入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -65,7 +63,7 @@
           <%= form.email_field :email, class: 'form-control', placeholder: 'メールアドレスを入力' %>
           <%# ***** 「form.email_field :email, class: 'form-control', placeholder: 'メールアドレスを入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -75,7 +73,7 @@
           <%= form.password_field :password, class: 'form-control', placeholder: 'パスワードを入力' %>
           <%# ***** 「form.password_field :password, class: 'form-control', placeholder: 'パスワードを入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -85,7 +83,7 @@
           <%= form.password_field :password_confirmation, class: 'form-control', placeholder: 'パスワードを再入力' %>
           <%# ***** 「form.password_field :password_confirmation, class: 'form-control', placeholder: 'パスワードを再入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
         <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -95,7 +93,7 @@
           <%= form.select :role, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, {}, class: 'form-control' %>
           <%# ***** 「form.select :role, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, {}, class: 'form-control'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group">
         <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -106,12 +104,12 @@
           <%= link_to 'キャンセル', admin_users_path, class: 'btn btn-secondary' %>
           <%# ***** 「link_to 'キャンセル', admin_users_path, class: 'btn btn-secondary'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <% end %>
       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   </div>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>

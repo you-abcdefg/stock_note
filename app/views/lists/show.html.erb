@@ -18,19 +18,17 @@
         <%= @list.public_list? ? '全体公開' : '非公開' %>
         <%# ***** 「@list.public_list? ? '全体公開' : '非公開'」：画面へ値を出力する式 ***** %>
       </span>
-      <%# ***** 「</span>」：spanタグ（インライン要素）の終了 ***** %>
+      <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
       <span class="ml-2 text-muted small">作成者: <%= @list.user.name.presence || @list.user.email %></span>
       <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
       <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     <div>
     <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
     <%# ***** 条件分岐セクション ***** %>
       <% if @list.owner?(current_user) %>
-      <%# ***** 「if @list.owner?(current_user)」：Ruby式を実行する処理 ***** %>
-      <%# ***** 「if (@list.owner?(current_user))」: @list.owner?(current_user)を判定する条件分岐 ***** %>
-      <%# ***** 「if」：条件を判定する分岐 ***** %>
+      <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
         <%= link_to '編集', edit_list_path(@list), class: 'btn btn-sm btn-outline-primary' %>
         <%# ***** 「link_to '編集', edit_list_path(@list), class: 'btn btn-sm btn-outline-primary'」：画面へ値を出力する式 ***** %>
         <%= link_to '削除', list_path(@list), method: :delete, data: { confirm: 'リストを削除しますか？' }, class: 'btn btn-sm btn-outline-danger' %>
@@ -40,9 +38,9 @@
       <%= link_to '一覧へ戻る', lists_path, class: 'btn btn-sm btn-outline-secondary' %>
       <%# ***** 「link_to '一覧へ戻る', lists_path, class: 'btn btn-sm btn-outline-secondary'」：画面へ値を出力する式 ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   </div>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
   <div class="card mb-4">
   <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -54,9 +52,7 @@
     <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
     <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <% if @list_items.any? %>
-      <%# ***** 「if @list_items.any?」：Ruby式を実行する処理 ***** %>
-      <%# ***** 「if (@list_items.any?)」: @list_items.any?を判定する条件分岐 ***** %>
-      <%# ***** 「if」：条件を判定する分岐 ***** %>
+      <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
         <ul class="list-group list-group-flush">
         <%# ***** 「<ul>」：順序なしリスト要素 ***** %>
         <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -76,11 +72,9 @@
                 <%= link_to item.post.title, post_path(item.post) %>
                 <%# ***** 「link_to item.post.title, post_path(item.post)」：画面へ値を出力する式 ***** %>
                 </div>
-                <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                 <% if @list.owner?(current_user) %>
-                <%# ***** 「if @list.owner?(current_user)」：Ruby式を実行する処理 ***** %>
-                <%# ***** 「if (@list.owner?(current_user))」: @list.owner?(current_user)を判定する条件分岐 ***** %>
-                <%# ***** 「if」：条件を判定する分岐 ***** %>
+                <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
                   <div class="d-flex">
                   <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
                   <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -91,15 +85,14 @@
                     <%= button_to '削除', list_list_item_path(@list, item), method: :delete, data: { confirm: 'リストから削除しますか？' }, class: 'btn btn-sm btn-outline-danger' %>
                     <%# ***** 「button_to '削除', list_list_item_path(@list, item), method: :delete, data: { confirm: 'リストから削除しますか？' }, class: 'btn btn-sm btn-outline-danger'」：画面へ値を出力する式 ***** %>
                   </div>
-                  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                 <% end %>
                 <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
               </div>
-              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
               <% if @list.owner?(current_user) %>
-              <%# ***** 「if @list.owner?(current_user)」：Ruby式を実行する処理 ***** %>
-              <%# ***** 「if (@list.owner?(current_user))」: @list.owner?(current_user)を判定する条件分岐 ***** %>
+              <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
 <%# ***** 入力フォームセクション ***** %>
                 <%= form_with model: [@list, item], local: true, class: 'mt-2' do |f| %>
                 <%# ***** 「form_with model: [@list, item], local: true, class: 'mt-2' do |f|」：画面へ値を出力する式 ***** %>
@@ -112,7 +105,7 @@
                     <%= f.text_area :memo, rows: 2, class: 'form-control' %>
                     <%# ***** 「f.text_area :memo, rows: 2, class: 'form-control'」：画面へ値を出力する式 ***** %>
                   </div>
-                  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
                   <%# ***** 送信ボタンセクション ***** %>
                   <%= f.submit 'メモ保存', class: 'btn btn-sm btn-outline-primary' %>
                   <%# ***** 「f.submit 'メモ保存', class: 'btn btn-sm btn-outline-primary'」：画面へ値を出力する式 ***** %>
@@ -128,15 +121,15 @@
                   <strong>投稿メモ:</strong> <%= simple_format(item.memo) %>
                   <%# ***** 「<strong>【内容】</strong>」：強調テキスト要素 ***** %>
                 </div>
-                <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+                <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
               <% end %>
               <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </li>
-            <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
+            <%# ***** 「<li>【内容】</li>」：リスト項目要素 ***** %>
           <% end %>
           <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
         </ul>
-        <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
+        <%# ***** 「<ul>【内容】</ul>」：順序なしリスト要素 ***** %>
       <% else %>
       <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
         <p class="text-muted mb-0">投稿はまだ登録されていません。</p>
@@ -145,9 +138,9 @@
       <% end %>
       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   </div>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
