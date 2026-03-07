@@ -1,85 +1,117 @@
 <%# ***** admin/users/new のビュー ***** %>
 <div class="container mt-4">
+<%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+<%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
   <div class="row">
-  <%# ***** div：汎用コンテナ要素 ***** %>
+  <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+  <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
     <div class="col-md-6">
-    <%# ***** div：汎用コンテナ要素 ***** %>
-    <%# ***** div：汎用コンテナ要素 ***** %>
+    <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+    <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <h1>ユーザーを追加</h1>
 
+      <%# ***** 「<h1>【内容】</h1>」：見出し要素 ***** %>
       <%# ***** 入力フォームセクション ***** %>
       <%= form_with(model: [:admin, @user], local: true) do |form| %>
+      <%# ***** 「form_with(model: [:admin, @user], local: true) do |form|」：画面へ値を出力する式 ***** %>
       <%# ***** エラーメッセージ表示セクション ***** %>
       <%# ***** 条件分岐セクション ***** %>
         <% if @user.errors.any? %>
-        <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
-        <%# ***** if：条件を判定する分岐 ***** %>
+        <%# ***** 「if @user.errors.any?」：Ruby式を実行する処理 ***** %>
+        <%# ***** 「if (@user.errors.any?)」: @user.errors.any?を判定する条件分岐 ***** %>
+        <%# ***** 「if」：条件を判定する分岐 ***** %>
           <div class="alert alert-danger">
-          <%# ***** div：汎用コンテナ要素 ***** %>
+          <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <h4><%= pluralize(@user.errors.count, "error") %> エラーが発生しました:</h4>
-            <%# ***** h4：見出し要素 ***** %>
+            <%# ***** 「<h4>【内容】</h4>」：見出し要素 ***** %>
             <ul>
+            <%# ***** 「<ul>」：順序なしリスト要素 ***** %>
             <%# ***** 一覧ループセクション ***** %>
               <% @user.errors.full_messages.each do |message| %>
-              <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+              <%# ***** 「@user.errors.full_messages.each do |message|」：Ruby式を実行する処理 ***** %>
+              <%# ***** 「each do |message|」: コレクションを順番に処理し、|message| で現在要素を受け取る反復構文 ***** %>
               <%# ***** 「@user.errors.full_messages」：処理対象となるコレクション ***** %>
               <%# ***** 「|message|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
-              <%# ***** each：コレクションを順に処理するループ ***** %>
+              <%# ***** 「each」：コレクションを順に処理するループ ***** %>
                 <li><%= message %></li>
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>【内容】</li>」：リスト項目要素 ***** %>
               <% end %>
+              <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </ul>
-            <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
+            <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
+        <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :name, 'ユーザー名' %>
+          <%# ***** 「form.label :name, 'ユーザー名'」：画面へ値を出力する式 ***** %>
           <%# ***** フォーム入力欄セクション ***** %>
           <%= form.text_field :name, class: 'form-control', placeholder: 'ユーザー名を入力' %>
+          <%# ***** 「form.text_field :name, class: 'form-control', placeholder: 'ユーザー名を入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :email, 'メールアドレス' %>
+          <%# ***** 「form.label :email, 'メールアドレス'」：画面へ値を出力する式 ***** %>
           <%= form.email_field :email, class: 'form-control', placeholder: 'メールアドレスを入力' %>
+          <%# ***** 「form.email_field :email, class: 'form-control', placeholder: 'メールアドレスを入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :password, 'パスワード' %>
+          <%# ***** 「form.label :password, 'パスワード'」：画面へ値を出力する式 ***** %>
           <%= form.password_field :password, class: 'form-control', placeholder: 'パスワードを入力' %>
+          <%# ***** 「form.password_field :password, class: 'form-control', placeholder: 'パスワードを入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :password_confirmation, 'パスワード確認' %>
+          <%# ***** 「form.label :password_confirmation, 'パスワード確認'」：画面へ値を出力する式 ***** %>
           <%= form.password_field :password_confirmation, class: 'form-control', placeholder: 'パスワードを再入力' %>
+          <%# ***** 「form.password_field :password_confirmation, class: 'form-control', placeholder: 'パスワードを再入力'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :role, '権限' %>
+          <%# ***** 「form.label :role, '権限'」：画面へ値を出力する式 ***** %>
           <%= form.select :role, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, {}, class: 'form-control' %>
+          <%# ***** 「form.select :role, User.roles.keys.map { |k| [I18n.t("enums.user.role.#{k}"), k] }, {}, class: 'form-control'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group">
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
         <%# ***** 送信ボタンセクション ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.submit '追加', class: 'btn btn-primary' %>
+          <%# ***** 「form.submit '追加', class: 'btn btn-primary'」：画面へ値を出力する式 ***** %>
           <%= link_to 'キャンセル', admin_users_path, class: 'btn btn-secondary' %>
+          <%# ***** 「link_to 'キャンセル', admin_users_path, class: 'btn btn-secondary'」：画面へ値を出力する式 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% end %>
+      <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </div>
+    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
-  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
-<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>

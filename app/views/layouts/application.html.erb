@@ -4,288 +4,410 @@
 <%# ***** Bootstrap 4 と Font Awesome を使用したレスポンシブデザイン ***** %>
 
 <!DOCTYPE html>
+<%# ***** 「!DOCTYPE html」：HTML5文書型宣言 ***** %>
 <html>
-<%# ***** html：HTMLドキュメント全体 ***** %>
+<%# ***** 「<html>」：HTMLドキュメント全体 ***** %>
   <head>
-  <%# ***** head：ヘッダー情報セクション ***** %>
+  <%# ***** 「<head>」：ヘッダー情報セクション ***** %>
     <title>Stock Note</title>
+    <%# ***** 「<title>【内容】</title>」：文書タイトル要素 ***** %>
     <%# ***** スマホ対応のためのviewport設定 ***** %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%# ***** 「<meta>」：メタ情報要素 ***** %>
     <%# ***** セキュリティ設定（CSRF対策） ***** %>
+    <%# ***** 「name ="【名前】"」：フォーム送信時のパラメータ名を指定する属性 ***** %>
+    <%# ***** 「content ="【内容】"」：メタ情報の内容を指定する属性 ***** %>
     <%= csrf_meta_tags %>
+    <%# ***** 「csrf_meta_tags」：画面へ値を出力する式 ***** %>
     <%= csp_meta_tag %>
-
+    <%# ***** 「csp_meta_tag」：画面へ値を出力する式 ***** %>
     <%# ***** スタイルシート読み込み ***** %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%# ***** 「stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'」：画面へ値を出力する式 ***** %>
     <%# ***** JavaScript読み込み ***** %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%# ***** 「javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'」：画面へ値を出力する式 ***** %>
     <%# ***** Font Awesome（アイコン）とBootstrap（CSSフレームワーク）をCDNから読み込み ***** %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <%# ***** 「<link>」：link要素 ***** %>
+    <%# ***** 「rel ="【関係】"」：リンク先との関係を示す属性 ***** %>
+    <%# ***** 「href ="【URL】"」：リンク先URLを指定する属性 ***** %>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <%# ***** link：外部リソース参照要素 ***** %>
-    <%# ***** link：外部リソース参照要素 ***** %>
+    <%# ***** 「<link>」：外部リソース参照要素 ***** %>
+    <%# ***** 「rel ="【関係】"」：リンク先との関係を示す属性 ***** %>
+    <%# ***** 「href ="【URL】"」：リンク先URLを指定する属性 ***** %>
   </head>
-  <%# ***** </head>：headタグ（ヘッダー情報セクション）の終了 ***** %>
+  <%# ***** 「</head>」：headタグ（ヘッダー情報セクション）の終了 ***** %>
 
   <body>
+  <%# ***** 「<body>」：文書本文要素 ***** %>
   <%# ***** ヘッダー：ナビゲーションバー ***** %>
     <header>
-    <%# ***** header：ヘッダー要素 ***** %>
+    <%# ***** 「<header>」：ヘッダー要素 ***** %>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <%# ***** nav：ナビゲーション要素 ***** %>
+      <%# ***** 「<nav>」：ナビゲーション要素 ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
         <div class="container">
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
         <%# ***** サイトロゴ（リンクなし） ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <span class="navbar-brand">Stock Note</span>
 
+          <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
           <%# ***** スマホ用ハンバーガーメニューボタン ***** %>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <%# ***** button：ボタン要素 ***** %>
+          <%# ***** 「<button>」：ボタン要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+          <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+          <%# ***** 「data-toggle ="【動作種別】"」：JavaScript動作用のデータ属性 ***** %>
+          <%# ***** 「data-target ="【対象セレクタ】"」：JavaScript動作対象を指定するデータ属性 ***** %>
+          <%# ***** 「aria-controls ="【制御対象ID】"」：制御対象要素を指定する属性 ***** %>
+          <%# ***** 「aria-expanded ="【展開状態】"」：展開状態を示す属性 ***** %>
+          <%# ***** 「aria-label ="【ラベル】"」：支援技術向けの要素ラベルを指定する属性 ***** %>
             <span class="navbar-toggler-icon"></span>
-            <%# ***** span：インライン要素 ***** %>
+            <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
           </button>
 
+          <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
           <%# ***** ナビゲーションメニュー ***** %>
           <div class="collapse navbar-collapse" id="navbarNav">
-          <%# ***** div：汎用コンテナ要素 ***** %>
+          <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+          <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
             <ul class="navbar-nav ml-auto">
+            <%# ***** 「<ul>」：順序なしリスト要素 ***** %>
             <%# ***** ログイン中の場合 ***** %>
 <%# ***** 条件分岐セクション ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
               <% if user_signed_in? %>
-              <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+              <%# ***** 「if user_signed_in?」：Ruby式を実行する処理 ***** %>
+              <%# ***** 「if (user_signed_in?)」: user_signed_in?を判定する条件分岐 ***** %>
               <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
-              <%# ***** if：条件を判定する分岐 ***** %>
+              <%# ***** 「if」：条件を判定する分岐 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to root_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to root_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-home"></i> Top
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to posts_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to posts_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-list"></i> 投稿
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to user_path(current_user), class: "nav-link text-light" do %>
+                  <%# ***** 「link_to user_path(current_user), class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-user-circle"></i> マイページ
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to users_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to users_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-users"></i> ユーザー
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to groups_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to groups_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-users-cog"></i> グループ
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to lists_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to lists_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-list-ul"></i> リスト
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to tags_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to tags_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-tags"></i> タグ
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to about_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to about_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-info-circle"></i> About
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <%# ***** 管理者のみ表示される管理画面リンク ***** %>
                 <% if current_user.admin? %>
-                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
-                <%# ***** if：条件を判定する分岐 ***** %>
+                <%# ***** 「if current_user.admin?」：Ruby式を実行する処理 ***** %>
+                <%# ***** 「if (current_user.admin?)」: current_user.admin?を判定する条件分岐 ***** %>
+                <%# ***** 「if」：条件を判定する分岐 ***** %>
                   <li class="nav-item">
-                  <%# ***** li：リスト項目要素 ***** %>
+                  <%# ***** 「<li>」：リスト項目要素 ***** %>
+                  <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                     <%= link_to admin_users_path, class: "nav-link text-light" do %>
+                    <%# ***** 「link_to admin_users_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                         <i class="fas fa-cogs"></i> 管理
                         <%# ***** i：HTML要素 ***** %>
                     <% end %>
+                    <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                   </li>
-                  <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                  <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <% end %>
+                <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to destroy_user_session_path, method: :delete, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to destroy_user_session_path, method: :delete, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-sign-out-alt"></i> ログアウト
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <%# ***** ログインしていない場合 ***** %>
               <% else %>
               <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
-              <%# ***** else：上記条件に当てはまらない場合の分岐 ***** %>
+              <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to root_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to root_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-home"></i> Top
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to posts_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to posts_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-list"></i> 投稿
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to users_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to users_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-users"></i> ユーザー
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to tags_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to tags_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-tags"></i> タグ
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to lists_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to lists_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-list-ul"></i> リスト
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to about_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to about_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-info-circle"></i> About
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to new_user_registration_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to new_user_registration_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-user-plus"></i> 新規登録
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
                 <li class="nav-item">
-                <%# ***** li：リスト項目要素 ***** %>
+                <%# ***** 「<li>」：リスト項目要素 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                   <%= link_to new_user_session_path, class: "nav-link text-light" do %>
+                  <%# ***** 「link_to new_user_session_path, class: "nav-link text-light" do」：画面へ値を出力する式 ***** %>
                     <i class="fas fa-sign-in-alt"></i> ログイン
                     <%# ***** i：HTML要素 ***** %>
                   <% end %>
+                  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                 </li>
-                <%# ***** </li>：liタグ（リスト項目要素）の終了 ***** %>
+                <%# ***** 「</li>」：liタグ（リスト項目要素）の終了 ***** %>
               <% end %>
+              <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </ul>
-            <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
+            <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
           </div>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       </nav>
-      <%# ***** </nav>：navタグ（ナビゲーション要素）の終了 ***** %>
+      <%# ***** 「</nav>」：navタグ（ナビゲーション要素）の終了 ***** %>
     </header>
 
+    <%# ***** 「</header>」：headerタグ（ヘッダー要素）の終了 ***** %>
     <%# ***** メインコンテンツエリア ***** %>
     <main>
-    <%# ***** main：メインコンテンツ要素 ***** %>
+    <%# ***** 「<main>」：メインコンテンツ要素 ***** %>
       <div class="container mt-4">
+      <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
       <%# ***** 成功メッセージ表示（notice） ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
         <% if notice %>
-        <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
-        <%# ***** if：条件を判定する分岐 ***** %>
+        <%# ***** 「if notice」：Ruby式を実行する処理 ***** %>
+        <%# ***** 「if (notice)」: noticeを判定する条件分岐 ***** %>
+        <%# ***** 「if」：条件を判定する分岐 ***** %>
           <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <%# ***** div：汎用コンテナ要素 ***** %>
+          <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+          <%# ***** 「role ="【ロール】"」：要素の役割を示す属性 ***** %>
             <%= notice %>
+            <%# ***** 「notice」：画面へ値を出力する式 ***** %>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <%# ***** button：ボタン要素 ***** %>
+            <%# ***** 「<button>」：ボタン要素 ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「data-dismiss ="【値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
+            <%# ***** 「aria-label ="【ラベル】"」：支援技術向けの要素ラベルを指定する属性 ***** %>
               <span aria-hidden="true">&times;</span>
-              <%# ***** span：インライン要素 ***** %>
+              <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
             </button>
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
+        <%# ***** 「end」：Ruby式を実行する処理 ***** %>
         <%# ***** エラーメッセージ表示（alert） ***** %>
         <% if alert %>
-        <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
-        <%# ***** if：条件を判定する分岐 ***** %>
+        <%# ***** 「if alert」：Ruby式を実行する処理 ***** %>
+        <%# ***** 「if (alert)」: alertを判定する条件分岐 ***** %>
+        <%# ***** 「if」：条件を判定する分岐 ***** %>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%# ***** div：汎用コンテナ要素 ***** %>
+          <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+          <%# ***** 「role ="【ロール】"」：要素の役割を示す属性 ***** %>
             <%= alert %>
+            <%# ***** 「alert」：画面へ値を出力する式 ***** %>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <%# ***** button：ボタン要素 ***** %>
+            <%# ***** 「<button>」：ボタン要素 ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「data-dismiss ="【値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
+            <%# ***** 「aria-label ="【ラベル】"」：支援技術向けの要素ラベルを指定する属性 ***** %>
               <span aria-hidden="true">&times;</span>
-              <%# ***** span：インライン要素 ***** %>
+              <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
             </button>
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
+        <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
       </div>
+      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       <%# ***** 各ページのコンテンツがここに表示される ***** %>
       <%= yield %>
+      <%# ***** 「yield」：画面へ値を出力する式 ***** %>
     </main>
 
+    <%# ***** 「</main>」：mainタグ（メイン要素）の終了 ***** %>
     <%# ***** フッター ***** %>
     <footer class="border-top mt-5 pt-5">
-    <%# ***** footer：フッター要素 ***** %>
+    <%# ***** 「<footer>」：フッター要素 ***** %>
+    <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <div class="container mb-5">
+      <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
         <div class="row">
-        <%# ***** div：汎用コンテナ要素 ***** %>
+        <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <div class="mx-auto">
-          <%# ***** div：汎用コンテナ要素 ***** %>
-          <%# ***** div：汎用コンテナ要素 ***** %>
+          <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <p class="text-center">© 2026 Stock Note All rights reserved.</p>
-            <%# ***** p：段落要素 ***** %>
+            <%# ***** 「<p>【内容】</p>」：段落要素 ***** %>
           </div>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
-      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
     </footer>
 
+    <%# ***** 「</footer>」：footerタグ（フッター要素）の終了 ***** %>
     <%# ***** jQuery と Bootstrap の JavaScript を CDN から読み込み ***** %>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
     <%# ***** スクリプトセクション ***** %>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-    <%# ***** script：スクリプト要素 ***** %>
+    <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
 
     <%# ***** ナビゲーションメニューのクリックで自動折りたたみ ***** %>
     <script>
-    <%# ***** script：スクリプト要素 ***** %>
+    <%# ***** 「<script>」：スクリプト要素 ***** %>
       // Bootstrapのネイティブcollapse機能を活用
       document.addEventListener('DOMContentLoaded', function() {
         // メニューリンククリック時に自動で閉じる処理のみ実装
@@ -301,8 +423,8 @@
         });
       });
     </script>
-    <%# ***** </script>：scriptタグ（スクリプト要素）の終了 ***** %>
+    <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
   </body>
-  <%# ***** </body>：bodyタグ（本文セクション）の終了 ***** %>
+  <%# ***** 「</body>」：bodyタグ（本文セクション）の終了 ***** %>
 </html>
-<%# ***** </html>：htmlタグ（HTMLドキュメント全体）の終了 ***** %>
+<%# ***** 「</html>」：htmlタグ（HTMLドキュメント全体）の終了 ***** %>

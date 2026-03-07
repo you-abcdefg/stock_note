@@ -1,32 +1,43 @@
 <div class="container px-5 px-sm-0 mt-4">
+<%# ***** 「<div>」：汎用コンテナ要素 ***** %>
 <%# ***** posts/new のビュー ***** %>
 <%# ***** container：レスポンシブコンテナクラス ***** %>
 <%# ***** px-5 px-sm-0：パディング調整（小画面で0、大画面で5） ***** %>
+<%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
   <div class="row">
+  <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
   <%# ***** mt-4：上部マージンを追加 ***** %>
+  <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
     <div class="col-md-12">
+    <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
     <%# ***** row：Bootstrapのグリッドシステムを使用する行 ***** %>
+    <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <h2>投稿を作成</h2>
       <%# ***** col-md-12：全幅を占めるカラム ***** %>
-      <%# ***** h2：2番目のレベルの見出し ***** %>
+      <%# ***** 「<h2>【内容】</h2>」：2番目のレベルの見出し ***** %>
 
       <script>
+      <%# ***** 「<script>」：スクリプト要素 ***** %>
       <%# ***** 画像URLマップをJavaScriptで利用できるようにする ***** %>
         window.imageUrlMap = {
-        <%# ***** script：スクリプト要素 ***** %>
+        <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
 <%# ***** 一覧ループセクション ***** %>
           <% @post.images.each do |image| %>
-          <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+          <%# ***** 「@post.images.each do |image|」：Ruby式を実行する処理 ***** %>
+          <%# ***** 「each do |image|」: コレクションを順番に処理し、|image| で現在要素を受け取る反復構文 ***** %>
           <%# ***** 「@post.images」：処理対象となるコレクション ***** %>
           <%# ***** 「|image|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
             '<%= image.filename %>': '<%= url_for(image) %>',
-            <%# ***** each：コレクションを順に処理するループ ***** %>
+            <%# ***** 「each」：コレクションを順に処理するループ ***** %>
           <% end %>
+          <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
         };
       </script>
 
+      <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
       <%# ***** 入力フォームセクション ***** %>
       <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
+      <%# ***** 「form_with(model: @post, local: true, html: { multipart: true }) do |form|」：画面へ値を出力する式 ***** %>
       <%# ***** form_with：投稿フォーム生成ヘルパー ***** %>
       <%# ***** model: @post：Postモデルをフォームに紐づける ***** %>
       <%# ***** local: true：Turboドライブを無効化して同期通信で送信 ***** %>
@@ -34,64 +45,76 @@
       <%# ***** エラーメッセージ表示セクション ***** %>
       <%# ***** 条件分岐セクション ***** %>
         <% if @post.errors.any? %>
-        <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+        <%# ***** 「if @post.errors.any?」：Ruby式を実行する処理 ***** %>
+        <%# ***** 「if (@post.errors.any?)」: @post.errors.any?を判定する条件分岐 ***** %>
 
-        <%# ***** if：投稿にエラーがある場合の条件 ***** %>
+        <%# ***** 「if」：投稿にエラーがある場合の条件 ***** %>
           <div class="alert alert-danger">
           <%# ***** @post.errors.any?：1つ以上のエラーが存在するか判定 ***** %>
-          <%# ***** div：エラーメッセージを囲む警告アラート ***** %>
+          <%# ***** 「<div>【内容】</div>」：エラーメッセージを囲む警告アラート ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <h4><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h4>
             <%# ***** alert alert-danger：赤色の危険アラートのスタイル ***** %>
-            <%# ***** h4：4番目のレベルの見出し ***** %>
+            <%# ***** 「<h4>【内容】</h4>」：4番目のレベルの見出し ***** %>
             <%# ***** pluralize：数に応じて単数・複数形を使い分ける ***** %>
             <ul>
             <%# ***** @post.errors.count：エラー数を取得 ***** %>
-            <%# ***** ul：順序なしリスト ***** %>
+            <%# ***** 「<ul>【内容】</ul>」：順序なしリスト ***** %>
               <% @post.errors.full_messages.each do |message| %>
-              <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+              <%# ***** 「@post.errors.full_messages.each do |message|」：Ruby式を実行する処理 ***** %>
+              <%# ***** 「each do |message|」: コレクションを順番に処理し、|message| で現在要素を受け取る反復構文 ***** %>
               <%# ***** 「@post.errors.full_messages」：処理対象となるコレクション ***** %>
               <%# ***** 「|message|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
 
-              <%# ***** each：エラーメッセージをループして各メッセージを処理 ***** %>
+              <%# ***** 「each」：エラーメッセージをループして各メッセージを処理 ***** %>
                 <li><%= message %></li>
                 <%# ***** message：ループ内の現在のエラーメッセージ ***** %>
-                <%# ***** li：リストアイテム ***** %>
+                <%# ***** 「<li>【内容】</li>」：リストアイテム ***** %>
                 <%# ***** message：エラーメッセージを表示 ***** %>
               <% end %>
+              <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </ul>
-            <%# ***** end：eachループの終了 ***** %>
+            <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
+            <%# ***** 「end」：eachループの終了 ***** %>
           </div>
-          <%# ***** </ul>：ulタグ（順序なしリスト要素）の終了 ***** %>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
-        <%# ***** end：if文の終了 ***** %>
+        <%# ***** 「end」：if文の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：タイトル入力フォームグループ ***** %>
+        <%# ***** 「<div>」：タイトル入力フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
         <%# ***** mb-3：下部マージンを追加 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :title %>
+          <%# ***** 「form.label :title」：画面へ値を出力する式 ***** %>
           <%# ***** form.label：タイトル入力フィールドのラベルを表示 ***** %>
           <%# ***** :title：ラベル対象属性 ***** %>
           <%= form.text_field :title, class: "form-control" %>
+          <%# ***** 「form.text_field :title, class: "form-control"」：画面へ値を出力する式 ***** %>
           <%# ***** フォーム入力欄セクション ***** %>
           <%# ***** form.text_field：単一行テキスト入力フィールド ***** %>
           <%# ***** :title：投稿タイトル属性を対象 ***** %>
         </div>
         <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：本文入力フォームグループ ***** %>
+        <%# ***** 「<div>」：本文入力フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <label>カード配置</label>
+          <%# ***** 「<label>【内容】</label>」：フォームラベル要素 ***** %>
           <%# ***** mb-3：下部マージンを追加 ***** %>
           <%# ***** form.label：本文入力フィールドのラベルを表示 ***** %>
           <%# ***** :body：ラベル対象属性 ***** %>
           <textarea id="body-source" class="d-none" rows="1" aria-hidden="true"></textarea>
+          <%# ***** 「<textarea>【内容】</textarea>」：複数行入力要素 ***** %>
           <%# ***** "本文"：ラベルのテキスト ***** %>
           <div id="body-editor" contenteditable="false" data-preview-only="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto; background: #f8f9fa;"></div>
-          <%# ***** textarea：複数行入力要素 ***** %>
+          <%# ***** 「<div>【内容】</div>」：汎用コンテナ要素 ***** %>
+          <%# ***** 「<textarea>【内容】</textarea>」：複数行入力要素 ***** %>
           <%# ***** div contenteditable：テキスト編集可能なdiv（textareaの代わり） ***** %>
           <%# ***** id="body-editor"：JavaScriptで参照するID ***** %>
           <%# ***** contenteditable="true"：ユーザーが編集可能に ***** %>
@@ -101,55 +124,85 @@
           <%# ***** input hidden：フォーム送信時に本文を格納する隠れたフィールド ***** %>
           <div class="mt-2">
           <%# ***** name="post[body]"：Railsフォームパラメータ ***** %>
-          <%# ***** div：本文挿入ボタンを配置する行 ***** %>
+          <%# ***** 「<div>【内容】</div>」：本文挿入ボタンを配置する行 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="insert-text-button">
+            <%# ***** 「<button>」：ボタン要素 ***** %>
             <%# ***** mt-2：上部マージンを追加 ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               テキストを挿入
             </button>
-            <%# ***** button：ボタン要素 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>」：ボタン要素 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               URLを挿入
             </button>
-            <%# ***** button：ボタン要素 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
             <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** button：本文中へ画像記法を挿入するボタン ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：本文中へ画像記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-primary mr-2"：小さめの青枠ボタン + 右マージン ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               画像を挿入
               <%# ***** id="insert-image-button"：JavaScriptで参照するID ***** %>
             </button>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="insert-code-button">
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** button：本文中へコードブロック記法を挿入するボタン ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：本文中へコードブロック記法を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-secondary"：小さめのグレー枠ボタン ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               コードを挿入
               <%# ***** id="insert-code-button"：JavaScriptで参照するID ***** %>
             </button>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-sm btn-outline-info" id="insert-formula-button">
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** button：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
             <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
             <%# ***** class: "btn btn-sm btn-outline-info"：小さめの水色枠ボタン ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               数式を挿入
               <%# ***** id="insert-formula-button"：JavaScriptで参照するID ***** %>
             </button>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>」：ボタン要素 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               全体プレビュー
             </button>
-            <%# ***** button：ボタン要素 ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
           </div>
-          <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
           <style>
+          <%# ***** 「<style>」：スタイル定義要素 ***** %>
           <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
             #body-editor {
-            <%# ***** style：スタイル定義要素 ***** %>
+            <%# ***** 「<style>【内容】</style>」：スタイル定義要素 ***** %>
               overflow-y: auto;
               <%# ***** overflow-y: auto：縦方向のスクロールを許可 ***** %>
               overflow-x: hidden;
@@ -619,195 +672,249 @@
               <%# ***** gap: 8px：ボタン間の間隔 ***** %>
             }
           </style>
+          <%# ***** 「</style>」：styleタグ（スタイル定義要素）の終了 ***** %>
         </div>
-        <%# ***** </style>：styleタグ（スタイル定義要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</style>」：styleタグ（スタイル定義要素）の終了 ***** %>
         <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
         <%= form.file_field :images, multiple: true, accept: "image/*", style: "display: none;" %>
+        <%# ***** 「form.file_field :images, multiple: true, accept: "image/*", style: "display: none;"」：画面へ値を出力する式 ***** %>
         <%# ***** form.file_field：JavaScriptで動作する隠れたファイル選択フィールド ***** %>
         <%# ***** multiple: true：複数ファイルの選択を許可 ***** %>
         <%# ***** accept: "image/*"：画像ファイルのみ選択可能に制限 ***** %>
         <%# ***** style: "display: none;"：ユーザーには表示しない ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：タグ選択フォームグループ ***** %>
+        <%# ***** 「<div>」：タグ選択フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <label>タグ</label>
+          <%# ***** 「<label>【内容】</label>」：フォームラベル要素 ***** %>
           <%# ***** mb-3：下部マージンを追加 ***** %>
           <%# ***** form.label：タグ入力フィールドのラベルを表示 ***** %>
           <%# ***** :tag_list：ラベル対象属性 ***** %>
           <div class="d-flex align-items-center">
           <%# ***** "タグ"：ラベルのテキスト ***** %>
-          <%# ***** div：タグ選択ボタンと選択状況を並べるセクション ***** %>
+          <%# ***** 「<div>【内容】</div>」：タグ選択ボタンと選択状況を並べるセクション ***** %>
           <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#tagSelectModal">
             <%# ***** align-items-center：要素を垂直中央に揃える ***** %>
-            <%# ***** button：モーダル開閉ボタン ***** %>
+            <%# ***** 「<button>【内容】</button>」：モーダル開閉ボタン ***** %>
             <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
             <%# ***** class: "btn btn-outline-primary"：青枠線のプライマリボタンのスタイル ***** %>
             <%# ***** data-toggle="modal"：Bootstrapモーダル開閉機能を有効化 ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「data-toggle ="【動作種別】"」：JavaScript動作用のデータ属性 ***** %>
+            <%# ***** 「data-target ="【対象セレクタ】"」：JavaScript動作対象を指定するデータ属性 ***** %>
               タグを選択
               <%# ***** data-target="#tagSelectModal"：開閉対象のモーダルIDを指定 ***** %>
             </button>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** button：新規タグ作成ボタン ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<button>【内容】</button>」：新規タグ作成ボタン ***** %>
             <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
             <%# ***** class: "btn btn-outline-secondary ml-2"：グレー枠線のボタンのスタイル + 左マージン ***** %>
+            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
               タグを作成
               <%# ***** id="add-tag-button"：JavaScriptで参照するID ***** %>
             </button>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
             <%# ***** ボタンの表示テキスト ***** %>
             <span id="selected-tags" class="ml-3 text-muted"></span>
-            <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
-            <%# ***** span：選択されたタグを表示するセクション ***** %>
+            <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
+            <%# ***** 「<span>【内容】</span>」：選択されたタグを表示するセクション ***** %>
             <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
           </div>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
           <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** div：公開状態選択フォームグループ ***** %>
+        <%# ***** 「<div>」：公開状態選択フォームグループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
         <%# ***** mb-3：下部マージンを追加 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.label :status %>
+          <%# ***** 「form.label :status」：画面へ値を出力する式 ***** %>
           <%# ***** form.label：公開状態選択フィールドのラベルを表示 ***** %>
           <%# ***** :status：ラベル対象属性 ***** %>
           <%= form.select :status, { "下書き": :draft, "公開": :published }, {}, class: "form-control" %>
+          <%# ***** 「form.select :status, { "下書き": :draft, "公開": :published }, {}, class: "form-control"」：画面へ値を出力する式 ***** %>
           <%# ***** form.select：ドロップダウン選択フィールド ***** %>
           <%# ***** :status：公開状態属性を対象 ***** %>
           <%# ***** { "下書き": :draft, "公開": :published }：選択肢を指定 ***** %>
           <%# ***** {}：HTMLオプション（プレースホルダーなど） ***** %>
         </div>
         <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="form-group">
-        <%# ***** div：送信・キャンセルボタングループ ***** %>
+        <%# ***** 「<div>」：送信・キャンセルボタングループ ***** %>
         <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
         <%# ***** 送信ボタンセクション ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <%= form.submit "投稿", class: "btn btn-primary" %>
+          <%# ***** 「form.submit "投稿", class: "btn btn-primary"」：画面へ値を出力する式 ***** %>
           <%# ***** form.submit：フォーム送信ボタン ***** %>
           <%# ***** "投稿"：ボタンのテキスト ***** %>
           <%# ***** class: "btn btn-primary"：青色のプライマリボタンのスタイル ***** %>
           <%= link_to "キャンセル", posts_path, class: "btn btn-outline-secondary" %>
+          <%# ***** 「link_to "キャンセル", posts_path, class: "btn btn-outline-secondary"」：画面へ値を出力する式 ***** %>
           <%# ***** link_to：キャンセルリンク ***** %>
           <%# ***** "キャンセル"：リンクの表示テキスト ***** %>
           <%# ***** posts_path：投稿一覧へのパス ***** %>
         </div>
         <%# ***** class: "btn btn-outline-secondary"：グレー枠線のボタンスタイル ***** %>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
-        <%# ***** div：タグ選択用Bootstrapモーダル ***** %>
+        <%# ***** 「<div>」：タグ選択用Bootstrapモーダル ***** %>
         <%# ***** modal fade：モーダルコンポーネント + フェードアニメーション ***** %>
         <%# ***** id="tagSelectModal"：モーダルのID ***** %>
         <%# ***** tabindex="-1"：タブオーダーから除外 ***** %>
         <%# ***** role="dialog"：アクセシビリティロール ***** %>
         <%# ***** aria-labelledby="tagSelectModalLabel"：ラベルIDの指定 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+        <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
+        <%# ***** 「tabindex ="【値】"」：要素の振る舞いや表示を指定する属性 ***** %>
+        <%# ***** 「role ="【ロール】"」：要素の役割を示す属性 ***** %>
+        <%# ***** 「aria-labelledby ="【値】"」：アクセシビリティ情報を補足する属性 ***** %>
+        <%# ***** 「aria-hidden ="【値】"」：アクセシビリティ情報を補足する属性 ***** %>
           <div class="modal-dialog" role="document">
           <%# ***** aria-hidden="true"：初期状態では隠す ***** %>
-          <%# ***** div：モーダルダイアログコンテナ ***** %>
+          <%# ***** 「<div>【内容】</div>」：モーダルダイアログコンテナ ***** %>
           <%# ***** modal-dialog：モーダルダイアログのスタイル ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+          <%# ***** 「role ="【ロール】"」：要素の役割を示す属性 ***** %>
             <div class="modal-content">
+            <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
             <%# ***** role="document"：アクセシビリティロール ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
               <div class="modal-header">
-              <%# ***** div：モーダルコンテンツを囲むセクション ***** %>
+              <%# ***** 「<div>」：モーダルコンテンツを囲むセクション ***** %>
               <%# ***** modal-content：モーダルコンテンツのスタイル ***** %>
-              <%# ***** div：モーダルヘッダー ***** %>
+              <%# ***** 「<div>【内容】</div>」：モーダルヘッダー ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <h5 class="modal-title" id="tagSelectModalLabel">タグ選択</h5>
                 <%# ***** modal-header：モーダルヘッダーのスタイル ***** %>
-                <%# ***** h5：5番目のレベルの見出し ***** %>
+                <%# ***** 「<h5>【内容】</h5>」：5番目のレベルの見出し ***** %>
                 <%# ***** modal-title：モーダルタイトルのスタイル ***** %>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <%# ***** id="tagSelectModalLabel"：モーダルのラベルID ***** %>
-                <%# ***** button：モーダル閉じるボタン ***** %>
+                <%# ***** 「<button>【内容】</button>」：モーダル閉じるボタン ***** %>
                 <%# ***** type="button"：ボタンの種類を指定 ***** %>
                 <%# ***** class="close"：Bootstrapの閉じるボタンスタイル ***** %>
                 <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
+                <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
+                <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+                <%# ***** 「data-dismiss ="【値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
+                <%# ***** 「aria-label ="【ラベル】"」：支援技術向けの要素ラベルを指定する属性 ***** %>
                   <span aria-hidden="true">&times;</span>
                   <%# ***** aria-label="Close"：スクリーンリーダー用ラベル ***** %>
-                  <%# ***** span：バツ記号（HTML実体参照） ***** %>
+                  <%# ***** 「<span>【内容】</span>」：バツ記号（HTML実体参照） ***** %>
                   <%# ***** aria-hidden="true"：スクリーンリーダーから隠す ***** %>
                 </button>
+                <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
                 <%# ***** &times；：× 記号のHTML実体参照 ***** %>
               </div>
-              <%# ***** </button>：buttonタグ（ボタン要素）の終了 ***** %>
+              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「</button>」：buttonタグ（ボタン要素）の終了 ***** %>
               <div class="modal-body">
-              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-              <%# ***** div：モーダルボディ（コンテンツ） ***** %>
+              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：モーダルボディ（コンテンツ） ***** %>
               <%# ***** modal-body：モーダルボディのスタイル ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <% if @available_tags.any? %>
-                <%# ***** 「if (【条件】)」: 【条件】を判定する条件分岐 ***** %>
+                <%# ***** 「if @available_tags.any?」：Ruby式を実行する処理 ***** %>
+                <%# ***** 「if (@available_tags.any?)」: @available_tags.any?を判定する条件分岐 ***** %>
 
-                <%# ***** if：利用可能なタグが存在するか判定 ***** %>
+                <%# ***** 「if」：利用可能なタグが存在するか判定 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes">
                   <%# ***** @available_tags.any?：1つ以上のタグが存在するか確認 ***** %>
-                  <%# ***** div：タグチェックボックスを囲むセクション ***** %>
+                  <%# ***** 「<div>【内容】</div>」：タグチェックボックスを囲むセクション ***** %>
                   <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
                   <%# ***** flex-wrap：要素が複数行に折り返されるように設定 ***** %>
                   <%# ***** id="tag-checkboxes"：JavaScriptで参照するID ***** %>
+                  <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+                  <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
                     <% @available_tags.each do |tag| %>
-                    <%# ***** 「each do |【要素】|」: コレクションを順番に処理し、|【要素】| で現在要素を受け取る反復構文 ***** %>
+                    <%# ***** 「@available_tags.each do |tag|」：Ruby式を実行する処理 ***** %>
+                    <%# ***** 「each do |tag|」: コレクションを順番に処理し、|tag| で現在要素を受け取る反復構文 ***** %>
                     <%# ***** 「@available_tags」：処理対象となるコレクション ***** %>
                     <%# ***** 「|tag|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
 
-                    <%# ***** each：利用可能なタグをループして各タグを処理 ***** %>
+                    <%# ***** 「each」：利用可能なタグをループして各タグを処理 ***** %>
                       <div class="custom-control custom-checkbox mr-3 mb-2">
                       <%# ***** tag：ループ内の現在のタグオブジェクト ***** %>
-                      <%# ***** div：カスタムチェックボックスを囲むセクション ***** %>
+                      <%# ***** 「<div>【内容】</div>」：カスタムチェックボックスを囲むセクション ***** %>
                       <%# ***** custom-control custom-checkbox：Bootstrapのカスタムチェックボックススタイル ***** %>
                       <%# ***** mr-3 mb-2：右マージン + 下部マージン ***** %>
+                      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                         <%= form.check_box :tag_list, { multiple: true, class: "custom-control-input", id: "tag_#{tag.id}" }, tag.name, nil %>
+                        <%# ***** 「form.check_box :tag_list, { multiple: true, class: "custom-control-input", id: "tag_#{tag.id}" }, tag.name, nil」：画面へ値を出力する式 ***** %>
                         <%# ***** form.check_box：チェックボックス入力フィールド ***** %>
                         <%# ***** :tag_list：タグリスト属性を対象 ***** %>
                         <%# ***** { multiple: true, class: "custom-control-input", id: "tag_#{tag.id}" }：複数選択可 + スタイル + ID ***** %>
                         <%# ***** tag.name, nil：チェック時の値 / チェック外時の値 ***** %>
                         <%= form.label :tag_list, tag.name, class: "custom-control-label", for: "tag_#{tag.id}" %>
+                        <%# ***** 「form.label :tag_list, tag.name, class: "custom-control-label", for: "tag_#{tag.id}"」：画面へ値を出力する式 ***** %>
                         <%# ***** form.label：チェックボックスのラベル ***** %>
                         <%# ***** :tag_list：ラベル対象属性 ***** %>
                         <%# ***** tag.name：ラベルのテキスト ***** %>
                         <%# ***** class: "custom-control-label"：Bootstrapのカスタムラベルスタイル ***** %>
                       </div>
                       <%# ***** for: "tag_#{tag.id}"：関連付けるチェックボックスのID ***** %>
-                      <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+                      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
                     <% end %>
+                    <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                   </div>
-                  <%# ***** end：eachループの終了 ***** %>
-                  <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+                  <%# ***** 「end」：eachループの終了 ***** %>
+                  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
                 <% else %>
                 <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
                   <div class="d-flex flex-wrap" id="tag-checkboxes"></div>
-                  <%# ***** else：利用可能なタグが存在しない場合 ***** %>
-                  <%# ***** div：（空の）タグチェックボックスコンテナ ***** %>
+                  <%# ***** 「else」：利用可能なタグが存在しない場合 ***** %>
+                  <%# ***** 「<div>【内容】</div>」：（空の）タグチェックボックスコンテナ ***** %>
                   <%# ***** d-flex flex-wrap：Flexboxレイアウト + 折り返し ***** %>
                   <p class="text-muted">登録済みのタグがありません。</p>
                   <%# ***** id="tag-checkboxes"：JavaScriptで参照するID ***** %>
-                  <%# ***** p：段落タグ ***** %>
+                  <%# ***** 「<p>【内容】</p>」：段落タグ ***** %>
                   <%# ***** text-muted：グレー色の文字色 ***** %>
                 <% end %>
+                <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
               </div>
-              <%# ***** end：if文の終了 ***** %>
+              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「end」：if文の終了 ***** %>
               <div class="modal-footer">
-              <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-              <%# ***** div：モーダルフッター ***** %>
+              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+              <%# ***** 「<div>【内容】</div>」：モーダルフッター ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
                 <%# ***** modal-footer：モーダルフッターのスタイル ***** %>
-                <%# ***** button：モーダルを閉じるボタン ***** %>
+                <%# ***** 「<button>【内容】</button>」：モーダルを閉じるボタン ***** %>
                 <%# ***** type="button"：ボタンの種類を指定 ***** %>
                 <%# ***** class: "btn btn-secondary"：グレー色のセカンダリボタンのスタイル ***** %>
               </div>
+              <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
               <%# ***** data-dismiss="modal"：Bootstrapモーダル閉じる機能を有効化 ***** %>
             </div>
+            <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         </div>
-        <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-          <%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+        <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
         <script>
+        <%# ***** 「<script>」：スクリプト要素 ***** %>
         <%# ***** スクリプトセクション ***** %>
           const initPostForm = () => {
           <%# ***** タグ選択・作成のJavaScriptロジック ***** %>
@@ -867,7 +974,7 @@
               if (bodyEditor) {
               <%# ***** setBodyText()：本文を更新して同期イベントを発火 ***** %>
                 bodyEditor.textContent = text;
-                <%# ***** if：contenteditable本文欄が存在する場合 ***** %>
+                <%# ***** 「if」：contenteditable本文欄が存在する場合 ***** %>
                 bodyEditor.dispatchEvent(new Event('input'));
                 <%# ***** textContent：本文を差し替え ***** %>
                 return;
@@ -876,7 +983,7 @@
               <%# ***** return：contenteditable側の更新で終了 ***** %>
               if (bodyHidden) {
                 bodyHidden.value = text;
-                <%# ***** if：隠しフィールド本文が存在する場合 ***** %>
+                <%# ***** 「if」：隠しフィールド本文が存在する場合 ***** %>
                 bodyHidden.dispatchEvent(new Event('input'));
                 <%# ***** value：隠しフィールドの本文を更新 ***** %>
               }
@@ -907,7 +1014,7 @@
 
             if (insertImageButton && !hasContentEditable) {
               insertImageButton.addEventListener('click', function () {
-              <%# ***** if：画像挿入ボタンが存在する場合 ***** %>
+              <%# ***** 「if」：画像挿入ボタンが存在する場合 ***** %>
                 if (!imageInput) return;
                 <%# ***** addEventListener：クリック時の処理を登録 ***** %>
                 imageInput.click();
@@ -921,11 +1028,11 @@
 
             if (imageInput && !hasContentEditable) {
               imageInput.addEventListener('change', function () {
-              <%# ***** if：画像入力が存在する場合 ***** %>
+              <%# ***** 「if」：画像入力が存在する場合 ***** %>
                 if (!imageInput.files || imageInput.files.length === 0) return;
                 <%# ***** change：ファイル選択時の処理 ***** %>
                 const newFiles = Array.from(imageInput.files);
-                <%# ***** if：未選択なら終了 ***** %>
+                <%# ***** 「if」：未選択なら終了 ***** %>
                 newFiles.forEach((file) => {
                 <%# ***** newFiles：今回選択したファイルのみを取得 ***** %>
                   if (!allFiles.find((f) => f.name === file.name && f.size === file.size)) {
@@ -957,13 +1064,13 @@
 
             if (bodyEditor) {
               bodyEditor.addEventListener('input', updateMediaDisplay);
-              <%# ***** if：本文欄が存在する場合 ***** %>
+              <%# ***** 「if」：本文欄が存在する場合 ***** %>
             }
             <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
 
             if (bodyHidden) {
               bodyHidden.addEventListener('input', updateMediaDisplay);
-              <%# ***** if：本文隠しフィールドが存在する場合 ***** %>
+              <%# ***** 「if」：本文隠しフィールドが存在する場合 ***** %>
             }
             <%# ***** addEventListener()：本文変更時にメディア表示を更新 ***** %>
 
@@ -1052,7 +1159,7 @@
               const label = document.createElement('label');
               <%# ***** createElement()：label要素を作成 ***** %>
               label.className = 'custom-control-label';
-              <%# ***** label：作成した要素への参照 ***** %>
+              <%# ***** 「<label>【内容】</label>」：作成した要素への参照 ***** %>
               label.setAttribute('for', id);
               <%# ***** .className：要素のクラス属性を設定 ***** %>
               <%# ***** setAttribute()：HTML属性を設定 ***** %>
@@ -1067,7 +1174,7 @@
               <%# ***** checkbox：追加する要素 ***** %>
               <%# ***** appendChild()：別の子要素を追加 ***** %>
               checkboxContainer.appendChild(wrapper);
-              <%# ***** label：追加する要素 ***** %>
+              <%# ***** 「<label>【内容】</label>」：追加する要素 ***** %>
               <%# ***** checkboxContainer.appendChild()：コンテナに新しい行を追加 ***** %>
               <%# ***** wrapper：追加する要素 ***** %>
 
@@ -1092,12 +1199,15 @@
           <%# ***** DOMContentLoaded：通常のページ読み込み時に初期化 ***** %>
         </script>
         <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
-        <%# ***** </script>：scriptタグ（スクリプト要素）の終了 ***** %>
+        <%# ***** 「</script>」：scriptタグ（スクリプト要素）の終了 ***** %>
       <% end %>
+      <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </div>
-    <%# ***** end：form_withブロックの終了 ***** %>
+    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+    <%# ***** 「end」：form_withブロックの終了 ***** %>
   </div>
+  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
-<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
-<%# ***** </div>：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
+<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** /div.container：コンテナレイアウトを閉じる ***** %>
