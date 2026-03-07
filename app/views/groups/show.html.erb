@@ -12,15 +12,17 @@
       <%# ***** 「<h1>【内容】</h1>」：見出し要素 ***** %>
       <p class="lead"><%= @group.description %></p>
       <%# ***** 「<p>【内容】</p>」：段落要素 ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
 
       <div class="mb-3">
       <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
       <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
         <span class="badge badge-info">投稿数: <%= @group.posts.count %>件</span>
         <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
         <span class="badge badge-success">メンバー: <%= @group.users.count %>人</span>
         <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
-        <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       </div>
       <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
@@ -33,6 +35,7 @@
         <%# ***** 「if (user_signed_in?)」: user_signed_in?を判定する条件分岐 ***** %>
         <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
         <%# ***** 「if」：条件を判定する分岐 ***** %>
+        <%# ***** 「user_signed_in?」：Deviseのログイン状態を判定するヘルパーメソッド（true / false を返す） ***** %>
           <% if current_user.group_memberships.exists?(group: @group) %>
           <%# ***** 「if current_user.group_memberships.exists?(group: @group)」：Ruby式を実行する処理 ***** %>
           <%# ***** 「if (current_user.group_memberships.exists?(group: @group))」: current_user.group_memberships.exists?(group: @group)を判定する条件分岐 ***** %>
@@ -40,7 +43,6 @@
             <%= link_to 'グループから退出', leave_group_path(@group), method: :delete, class: 'btn btn-secondary' %>
             <%# ***** 「link_to 'グループから退出', leave_group_path(@group), method: :delete, class: 'btn btn-secondary'」：画面へ値を出力する式 ***** %>
           <% else %>
-          <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
           <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
             <%= link_to 'グループに参加', join_group_path(@group), method: :post, class: 'btn btn-primary' %>
             <%# ***** 「link_to 'グループに参加', join_group_path(@group), method: :post, class: 'btn btn-primary'」：画面へ値を出力する式 ***** %>
@@ -63,6 +65,7 @@
 
       <h3 class="mt-4">このグループの投稿</h3>
       <%# ***** 「<h3>【内容】</h3>」：見出し要素 ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <% if @group.posts.published.any? %>
       <%# ***** 「if @group.posts.published.any?」：Ruby式を実行する処理 ***** %>
       <%# ***** 「if (@group.posts.published.any?)」: @group.posts.published.any?を判定する条件分岐 ***** %>
@@ -88,6 +91,7 @@
               <%# ***** 「</h5>」：h5タグ（見出し要素）の終了 ***** %>
               <p class="card-text"><%= truncate(post.body, length: 150) %></p>
               <%# ***** 「<p>【内容】</p>」：段落要素 ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
               <div class="d-flex justify-content-between">
               <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
               <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -110,14 +114,13 @@
             <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
           </div>
           <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-          <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
         <% end %>
         <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
       <% else %>
       <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
-      <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
         <p class="text-muted">まだ投稿がありません。</p>
         <%# ***** 「<p>【内容】</p>」：段落要素 ***** %>
+        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <% end %>
       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
     </div>
@@ -165,9 +168,9 @@
             <%# ***** 「</ul>」：ulタグ（順序なしリスト要素）の終了 ***** %>
           <% else %>
           <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
-          <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
             <p class="text-muted">メンバーはまだいません。</p>
             <%# ***** 「<p>【内容】</p>」：段落要素 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <% end %>
           <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
         </div>
@@ -178,7 +181,6 @@
     <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
   </div>
   <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-  <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
   <div class="mt-4">
   <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -188,5 +190,4 @@
   </div>
   <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>

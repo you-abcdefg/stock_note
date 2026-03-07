@@ -20,16 +20,20 @@
           <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
           <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <i class="fas fa-user-circle fa-5x text-primary"></i>
+            <%# ***** 「<i>【内容】</i>」：i要素 ***** %>
             <%# ***** 「i」：i要素 ***** %>
             <%# ***** i：HTML要素 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           </div>
           <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
           <!-- ユーザー情報 -->
           <h3 class="card-title"><%= @user.name %></h3>
           <%# ***** 「<h3>【内容】</h3>」：見出し要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <p class="text-muted"><%= @user.email %></p>
           <%# ***** 「<p>【内容】</p>」：段落要素 ***** %>
+          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
 
           <!-- ロール表示 -->
           <div class="mb-3">
@@ -42,17 +46,19 @@
             <%# ***** 「if」：条件を判定する分岐 ***** %>
               <span class="badge badge-danger">管理者</span>
               <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <% elsif @user.guest? %>
             <%# ***** 「elsif @user.guest?」：Ruby式を実行する処理 ***** %>
             <%# ***** 「elsif (@user.guest?)」: 前条件が偽の場合に@user.guest?を追加判定する分岐 ***** %>
             <%# ***** 「elsif」：前条件が偽の場合の追加分岐 ***** %>
               <span class="badge badge-secondary">ゲスト</span>
               <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <% else %>
-            <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
             <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
               <span class="badge badge-primary">一般ユーザー</span>
               <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+              <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
             <% end %>
             <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
           </div>
@@ -85,8 +91,8 @@
           <%# ***** 「if」：条件を判定する分岐 ***** %>
             <button class="btn btn-outline-danger btn-sm w-100 mt-3" disabled>退会（ゲストは不可）</button>
             <%# ***** 「<button>【内容】</button>」：ボタン要素 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           <% else %>
-          <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
           <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
             <%= link_to "退会", user_registration_path, method: :delete,
                         data: { confirm: "本当に退会しますか？この操作は取り消せません。" },
@@ -98,7 +104,6 @@
       </div>
       <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
     </div>
-    <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
     <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
     <!-- ===== マイページ投稿一覧 ===== -->
@@ -118,6 +123,7 @@
             <%# ***** i：HTML要素 ***** %>
             <span class="badge badge-light ml-2"><%= @posts.count %></span>
             <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
           </h5>
           <%# ***** 「</h5>」：h5タグ（見出し要素）の終了 ***** %>
           <%= link_to "新規投稿", new_post_path, class: "btn btn-sm btn-outline-light" %>
@@ -165,12 +171,14 @@
                       <%# ***** 「if」：条件を判定する分岐 ***** %>
                         <span class="badge badge-success ml-2">公開</span>
                         <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+                        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                       <% elsif post.status == "draft" %>
                       <%# ***** 「elsif post.status == "draft"」：Ruby式を実行する処理 ***** %>
                       <%# ***** 「elsif (post.status == "draft")」: 前条件が偽の場合にpost.status == "draft"を追加判定する分岐 ***** %>
                       <%# ***** 「elsif」：前条件が偽の場合の追加分岐 ***** %>
                         <span class="badge badge-warning ml-2">下書き</span>
                         <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+                        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                       <% end %>
                       <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                     </div>
@@ -196,35 +204,39 @@
                     <%= link_to post_path(post), class: "btn btn-sm btn-outline-primary" do %>
                     <%# ***** 「link_to post_path(post), class: "btn btn-sm btn-outline-primary" do」：画面へ値を出力する式 ***** %>
                       <i class="fas fa-eye"></i>
+                      <%# ***** 「<i>【内容】</i>」：i要素 ***** %>
                       <%# ***** 「i」：i要素 ***** %>
                       <%# ***** i：HTML要素 ***** %>
+                      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                     <% end %>
                     <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                     <%= link_to edit_post_path(post), class: "btn btn-sm btn-outline-secondary" do %>
                     <%# ***** 「link_to edit_post_path(post), class: "btn btn-sm btn-outline-secondary" do」：画面へ値を出力する式 ***** %>
                       <i class="fas fa-edit"></i>
+                      <%# ***** 「<i>【内容】</i>」：i要素 ***** %>
                       <%# ***** 「i」：i要素 ***** %>
                       <%# ***** i：HTML要素 ***** %>
+                      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                     <% end %>
                     <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                     <%= link_to post_path(post), method: :delete, data: { confirm: "削除しますか？" }, class: "btn btn-sm btn-outline-danger" do %>
                     <%# ***** 「link_to post_path(post), method: :delete, data: { confirm: "削除しますか？" }, class: "btn btn-sm btn-outline-danger" do」：画面へ値を出力する式 ***** %>
                       <i class="fas fa-trash"></i>
+                      <%# ***** 「<i>【内容】</i>」：i要素 ***** %>
                       <%# ***** 「i」：i要素 ***** %>
                       <%# ***** i：HTML要素 ***** %>
+                      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                     <% end %>
                     <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
                   </div>
                   <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
                 </div>
                 <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-                <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
               <% end %>
               <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
             </div>
             <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
           <% else %>
-          <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
           <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
             <div class="alert alert-info text-center" role="alert">
             <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -247,7 +259,6 @@
   </div>
   <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 
 <style>

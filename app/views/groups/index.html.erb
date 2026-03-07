@@ -64,8 +64,10 @@
                 <%# ***** 「if (user_signed_in? && current_user.group_memberships.exists?(group: group))」: user_signed_in? && current_user.group_memberships.exists?(group: group)を判定する条件分岐 ***** %>
                 <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
                 <%# ***** 「if」：条件を判定する分岐 ***** %>
+                <%# ***** 「user_signed_in?」：Deviseのログイン状態を判定するヘルパーメソッド（true / false を返す） ***** %>
                   <span class="badge badge-success">所属中</span>
                   <%# ***** 「<span>【内容】</span>」：インライン要素 ***** %>
+                  <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
                 <% end %>
                 <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
               </div>
@@ -93,7 +95,6 @@
         </div>
         <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       </div>
-      <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
     <% end %>
     <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>

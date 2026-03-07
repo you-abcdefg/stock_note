@@ -13,6 +13,8 @@
     <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
     <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
       <h2 class="mb-4">ユーザーを検索</h2>
+      <%# ***** 「<h2>【内容】</h2>」：見出し要素 ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
 
       <%# ***** 「<h2>【内容】</h2>」：見出し要素 ***** %>
       <%# ***** 検索フォーム ***** %>
@@ -30,6 +32,7 @@
               <label for="q_name_cont">ユーザー名で検索</label>
               <%# ***** 「<label>【内容】</label>」：フォームラベル要素 ***** %>
               <%# ***** フォーム入力欄セクション ***** %>
+              <%# ***** 「for ="【対象ID】"」：ラベルとフォーム部品を関連付ける属性 ***** %>
               <%= f.search_field :name_cont, class: 'form-control', placeholder: 'ユーザー名キーワード', id: 'q_name_cont' %>
               <%# ***** 「f.search_field :name_cont, class: 'form-control', placeholder: 'ユーザー名キーワード', id: 'q_name_cont'」：画面へ値を出力する式 ***** %>
             </div>
@@ -40,6 +43,7 @@
             <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
               <label for="q_email_cont">メールアドレスで検索</label>
               <%# ***** 「<label>【内容】</label>」：フォームラベル要素 ***** %>
+              <%# ***** 「for ="【対象ID】"」：ラベルとフォーム部品を関連付ける属性 ***** %>
               <%= f.search_field :email_cont, class: 'form-control', placeholder: 'メールアドレス', id: 'q_email_cont' %>
               <%# ***** 「f.search_field :email_cont, class: 'form-control', placeholder: 'メールアドレス', id: 'q_email_cont'」：画面へ値を出力する式 ***** %>
             </div>
@@ -120,6 +124,7 @@
                     <%# ***** 「if (user_signed_in? && current_user == user)」: user_signed_in? && current_user == userを判定する条件分岐 ***** %>
                     <%# ***** 「user_signed_in?」：Deviseで定義されたログイン状態判定ヘルパー関数 ***** %>
                     <%# ***** 「if」：条件を判定する分岐 ***** %>
+                    <%# ***** 「user_signed_in?」：Deviseのログイン状態を判定するヘルパーメソッド（true / false を返す） ***** %>
                       <%= link_to '編集', edit_user_path(user), class: 'btn btn-warning' %>
                       <%# ***** 「link_to '編集', edit_user_path(user), class: 'btn btn-warning'」：画面へ値を出力する式 ***** %>
                     <% end %>
@@ -132,13 +137,11 @@
               <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
             </div>
             <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
-            <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
           <% end %>
           <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
         </div>
         <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
       <% else %>
-      <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
       <%# ***** 「else」：上記条件に当てはまらない場合の分岐 ***** %>
         <div class="alert alert-warning" role="alert">
         <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
@@ -162,5 +165,4 @@
   </div>
   <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 </div>
-<%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
 <%# ***** 「</div>」：divタグ（汎用コンテナ要素）の終了 ***** %>
