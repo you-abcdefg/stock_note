@@ -1,15 +1,26 @@
 <%# ***** 投稿検索フォーム（パーシャル） ***** %>
+<%# ***** 「# ***** 投稿検索フォーム（パーシャル） *****」：出力式/式 ***** %>
 <%# ***** すべての投稿一覧ページで共通で使用する検索フォーム ***** %>
+<%# ***** 「# ***** すべての投稿一覧ページで共通で使用する検索フォーム *****」：出力式/式 ***** %>
 <% selected_tags = Array(params.dig(:q, :tags_name_in)).reject(&:blank?) %>
+<%# ***** 「selected_tags = Array(params.dig(:q, :tags_name_in)).reject(&:blank?)」：出力式/式 ***** %>
 <%# ***** 「selected_tags = Array(params.dig(:q, :tags_name_in)).reject(&:blank?)」: selected_tagsに計算結果を代入して保持する式 ***** %>
+<%# ***** 「# ***** 「selected_tags = Array(params.dig(:q, :tags_name_in)).reject(&:blank?)」: selected_tagsに計算結果を代入して保持する式 *****」：出力式/式 ***** %>
 <%# ***** selected_tags：この行で使用する値を保持する変数 ***** %>
+<%# ***** 「# ***** selected_tags：この行で使用する値を保持する変数 *****」：出力式/式 ***** %>
 <% tag_select_class = "form-control form-control-sm" %>
+<%# ***** 「tag_select_class = "form-control form-control-sm"」：出力式/式 ***** %>
 <%# ***** 「tag_select_class = "form-control form-control-sm"」: tag_select_classに計算結果を代入して保持する式 ***** %>
+<%# ***** 「# ***** 「tag_select_class = "form-control form-control-sm"」: tag_select_classに計算結果を代入して保持する式 *****」：出力式/式 ***** %>
 <%# ***** tag_select_class：この行で使用する値を保持する変数 ***** %>
+<%# ***** 「# ***** tag_select_class：この行で使用する値を保持する変数 *****」：出力式/式 ***** %>
 
 <div class="card mb-3">
+<%# ***** 「<div>」：HTMLタグ ***** %>
 <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+<%# ***** 「# ***** 「<div>」：汎用コンテナ要素 *****」：出力式/式 ***** %>
 <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+<%# ***** 「# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 *****」：出力式/式 ***** %>
   <div class="card-header">
   <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
   <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
@@ -140,3 +151,4 @@
   <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 </div>
 <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
+<%# ***** 「# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ *****」：出力式/式 ***** %>
