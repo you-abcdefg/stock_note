@@ -1,3 +1,140 @@
+<script>
+// --- カード編集UI用JS ---
+const CARD_TYPES = [
+  { value: 'text', label: 'テキスト' },
+  { value: 'image', label: '画像' },
+  { value: 'url', label: 'URL' },
+  { value: 'code', label: 'コード' },
+  { value: 'formula', label: '数式' }
+];
+
+function getInitialCards() {
+  try {
+    const body = document.getElementById('body-hidden').value;
+    if (!body) return [];
+    const parsed = JSON.parse(body);
+    if (Array.isArray(parsed)) return parsed; // 古い形式
+    if (parsed && parsed.cards) return parsed.cards;
+    return [];
+  } catch (e) {
+    return [];
+  }
+}
+
+let cards = getInitialCards();
+
+function renderCards() {
+  const list = document.getElementById('cards-list');
+  list.innerHTML = '';
+  cards.forEach((card, idx) => {
+    const div = document.createElement('div');
+    div.className = 'card-edit-item';
+
+    // 並び替えボタン
+    const upBtn = document.createElement('button');
+    upBtn.innerHTML = '↑';
+    upBtn.className = 'move-up';
+    upBtn.disabled = idx === 0;
+    upBtn.onclick = () => { moveCard(idx, -1); };
+    div.appendChild(upBtn);
+    const downBtn = document.createElement('button');
+    downBtn.innerHTML = '↓';
+    downBtn.className = 'move-down';
+    downBtn.disabled = idx === cards.length - 1;
+    downBtn.onclick = () => { moveCard(idx, 1); };
+    div.appendChild(downBtn);
+
+    // 種類選択
+    const typeSel = document.createElement('select');
+    CARD_TYPES.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.value;
+      opt.textContent = t.label;
+      if (card.type === t.value) opt.selected = true;
+      typeSel.appendChild(opt);
+    });
+    typeSel.onchange = (e) => {
+      card.type = e.target.value;
+      card.content = '';
+      renderCards();
+      updateBodyField();
+    };
+    div.appendChild(typeSel);
+
+    // 内容編集
+    let contentInput;
+    if (card.type === 'text' || card.type === 'url' || card.type === 'formula') {
+      contentInput = document.createElement('input');
+      contentInput.type = 'text';
+      contentInput.className = 'form-control';
+      contentInput.value = card.content || '';
+      contentInput.placeholder = CARD_TYPES.find(t => t.value === card.type).label + '内容';
+      contentInput.oninput = (e) => {
+        card.content = e.target.value;
+        updateBodyField();
+      };
+    } else if (card.type === 'code') {
+      contentInput = document.createElement('textarea');
+      contentInput.className = 'form-control';
+      contentInput.rows = 2;
+      contentInput.value = card.content || '';
+      contentInput.placeholder = 'コード内容';
+      contentInput.oninput = (e) => {
+        card.content = e.target.value;
+        updateBodyField();
+      };
+    } else if (card.type === 'image') {
+      contentInput = document.createElement('input');
+      contentInput.type = 'text';
+      contentInput.className = 'form-control';
+      contentInput.value = card.content || '';
+      contentInput.placeholder = '画像URLまたは説明';
+      contentInput.oninput = (e) => {
+        card.content = e.target.value;
+        updateBodyField();
+      };
+    }
+    div.appendChild(contentInput);
+
+    // 削除ボタン
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '削除';
+    delBtn.className = 'delete-card btn btn-sm btn-outline-danger';
+    delBtn.onclick = () => { deleteCard(idx); };
+    div.appendChild(delBtn);
+
+    list.appendChild(div);
+  });
+  updateBodyField();
+}
+
+function addCard() {
+  cards.push({ type: 'text', content: '' });
+  renderCards();
+}
+function deleteCard(idx) {
+  cards.splice(idx, 1);
+  renderCards();
+}
+function moveCard(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= cards.length) return;
+  const tmp = cards[idx];
+  cards[idx] = cards[newIdx];
+  cards[newIdx] = tmp;
+  renderCards();
+}
+function updateBodyField() {
+  // JSON形式でbody-hiddenに格納
+  const doc = { version: 1, cards: cards };
+  document.getElementById('body-hidden').value = JSON.stringify(doc);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderCards();
+  document.getElementById('add-card-button').onclick = addCard;
+});
+</script>
 <%# ***** posts/edit のビュー ***** %>
 <%# ***** 「# ***** posts/edit のビュー *****」：出力式/式 ***** %>
 <div class="container px-5 px-sm-0 mt-4">
@@ -110,114 +247,43 @@
         <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
         <div class="form-group mb-3">
-        <%# ***** 「<div>」：本文入力フォームグループ ***** %>
-        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
-        <%# ***** mb-3：下部マージンを追加 ***** %>
-        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <div class="form-label">本文</div>
-          <%# ***** 「<div>【内容】</div>」：汎用コンテナ要素 ***** %>
-          <%# ***** form.label：本文入力フィールドのラベルを表示 ***** %>
-          <%# ***** :body：ラベル対象属性 ***** %>
-          <%# ***** "本文"：ラベルのテキスト ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <textarea id="body-source" class="form-control mb-2" rows="8" placeholder="ここに本文を入力してください（テキスト編集レイヤー）"><%= @post.body %></textarea>
-          <%# ***** 「<textarea>【内容】</textarea>」：複数行入力要素 ***** %>
-          <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <%# ***** 「rows ="【行数】"」：テキストエリアの表示行数を指定する属性 ***** %>
-          <%# ***** 「placeholder ="【プレースホルダ】"」：入力欄の補助テキストを指定する属性 ***** %>
-          <%# ***** 「rows ="【設定値】"」：属性 ***** %>
-          <small class="text-muted d-block mb-2">上段で本文を編集すると、下段のカード表示が自動で更新されます。</small>
-          <%# ***** 「<small>【内容】</small>」：補足テキスト要素 ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <div id="body-editor" contenteditable="false" data-preview-only="true" class="form-control" style="min-height: 250px; max-height: 400px; white-space: pre-wrap; word-wrap: break-word; overflow-y: auto; background: #f8f9fa;"></div>
-          <%# ***** 「<div>【内容】</div>」：汎用コンテナ要素 ***** %>
-          <%# ***** div contenteditable：テキスト編集可能なdiv（textareaの代わり） ***** %>
-          <%# ***** id="body-editor"：JavaScriptで参照するID ***** %>
-          <%# ***** contenteditable="true"：ユーザーが編集可能に ***** %>
-          <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
-          <%# ***** style: min-height, max-height等：表示を調整 ***** %>
-          <%# ***** @post.body：既存の本文を初期値として表示 ***** %>
-          <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-          <%# ***** 「contenteditable ="【設定値】"」：属性 ***** %>
-          <%# ***** 「data-preview-only ="【設定値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <%# ***** 「style ="【スタイル】"」：要素へ直接スタイルを指定する属性 ***** %>
-          <%# ***** 「style ="【設定値】"」：属性 ***** %>
-          <input type="hidden" id="body-hidden" name="post[body]" value="<%= @post.body %>">
-          <%# ***** input hidden：フォーム送信時に本文を格納する隠れたフィールド ***** %>
-          <%# ***** name="post[body]"：Railsフォームパラメータ ***** %>
-          <div class="mt-2">
-          <%# ***** 「<div>」：本文挿入ボタンを配置する行 ***** %>
-          <%# ***** mt-2：上部マージンを追加 ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="insert-text-button">
-            <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              テキストカードを追加
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <button type="button" class="btn btn-sm btn-outline-success mr-2" id="insert-url-button">
-            <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              URLカードを追加
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="insert-image-button">
-            <%# ***** 「<button>」：本文中へ画像記法を挿入するボタン ***** %>
-            <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
-            <%# ***** class: "btn btn-sm btn-outline-primary mr-2"：小さめの青枠ボタン + 右マージン ***** %>
-            <%# ***** id="insert-image-button"：JavaScriptで参照するID ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              画像を挿入
-              <%# ***** ボタンの表示テキスト ***** %>
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="insert-code-button">
-            <%# ***** 「<button>」：本文中へコードブロック記法を挿入するボタン ***** %>
-            <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
-            <%# ***** class: "btn btn-sm btn-outline-secondary"：小さめのグレー枠ボタン ***** %>
-            <%# ***** id="insert-code-button"：JavaScriptで参照するID ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              コードを挿入
-              <%# ***** ボタンの表示テキスト ***** %>
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <button type="button" class="btn btn-sm btn-outline-info" id="insert-formula-button">
-            <%# ***** 「<button>」：本文中へ数式（上付き・下付き文字）を挿入するボタン ***** %>
-            <%# ***** type="button"：フォーム送信を行わないボタン ***** %>
-            <%# ***** class: "btn btn-sm btn-outline-info"：小さめの水色枠ボタン ***** %>
-            <%# ***** id="insert-formula-button"：JavaScriptで参照するID ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              数式を挿入
-              <%# ***** ボタンの表示テキスト ***** %>
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <button type="button" class="btn btn-sm btn-outline-dark ml-2" id="open-preview-modal-button">
-            <%# ***** 「<button>」：ボタン要素 ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              全体プレビュー
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
+          <div class="form-label">本文（カード編集）</div>
+          <div id="cards-list">
+            <%# ここにカード配列の内容をJSで描画 %>
           </div>
-          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
-
-          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
-          <%# ***** ==== 本文内メディア表示用スタイル ==== ***** %>
-          <style>
-          <%# ***** 「<style>」：本文内のカード/モーダルのCSS定義 ***** %>
+          <div class="mt-2">
+            <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="add-card-button">
+              カードを追加
+            </button>
+          </div>
+          <input type="hidden" id="body-hidden" name="post[body]" value="<%= @post.body %>">
+        </div>
+        <style>
+        /* カード編集UI用の簡易スタイル */
+        #cards-list .card-edit-item {
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          background: #f8f9fa;
+          margin-bottom: 8px;
+          padding: 12px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        #cards-list .card-edit-item .move-up,
+        #cards-list .card-edit-item .move-down {
+          cursor: pointer;
+          font-size: 18px;
+          background: none;
+          border: none;
+        }
+        #cards-list .card-edit-item .delete-card {
+          color: #dc3545;
+          cursor: pointer;
+          background: none;
+          border: none;
+        }
+        </style>
             <%# ***** #body-editor：本文編集エリアのベーススタイル ***** %>
             #body-editor {
               overflow-y: auto;
