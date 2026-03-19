@@ -32,6 +32,29 @@
           <%= form.label :body, '本文' %>
           <%= form.hidden_field :body, id: 'body-hidden' %>
           <div id="cards-list" class="mb-2" style="height: 400px; min-height: 400px; max-height: 400px; overflow-y: auto; border: 2px solid #007bff; border-radius: 10px; background: #f4f8ff; box-shadow: 0 0 8px #b3d1ff; padding: 12px;"></div>
+          <!-- カード編集モーダル -->
+          <div class="modal fade" id="cardEditModal" tabindex="-1" role="dialog" aria-labelledby="cardEditModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="cardEditModalLabel">カード編集</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="edit-card-content">内容</label>
+                    <textarea id="edit-card-content" class="form-control" rows="4"></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="save-card-edit">保存</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- カード種別選択ダイアログ -->
           <div class="modal fade" id="cardTypeModal" tabindex="-1" role="dialog" aria-labelledby="cardTypeModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -102,6 +125,11 @@
           const cardsList = document.getElementById('cards-list');
           const cardTypeModal = document.getElementById('cardTypeModal');
           let cards = [];
+          // 編集用
+          const cardEditModal = document.getElementById('cardEditModal');
+          const editCardContent = document.getElementById('edit-card-content');
+          const saveCardEditBtn = document.getElementById('save-card-edit');
+          let editingCardIdx = null;
 
           // Bootstrapモーダル表示
           function showCardTypeModal() {
@@ -154,6 +182,34 @@
           // n+1個の追加ボタンでカード挿入
           let pendingInsertIdx = null;
           cardsList.addEventListener('click', function(e) {
+            // 編集
+            if (e.target.dataset.editIdx !== undefined) {
+              editingCardIdx = parseInt(e.target.dataset.editIdx);
+              // 編集内容をセット
+              editCardContent.value = cards[editingCardIdx].content || '';
+              // モーダル表示
+              if (window.jQuery) {
+                window.jQuery(cardEditModal).modal('show');
+              } else {
+                cardEditModal.style.display = 'block';
+              }
+              return;
+            }
+                      // 編集保存
+                      if (saveCardEditBtn) {
+                        saveCardEditBtn.addEventListener('click', function() {
+                          if (editingCardIdx !== null) {
+                            cards[editingCardIdx].content = editCardContent.value;
+                            renderCards();
+                            if (window.jQuery) {
+                              window.jQuery(cardEditModal).modal('hide');
+                            } else {
+                              cardEditModal.style.display = 'none';
+                            }
+                            editingCardIdx = null;
+                          }
+                        });
+                      }
             if (e.target.classList.contains('card-insert-btn')) {
               pendingInsertIdx = parseInt(e.target.dataset.insertIdx);
               showCardTypeModal();

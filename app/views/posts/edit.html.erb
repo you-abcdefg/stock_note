@@ -1,139 +1,289 @@
 <script>
-// --- カード編集UI用JS ---
-const CARD_TYPES = [
-  { value: 'text', label: 'テキスト' },
-  { value: 'image', label: '画像' },
-  { value: 'url', label: 'URL' },
-  { value: 'code', label: 'コード' },
-  { value: 'formula', label: '数式' }
-];
+  (function() {
+    // --- カードリストUI ---
+    const cardsList = document.getElementById('cards-list');
+    if (!cardsList) return;
+    const cardTypeModal = document.getElementById('cardTypeModal');
+    if (!cardTypeModal) return;
+    let cards = [];
+    // 編集用
+    const cardEditModal = document.getElementById('cardEditModal');
+    if (!cardEditModal) return;
+    const editCardContent = document.getElementById('edit-card-content');
+    const saveCardEditBtn = document.getElementById('save-card-edit');
+    let editingCardIdx = null;
 
-function getInitialCards() {
-  try {
-    const body = document.getElementById('body-hidden').value;
-    if (!body) return [];
-    const parsed = JSON.parse(body);
-    if (Array.isArray(parsed)) return parsed; // 古い形式
-    if (parsed && parsed.cards) return parsed.cards;
-    return [];
-  } catch (e) {
-    return [];
-  }
-}
-
-let cards = getInitialCards();
-
-function renderCards() {
-  const list = document.getElementById('cards-list');
-  list.innerHTML = '';
-  cards.forEach((card, idx) => {
-    const div = document.createElement('div');
-    div.className = 'card-edit-item';
-
-    // 並び替えボタン
-    const upBtn = document.createElement('button');
-    upBtn.innerHTML = '↑';
-    upBtn.className = 'move-up';
-    upBtn.disabled = idx === 0;
-    upBtn.onclick = () => { moveCard(idx, -1); };
-    div.appendChild(upBtn);
-    const downBtn = document.createElement('button');
-    downBtn.innerHTML = '↓';
-    downBtn.className = 'move-down';
-    downBtn.disabled = idx === cards.length - 1;
-    downBtn.onclick = () => { moveCard(idx, 1); };
-    div.appendChild(downBtn);
-
-    // 種類選択
-    const typeSel = document.createElement('select');
-    CARD_TYPES.forEach(t => {
-      const opt = document.createElement('option');
-      opt.value = t.value;
-      opt.textContent = t.label;
-      if (card.type === t.value) opt.selected = true;
-      typeSel.appendChild(opt);
-    });
-    typeSel.onchange = (e) => {
-      card.type = e.target.value;
-      card.content = '';
-      renderCards();
-      updateBodyField();
-    };
-    div.appendChild(typeSel);
-
-    // 内容編集
-    let contentInput;
-    if (card.type === 'text' || card.type === 'url' || card.type === 'formula') {
-      contentInput = document.createElement('input');
-      contentInput.type = 'text';
-      contentInput.className = 'form-control';
-      contentInput.value = card.content || '';
-      contentInput.placeholder = CARD_TYPES.find(t => t.value === card.type).label + '内容';
-      contentInput.oninput = (e) => {
-        card.content = e.target.value;
-        updateBodyField();
-      };
-    } else if (card.type === 'code') {
-      contentInput = document.createElement('textarea');
-      contentInput.className = 'form-control';
-      contentInput.rows = 2;
-      contentInput.value = card.content || '';
-      contentInput.placeholder = 'コード内容';
-      contentInput.oninput = (e) => {
-        card.content = e.target.value;
-        updateBodyField();
-      };
-    } else if (card.type === 'image') {
-      contentInput = document.createElement('input');
-      contentInput.type = 'text';
-      contentInput.className = 'form-control';
-      contentInput.value = card.content || '';
-      contentInput.placeholder = '画像URLまたは説明';
-      contentInput.oninput = (e) => {
-        card.content = e.target.value;
-        updateBodyField();
-      };
+    // Bootstrapモーダル表示
+    function showCardTypeModal() {
+      if (window.jQuery) {
+        window.jQuery(cardTypeModal).modal('show');
+      } else {
+        cardTypeModal.style.display = 'block';
+      }
     }
-    div.appendChild(contentInput);
+    function hideCardTypeModal() {
+      if (window.jQuery) {
+        window.jQuery(cardTypeModal).modal('hide');
+      } else {
+        cardTypeModal.style.display = 'none';
+      }
+    }
 
-    // 削除ボタン
-    const delBtn = document.createElement('button');
-    delBtn.textContent = '削除';
-    delBtn.className = 'delete-card btn btn-sm btn-outline-danger';
-    delBtn.onclick = () => { deleteCard(idx); };
-    div.appendChild(delBtn);
+    // n+1個のカード追加ボタンを含めて描画
+    function renderCards() {
+      cardsList.innerHTML = '';
+      for (let i = 0; i <= cards.length; i++) {
+        // 追加ボタン
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn btn-outline-success btn-block mb-2 card-insert-btn';
+        addBtn.textContent = '＋ カード追加';
+        addBtn.dataset.insertIdx = i;
+        cardsList.appendChild(addBtn);
+        // カード本体
+        if (i < cards.length) {
+          const card = cards[i];
+          const cardDiv = document.createElement('div');
+          cardDiv.className = 'card mb-2';
+          cardDiv.innerHTML = `
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <span>${card.type}カード</span>
+              <div>
+                <button type="button" class="btn btn-sm btn-outline-secondary mr-1" data-move-up="${i}">↑</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary mr-2" data-move-down="${i}">↓</button>
+                <button type="button" class="btn btn-sm btn-outline-primary mr-2" data-edit-idx="${i}">編集</button>
+                <button type="button" class="btn btn-sm btn-outline-danger" data-del-idx="${i}">削除</button>
+              </div>
+            </div>
+          `;
+          cardsList.appendChild(cardDiv);
+        }
+      }
+    }
 
-    list.appendChild(div);
-  });
-  updateBodyField();
-}
-
-function addCard() {
-  cards.push({ type: 'text', content: '' });
-  renderCards();
-}
-function deleteCard(idx) {
-  cards.splice(idx, 1);
-  renderCards();
-}
-function moveCard(idx, dir) {
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= cards.length) return;
-  const tmp = cards[idx];
-  cards[idx] = cards[newIdx];
-  cards[newIdx] = tmp;
-  renderCards();
-}
-function updateBodyField() {
-  // JSON形式でbody-hiddenに格納
-  const doc = { version: 1, cards: cards };
-  document.getElementById('body-hidden').value = JSON.stringify(doc);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  renderCards();
-  document.getElementById('add-card-button').onclick = addCard;
-});
+    // n+1個の追加ボタンでカード挿入
+    let pendingInsertIdx = null;
+    cardsList.addEventListener('click', function(e) {
+      // 編集
+      if (e.target.dataset.editIdx !== undefined) {
+        editingCardIdx = parseInt(e.target.dataset.editIdx);
+        // 編集内容をセット
+        editCardContent.value = cards[editingCardIdx].content || '';
+        // モーダル表示
+        if (window.jQuery) {
+          window.jQuery(cardEditModal).modal('show');
+        } else {
+          cardEditModal.style.display = 'block';
+        }
+        return;
+      }
+      // 編集保存
+      if (saveCardEditBtn) {
+        saveCardEditBtn.addEventListener('click', function() {
+          if (editingCardIdx !== null) {
+            cards[editingCardIdx].content = editCardContent.value;
+            renderCards();
+            if (window.jQuery) {
+              window.jQuery(cardEditModal).modal('hide');
+            } else {
+              cardEditModal.style.display = 'none';
+            }
+            editingCardIdx = null;
+          }
+        });
+      }
+      if (e.target.classList.contains('card-insert-btn')) {
+        pendingInsertIdx = parseInt(e.target.dataset.insertIdx);
+        showCardTypeModal();
+      }
+    });
+    if (cardTypeModal) {
+      cardTypeModal.addEventListener('click', function(e) {
+        if (e.target.dataset.cardType && pendingInsertIdx !== null) {
+          cards.splice(pendingInsertIdx, 0, {type: e.target.dataset.cardType, content: ''});
+          renderCards();
+          hideCardTypeModal();
+          pendingInsertIdx = null;
+        }
+      });
+    }
+    // カード削除・上下移動
+    cardsList.addEventListener('click', function(e) {
+      // 削除
+      if (e.target.dataset.delIdx !== undefined) {
+        const idx = parseInt(e.target.dataset.delIdx);
+        cards.splice(idx, 1);
+        renderCards();
+        return;
+      }
+      // 上移動
+      if (e.target.dataset.moveUp !== undefined) {
+        const idx = parseInt(e.target.dataset.moveUp);
+        if (idx > 0) {
+          [cards[idx - 1], cards[idx]] = [cards[idx], cards[idx - 1]];
+          renderCards();
+        }
+        return;
+      }
+      // 下移動
+      if (e.target.dataset.moveDown !== undefined) {
+        const idx = parseInt(e.target.dataset.moveDown);
+        if (idx < cards.length - 1) {
+          [cards[idx + 1], cards[idx]] = [cards[idx], cards[idx + 1]];
+          renderCards();
+        }
+        return;
+      }
+    });
+    // 初期描画
+    renderCards();
+    // --- 既存フォーム初期化 ---
+    const initPostForm = () => {
+      const bodyEditor = document.getElementById('body-editor');
+      const bodyHidden = document.getElementById('body-hidden');
+      if (bodyEditor && bodyEditor.dataset.insertBindings === 'true') return;
+      if (bodyEditor) {
+        bodyEditor.dataset.insertBindings = 'true';
+      }
+      const insertImageButton = document.getElementById('insert-image-button');
+      const insertCodeButton = document.getElementById('insert-code-button');
+      const imageInput = document.getElementById('post_images');
+      const selectedTags = document.getElementById('selected-tags');
+      const openTagModalBtn = document.getElementById('open-tag-modal');
+      const tagSelectModal = document.getElementById('tagSelectModal');
+      const tagCheckboxesModal = document.getElementById('tag-checkboxes-modal');
+      const applyTagSelectionBtn = document.getElementById('apply-tag-selection');
+      // 選択状態保持用
+      let selectedTagValues = [];
+      const imageObjectsContainer = document.getElementById('image-objects');
+      const codeObjectsContainer = document.getElementById('code-objects');
+      const imageCountSpan = document.getElementById('image-count');
+      const codeCountSpan = document.getElementById('code-count');
+      const noImagesMessage = document.getElementById('no-images-message');
+      const noCodeMessage = document.getElementById('no-code-message');
+      const codeTemplate = "\n```ruby\n\n```\n";
+      const resolveImageUrl = (filename) => {
+        if (window.localImageUrlMap && window.localImageUrlMap.has(filename)) {
+          return window.localImageUrlMap.get(filename);
+        }
+        if (window.imageUrlMap && window.imageUrlMap[filename]) {
+          return window.imageUrlMap[filename];
+        }
+        return null;
+      };
+      const hasContentEditable = !!bodyEditor;
+      const setBodyText = (text) => {
+        if (bodyEditor) {
+          bodyEditor.textContent = text;
+          bodyEditor.dispatchEvent(new Event('input'));
+          return;
+        }
+        if (bodyHidden) {
+          bodyHidden.value = text;
+          bodyHidden.dispatchEvent(new Event('input'));
+        }
+      };
+      const insertAtCursor = (text) => {
+        if (!bodyHidden) return;
+        const start = bodyHidden.selectionStart || 0;
+        const end = bodyHidden.selectionEnd || 0;
+        const before = bodyHidden.value.slice(0, start);
+        const after = bodyHidden.value.slice(end);
+        bodyHidden.value = `${before}${text}${after}`;
+        bodyHidden.dispatchEvent(new Event('input'));
+      };
+      const updateMediaDisplay = () => {
+      };
+      if (insertImageButton && !hasContentEditable) {
+        insertImageButton.addEventListener('click', function () {
+          if (!imageInput) return;
+          imageInput.click();
+        });
+      }
+      const allFiles = [];
+      if (imageInput && !hasContentEditable) {
+        imageInput.addEventListener('change', function () {
+          if (!imageInput.files || imageInput.files.length === 0) return;
+          const newFiles = Array.from(imageInput.files);
+          newFiles.forEach((file) => {
+            if (!allFiles.find((f) => f.name === file.name && f.size === file.size)) {
+              allFiles.push(file);
+            }
+          });
+          const dt = new DataTransfer();
+          allFiles.forEach((file) => {
+            dt.items.add(file);
+          });
+          imageInput.files = dt.files;
+          const lines = newFiles.map((file) => `![説明](image:${file.name})`);
+          insertAtCursor(lines.join("\n"));
+          updateMediaDisplay();
+        });
+      }
+      if (bodyEditor) {
+        bodyEditor.addEventListener('input', updateMediaDisplay);
+      }
+      if (bodyHidden) {
+        bodyHidden.addEventListener('input', updateMediaDisplay);
+      }
+      // タグチェックボックス取得関数（null安全）
+      const getCheckboxes = () => {
+        const container = document.getElementById('tag-checkboxes-modal') || document.getElementById('tag-checkboxes');
+        if (!container) return [];
+        return container.querySelectorAll('input[type="checkbox"]');
+      };
+      const updateSelected = () => {
+        const checkboxes = getCheckboxes();
+        if (!checkboxes.length) return;
+        const names = Array.from(checkboxes)
+          .filter((cb) => cb.checked)
+          .map((cb) => cb.value);
+        selectedTags.textContent = names.length ? names.join(', ') : '未選択';
+      };
+      const bindCheckboxEvents = () => {
+        const checkboxes = getCheckboxes();
+        if (!checkboxes.length) return;
+        checkboxes.forEach((cb) => cb.addEventListener('change', updateSelected));
+      };
+      // タグ選択モーダルの制御
+      if (openTagModalBtn && tagSelectModal) {
+        openTagModalBtn.addEventListener('click', function() {
+          if (window.jQuery) {
+            window.jQuery(tagSelectModal).modal('show');
+          } else {
+            tagSelectModal.style.display = 'block';
+          }
+          // モーダル表示時、既存選択を反映
+          Array.from(tagCheckboxesModal.querySelectorAll('input[type="checkbox"]')).forEach(cb => {
+            cb.checked = selectedTagValues.includes(cb.value);
+          });
+        });
+      }
+      if (applyTagSelectionBtn && tagCheckboxesModal) {
+        applyTagSelectionBtn.addEventListener('click', function() {
+          // 選択値を反映
+          selectedTagValues = Array.from(tagCheckboxesModal.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+          selectedTags.textContent = selectedTagValues.length ? selectedTagValues.join(', ') : '未選択';
+          // hiddenフィールドへ反映
+          let hidden = document.querySelector('input[name="post[tag_list]"]');
+          if (!hidden) {
+            hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'post[tag_list]';
+            document.querySelector('form').appendChild(hidden);
+          }
+          hidden.value = selectedTagValues.join(',');
+          if (window.jQuery) {
+            window.jQuery(tagSelectModal).modal('hide');
+          } else {
+            tagSelectModal.style.display = 'none';
+          }
+        });
+      }
+    };
+    // turbolinks:loadで初期化
+    document.addEventListener('turbolinks:load', initPostForm);
+  })();
 </script>
 <%# ***** posts/edit のビュー ***** %>
 <%# ***** 「# ***** posts/edit のビュー *****」：出力式/式 ***** %>
@@ -228,531 +378,68 @@ document.addEventListener('DOMContentLoaded', function() {
         <% end %>
         <%# ***** 「end」：if文の終了 ***** %>
 
-        <div class="form-group mb-3">
-        <%# ***** 「<div>」：タイトル入力フォームグループ ***** %>
-        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
-        <%# ***** mb-3：下部マージンを追加 ***** %>
-        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <%= form.label :title %>
-          <%# ***** 「form.label :title」：画面へ値を出力する式 ***** %>
-          <%# ***** form.label：タイトル入力フィールドのラベルを表示 ***** %>
-          <%# ***** :title：ラベル対象属性 ***** %>
-          <%= form.text_field :title, class: "form-control" %>
-          <%# ***** 「form.text_field :title, class: "form-control"」：画面へ値を出力する式 ***** %>
-          <%# ***** フォーム入力欄セクション ***** %>
-          <%# ***** form.text_field：単一行テキスト入力フィールド ***** %>
-          <%# ***** :title：投稿タイトル属性を対象 ***** %>
-          <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
+        <div class="form-group">
+          <%= form.label :title, 'タイトル' %>
+          <%= form.text_field :title, class: 'form-control', style: 'height: 48px; min-height: 48px; max-height: 48px; border: 2px solid #000; border-radius: 10px; background: #f4f8ff; box-shadow: 0 0 8px #b3d1ff; padding: 12px;' %>
         </div>
         <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
-        <div class="form-group mb-3">
-          <div class="form-label">本文（カード編集）</div>
-          <div id="cards-list">
-            <%# ここにカード配列の内容をJSで描画 %>
+        <div class="form-group">
+          <%= form.label :body, '本文' %>
+          <%= form.hidden_field :body, id: 'body-hidden' %>
+          <div id="cards-list" class="mb-2" style="height: 400px; min-height: 400px; max-height: 400px; overflow-y: auto; border: 2px solid #000; border-radius: 10px; background: #f4f8ff; box-shadow: 0 0 8px #b3d1ff; padding: 12px;"></div>
+          <!-- カード編集モーダル -->
+          <div class="modal fade" id="cardEditModal" tabindex="-1" role="dialog" aria-labelledby="cardEditModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="cardEditModalLabel">カード編集</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="edit-card-content">内容</label>
+                    <textarea id="edit-card-content" class="form-control" rows="4"></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="save-card-edit">保存</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="mt-2">
-            <button type="button" class="btn btn-sm btn-outline-dark mr-2" id="add-card-button">
-              カードを追加
-            </button>
+          <!-- カード種別選択ダイアログ -->
+          <div class="modal fade" id="cardTypeModal" tabindex="-1" role="dialog" aria-labelledby="cardTypeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="cardTypeModalLabel">カードの種類を選択</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <button type="button" class="btn btn-secondary btn-block mb-2" data-card-type="text">テキスト</button>
+                  <button type="button" class="btn btn-secondary btn-block mb-2" data-card-type="url">URL</button>
+                  <button type="button" class="btn btn-secondary btn-block mb-2" data-card-type="image">画像</button>
+                  <button type="button" class="btn btn-secondary btn-block mb-2" data-card-type="math">数式</button>
+                  <button type="button" class="btn btn-secondary btn-block mb-2" data-card-type="code">コード</button>
+                </div>
+              </div>
+            </div>
           </div>
-          <input type="hidden" id="body-hidden" name="post[body]" value="<%= @post.body %>">
         </div>
-        <style>
-        /* カード編集UI用の簡易スタイル */
-        #cards-list .card-edit-item {
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          background: #f8f9fa;
-          margin-bottom: 8px;
-          padding: 12px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        #cards-list .card-edit-item .move-up,
-        #cards-list .card-edit-item .move-down {
-          cursor: pointer;
-          font-size: 18px;
-          background: none;
-          border: none;
-        }
-        #cards-list .card-edit-item .delete-card {
-          color: #dc3545;
-          cursor: pointer;
-          background: none;
-          border: none;
-        }
-        </style>
-            <%# ***** #body-editor：本文編集エリアのベーススタイル ***** %>
-            #body-editor {
-              overflow-y: auto;
-              <%# ***** overflow-y: auto：縦方向のスクロールを許可 ***** %>
-              overflow-x: hidden;
-              <%# ***** overflow-x: hidden：横方向のはみ出しを隠す ***** %>
-              word-break: break-word;
-              <%# ***** word-break: break-word：単語途中での改行を許可 ***** %>
-              word-wrap: break-word;
-              <%# ***** word-wrap: break-word：長い単語を折り返す ***** %>
-              line-height: 1.6;
-              <%# ***** line-height: 1.6：行の高さを広めに設定 ***** %>
-              padding: 10px 12px;
-              <%# ***** padding: 10px 12px：内側余白を上下左右に付与 ***** %>
-              box-sizing: border-box;
-              <%# ***** box-sizing: border-box：paddingを幅/高さに含める ***** %>
-              text-align: left;
-              <%# ***** text-align: left：テキストを左寄せ ***** %>
-            }
-            <%# ***** .card-spacer：カードとテキストの間隔調整用スペーサー ***** %>
-            #body-editor .card-spacer {
-              display: inline-block;
-              <%# ***** display: inline-block：インライン要素として配置 ***** %>
-              width: 12px;
-              <%# ***** width: 12px：横方向の空白幅 ***** %>
-              height: 1px;
-              <%# ***** height: 1px：高さを最小化 ***** %>
-            }
-            <%# ***** .media-card：画像カードのコンテナ ***** %>
-            #body-editor .media-card {
-              display: inline-flex;
-              <%# ***** display: inline-flex：インラインでフレックス配置 ***** %>
-              margin: 0 12px 8px 0;
-              <%# ***** margin: 0 12px 8px 0：外側余白を調整 ***** %>
-              vertical-align: top;
-              <%# ***** vertical-align: top：上端揃え ***** %>
-              cursor: pointer;
-              <%# ***** cursor: pointer：ホバー時にポインタ表示 ***** %>
-              border: 1px solid #e9ecef;
-              <%# ***** border: 1px solid #e9ecef：枠線を薄く表示 ***** %>
-              border-radius: 3px;
-              <%# ***** border-radius: 3px：角丸 ***** %>
-              background: white;
-              <%# ***** background: white：背景色を白に設定 ***** %>
-              position: relative;
-              <%# ***** position: relative：絶対配置ボタンの基準 ***** %>
-              transition: all 0.2s;
-              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
-              width: 100px;
-              <%# ***** width: 100px：カードの横幅 ***** %>
-              height: 72px;
-              <%# ***** height: 72px：カードの縦幅 ***** %>
-              overflow: hidden;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
-              top: 0;
-              <%# ***** top: 0：上方向の位置調整 ***** %>
-              font-size: 0;
-              <%# ***** font-size: 0：余白文字の影響を防止 ***** %>
-              align-items: stretch;
-              <%# ***** align-items: stretch：子要素を高さに合わせる ***** %>
-            }
-            <%# ***** .media-card:hover：ホバー時の装飾 ***** %>
-            #body-editor .media-card:hover {
-              border-color: #0d6efd;
-              <%# ***** border-color: #0d6efd：枠線色を強調 ***** %>
-              <%# ***** box-shadow：影を付けて浮き上がり感を出す ***** %>
-              box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            }
-            <%# ***** .media-card img：画像の表示設定 ***** %>
-            #body-editor .media-card img {
-              width: 100%;
-              <%# ***** width: 100%：横幅をカードに合わせる ***** %>
-              height: 100%;
-              <%# ***** height: 100%：縦幅をカードに合わせる ***** %>
-              object-fit: cover;
-              <%# ***** object-fit: cover：縦横比を保ちトリミング ***** %>
-              border-radius: 2px;
-              <%# ***** border-radius: 2px：画像の角丸 ***** %>
-              display: block;
-              <%# ***** display: block：余白のないブロック表示 ***** %>
-            }
-            <%# ***** .media-card .filename：ファイル名表示（現在は非表示） ***** %>
-            #body-editor .media-card .filename {
-              display: none;
-              <%# ***** display: none：ファイル名を非表示 ***** %>
-            }
-            <%# ***** .code-card：コードカードのコンテナ ***** %>
-            #body-editor .code-card,
-            #body-editor .url-card {
-              display: block;
-              <%# ***** display: block：ブロック要素として配置 ***** %>
-              <%# ***** margin: 0なし：上下左右の余白をなくす ***** %>
-              margin: 0 !important;
-              margin-top: 0 !important;
-              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
-              padding: 0 !important;
-              <%# ***** padding: 0：全padding削除 ***** %>
-              background: #f8f9fa;
-              <%# ***** background: #f8f9fa：背景色を薄いグレー ***** %>
-              border-left: 3px solid #0d6efd;
-              <%# ***** border-left: 3px solid #0d6efd：左のアクセント線 ***** %>
-              border-radius: 3px;
-              <%# ***** border-radius: 3px：角丸 ***** %>
-              cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
-              position: relative;
-              <%# ***** position: relative：ボタン配置の基準 ***** %>
-              overflow: hidden;
-              <%# ***** overflow: hidden：はみ出しを隠す ***** %>
-              transition: all 0.2s;
-              <%# ***** transition: all 0.2s：ホバー時の変化を滑らかに ***** %>
-              height: 100px;
-              <%# ***** height: 100px：高さを統一 ***** %>
-            }
-            <%# ***** .code-card:hover：ホバー時の装飾 ***** %>
-            #body-editor .code-card:hover,
-            #body-editor .url-card:hover {
-              background: #e7f1ff;
-              <%# ***** background: #e7f1ff：背景色を強調 ***** %>
-              border-left-color: #0056b3;
-              <%# ***** border-left-color: #0056b3：左線の色を変更 ***** %>
-            }
-            <%# ***** .code-card pre：コード表示のテキスト領域 ***** %>
-            #body-editor .code-card pre,
-            #body-editor .url-card pre {
-              margin: 0;
-              <%# ***** margin: 0：余白をリセット ***** %>
-              font-size: 12px;
-              <%# ***** font-size: 12px：文字サイズを調整 ***** %>
-              line-height: 1.5;
-              <%# ***** line-height: 1.5：行の高さ ***** %>
-              white-space: pre-wrap;
-              <%# ***** white-space: pre-wrap：折り返し表示を許可 ***** %>
-              word-break: break-word;
-              <%# ***** word-break: break-word：単語途中での折り返し ***** %>
-              overflow: auto;
-              <%# ***** overflow: auto：はみ出しをスクロール表示 ***** %>
-              height: 100%;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
-            }
-            <%# ***** .formula-card：数式カード ***** %>
-            #body-editor .formula-card {
-              display: block;
-              <%# ***** display: block：ブロック要素として配置 ***** %>
-              width: 100%;
-              <%# ***** width: 100%：横幅を100%に統一 ***** %>
-              margin: 0 !important;
-              <%# ***** margin: 0：上下左右の余白をなくす ***** %>
-              margin-top: 0 !important;
-              <%# ***** margin-top: 0：上余白を明示的に削除 ***** %>
-              padding: 0 !important;
-              <%# ***** padding: 0：内側余白も0に ***** %>
-              text-align: left;
-              <%# ***** text-align: left：左寄せを明示的に設定 ***** %>
-              height: 100px;
-              <%# ***** height: 100px：高さを統一 ***** %>
-              position: relative;
-              <%# ***** position: relative：配置基準 ***** %>
-              float: none;
-              <%# ***** float: none：浮動を無効化 ***** %>
-            }
-            #body-editor .text-card {
-              display: block;
-              width: 100%;
-              margin: 0 !important;
-              margin-top: 0 !important;
-              padding: 0 !important;
-              text-align: left;
-              min-height: 100px;
-              position: relative;
-              float: none;
-              background: #f8f9fa;
-              border-left: 3px solid #0d6efd;
-              border-radius: 3px;
-            }
-            <%# ***** .code-card-body：コードカード本体 ***** %>
-            #body-editor .code-card-body {
-              padding: 3px 4px 0 4px !important;
-              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
-              margin: 0 !important;
-              <%# ***** margin: 0：余白なし ***** %>
-              height: 100%;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
-              display: block !important;
-              <%# ***** display: block：ブロック要素 ***** %>
-              line-height: 1.2 !important;
-              <%# ***** line-height: 1.2：行の高さ ***** %>
-            }
-            <%# ***** .formula-card-body：数式カード本体 ***** %>
-            #body-editor .formula-card-body {
-              padding: 3px 4px 0 4px !important;
-              <%# ***** padding: 3px 4px 0 4px：上3px、左右4pxの余白 ***** %>
-              margin: 0 !important;
-              <%# ***** margin: 0：余白なし ***** %>
-              height: 100%;
-              <%# ***** height: 100%：親の高さに合わせる ***** %>
-              display: block !important;
-              <%# ***** display: block：ブロック要素 ***** %>
-              line-height: 1.2 !important;
-              <%# ***** line-height: 1.2：行の高さ ***** %>
-            }
-            #body-editor .text-card-body {
-              padding: 10px 12px 8px 8px !important;
-              margin: 0 !important;
-              min-height: 100%;
-              display: block !important;
-              line-height: 1.5 !important;
-              white-space: pre-wrap;
-              word-break: break-word;
-            }
-            #body-editor .url-card-body {
-              padding: 3px 4px 0 4px !important;
-              margin: 0 !important;
-              height: 100%;
-              display: block !important;
-              line-height: 1.2 !important;
-              white-space: pre-wrap;
-              word-break: break-word;
-              overflow: auto;
-            }
-            <%# ***** .card-delete-btn：カード削除ボタンの共通スタイル ***** %>
-            #body-editor .card-delete-btn {
-              position: absolute;
-              <%# ***** position: absolute：カード右上に配置 ***** %>
-              top: 0;
-              <%# ***** top: 0：上からの位置を0に ***** %>
-              right: 2px;
-              <%# ***** right: 2px：右からの位置 ***** %>
-              padding: 1px 3px;
-              <%# ***** padding: 1px 3px：内側余白 ***** %>
-              font-size: 9px;
-              <%# ***** font-size: 9px：文字サイズ ***** %>
-              background: #dc3545;
-              <%# ***** background: #dc3545：背景色（赤） ***** %>
-              color: white;
-              <%# ***** color: white：文字色 ***** %>
-              border: none;
-              <%# ***** border: none：枠線なし ***** %>
-              border-radius: 2px;
-              <%# ***** border-radius: 2px：角丸 ***** %>
-              cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
-              z-index: 10;
-              <%# ***** z-index: 10：前面表示 ***** %>
-            }
-            <%# ***** .media-card .card-delete-btn：画像カードの削除ボタン ***** %>
-            #body-editor .media-card .card-delete-btn {
-              z-index: 20;
-              <%# ***** z-index: 20：画像の上に表示 ***** %>
-              opacity: 0.95;
-              <%# ***** opacity: 0.95：少しだけ透過 ***** %>
-              display: inline-block;
-              <%# ***** display: inline-block：ボタンを表示 ***** %>
-            }
-            <%# ***** .card-delete-btn:hover：削除ボタンのホバー色 ***** %>
-            #body-editor .card-delete-btn:hover {
-              background: #bb2d3b;
-              <%# ***** background: #bb2d3b：ホバー時の色 ***** %>
-            }
-            <%# ***** .code-editor-overlay：コード編集モーダルの背景 ***** %>
-            .code-editor-overlay {
-              position: fixed;
-              <%# ***** position: fixed：画面全体に固定 ***** %>
-              inset: 0;
-              <%# ***** inset: 0：上下左右を0に設定 ***** %>
-              background: rgba(0, 0, 0, 0.4);
-              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
-              display: none;
-              <%# ***** display: none：初期状態は非表示 ***** %>
-              align-items: center;
-              <%# ***** align-items: center：縦中央揃え ***** %>
-              justify-content: center;
-              <%# ***** justify-content: center：横中央揃え ***** %>
-              z-index: 9999;
-              <%# ***** z-index: 9999：最前面表示 ***** %>
-            }
-            <%# ***** .code-editor-overlay.is-open：モーダル表示時 ***** %>
-            .code-editor-overlay.is-open {
-              display: flex;
-              <%# ***** display: flex：フレックスで表示 ***** %>
-            }
-            <%# ***** .code-editor-modal：モーダル本体 ***** %>
-            .code-editor-modal {
-              background: #fff;
-              <%# ***** background: #fff：背景色を白 ***** %>
-              width: 90%;
-              <%# ***** width: 90%：横幅を SCSS と統一 ***** %>
-              max-width: 1200px;
-              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
-              height: min(70vh, 600px);
-              <%# ***** height: min(70vh, 600px)：高さを制限 ***** %>
-              border-radius: 8px;
-              <%# ***** border-radius: 8px：角丸 ***** %>
-              <%# ***** box-shadow：影を付ける ***** %>
-              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-              display: flex;
-              <%# ***** display: flex：縦並びレイアウト ***** %>
-              flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
-              padding: 12px;
-              <%# ***** padding: 12px：内側余白 ***** %>
-            }
-            <%# ***** .code-editor-header：モーダルの見出し ***** %>
-            .code-editor-header {
-              font-weight: 600;
-              <%# ***** font-weight: 600：太字指定 ***** %>
-              margin-bottom: 8px;
-              <%# ***** margin-bottom: 8px：下余白 ***** %>
-            }
-            <%# ***** .code-editor-textarea：コード入力欄 ***** %>
-            .code-editor-textarea {
-              flex: 1;
-              <%# ***** flex: 1：高さを埋める ***** %>
-              width: 100%;
-              <%# ***** width: 100%：横幅100% ***** %>
-              resize: none;
-              <%# ***** resize: none：サイズ変更不可 ***** %>
-              <%# ***** font-family：等幅フォントを指定 ***** %>
-              font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-              font-size: 13px;
-              <%# ***** font-size: 13px：文字サイズ ***** %>
-              line-height: 1.5;
-              <%# ***** line-height: 1.5：行の高さ ***** %>
-              border: 1px solid #dee2e6;
-              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
-              border-radius: 6px;
-              <%# ***** border-radius: 6px：角丸 ***** %>
-              padding: 10px;
-              <%# ***** padding: 10px：内側余白 ***** %>
-            }
-            <%# ***** .code-editor-actions：モーダル下部のボタン領域 ***** %>
-            .code-editor-actions {
-              margin-top: 10px;
-              <%# ***** margin-top: 10px：上余白 ***** %>
-              display: flex;
-              <%# ***** display: flex：横並び ***** %>
-              justify-content: flex-end;
-              <%# ***** justify-content: flex-end：右寄せ ***** %>
-              gap: 8px;
-              <%# ***** gap: 8px：ボタン間の余白 ***** %>
-            }
-            <%# ***** .formula-editor-overlay：数式編集モーダルの背景 ***** %>
-            .formula-editor-overlay {
-              position: fixed;
-              <%# ***** position: fixed：画面全体に固定 ***** %>
-              inset: 0;
-              <%# ***** inset: 0：上下左右を0に設定 ***** %>
-              background: rgba(0, 0, 0, 0.4);
-              <%# ***** background: rgba(0, 0, 0, 0.4)：半透明の背景 ***** %>
-              display: none;
-              <%# ***** display: none：初期状態は非表示 ***** %>
-              align-items: center;
-              <%# ***** align-items: center：縦中央揃え ***** %>
-              justify-content: center;
-              <%# ***** justify-content: center：横中央揃え ***** %>
-              z-index: 9999;
-              <%# ***** z-index: 9999：最前面表示 ***** %>
-            }
-            <%# ***** .formula-editor-overlay.is-open：モーダル表示時 ***** %>
-            .formula-editor-overlay.is-open {
-              display: flex;
-              <%# ***** display: flex：フレックスで表示 ***** %>
-            }
-            <%# ***** .formula-editor-modal：モーダル本体 ***** %>
-            .formula-editor-modal {
-              background: #fff;
-              <%# ***** background: #fff：背景色を白 ***** %>
-              width: 90%;
-              <%# ***** width: 90%：横幅をコードモーダルと統一 ***** %>
-              max-width: 1200px;
-              <%# ***** max-width: 1200px：最大幅を統一 ***** %>
-              border-radius: 8px;
-              <%# ***** border-radius: 8px：角丸 ***** %>
-              <%# ***** box-shadow：影を付ける ***** %>
-              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-              display: flex;
-              <%# ***** display: flex：縦並びレイアウト ***** %>
-              flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
-              padding: 24px;
-              <%# ***** padding: 24px：内側余白 ***** %>
-            }
-            <%# ***** .formula-editor-header：モーダルの見出し ***** %>
-            .formula-editor-header {
-              font-weight: 600;
-              <%# ***** font-weight: 600：太字指定 ***** %>
-              font-size: 16px;
-              <%# ***** font-size: 16px：文字サイズ ***** %>
-              margin-bottom: 16px;
               <%# ***** margin-bottom: 16px：下余白 ***** %>
-            }
             <%# ***** .formula-editor-content：モーダルコンテンツエリア ***** %>
-            .formula-editor-content {
-              display: flex;
-              <%# ***** display: flex：縦並び ***** %>
-              flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
-              gap: 16px;
-              <%# ***** gap: 16px：要素間の間隔 ***** %>
-              margin-bottom: 20px;
-              <%# ***** margin-bottom: 20px：下余白 ***** %>
-            }
-            <%# ***** .formula-input-group：上付き・下付き入力フィールドグループ ***** %>
-            .formula-input-group {
-              display: flex;
-              <%# ***** display: flex：縦並び ***** %>
-              flex-direction: column;
-              <%# ***** flex-direction: column：縦方向に並べる ***** %>
-              gap: 8px;
-              <%# ***** gap: 8px：要素間の間隔 ***** %>
-            }
-            <%# ***** .formula-input-group label：入力フィールドのラベル ***** %>
-            .formula-input-group label {
-              font-weight: 500;
-              <%# ***** font-weight: 500：太字 ***** %>
-              font-size: 13px;
-              <%# ***** font-size: 13px：小さめのフォント ***** %>
-            }
-            <%# ***** .formula-type-selector：上付き・下付き選択ラジオボタン ***** %>
-            .formula-type-selector {
-              display: flex;
               <%# ***** display: flex：横並び ***** %>
-              gap: 20px;
-              <%# ***** gap: 20px：選択肢間の間隔 ***** %>
-            }
-            <%# ***** .formula-type-selector label：ラジオボタンのラベル ***** %>
-            .formula-type-selector label {
-              display: flex;
-              <%# ***** display: flex：フレックスで並べる ***** %>
-              align-items: center;
-              <%# ***** align-items: center：垂直中央揃え ***** %>
-              gap: 8px;
-              <%# ***** gap: 8px：チェックボックスとテキストの間隔 ***** %>
-              cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
-            }
-            <%# ***** .formula-type-selector input：ラジオボタン ***** %>
-            .formula-type-selector input {
-              cursor: pointer;
-              <%# ***** cursor: pointer：ポインタ表示 ***** %>
-            }
-            <%# ***** .formula-editor-input：数式入力フィールド ***** %>
-            .formula-editor-input {
-              width: 100%;
-              <%# ***** width: 100%：横幅100% ***** %>
-              padding: 10px 12px;
-              <%# ***** padding: 10px 12px：内側余白 ***** %>
-              border: 1px solid #dee2e6;
-              <%# ***** border: 1px solid #dee2e6：枠線 ***** %>
-              border-radius: 6px;
-              <%# ***** border-radius: 6px：角丸 ***** %>
-              font-size: 14px;
-              <%# ***** font-size: 14px：文字サイズ ***** %>
-              box-sizing: border-box;
-              <%# ***** box-sizing: border-box：padding を幅に含める ***** %>
-            }
-            <%# ***** .formula-editor-actions：モーダル下部のボタン領域 ***** %>
-            .formula-editor-actions {
-              display: flex;
-              <%# ***** display: flex：横並び ***** %>
-              justify-content: flex-end;
               <%# ***** justify-content: flex-end：右寄せ ***** %>
-              gap: 8px;
               <%# ***** gap: 8px：ボタン間の間隔 ***** %>
-            }
           </style>
           <%# ***** 「<style>【内容】</style>」：スタイル定義要素 ***** %>
           <%# ***** /style：本文内スタイル定義の終了 ***** %>
-          </div>
           <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
           <%# ***** 隠れたファイル入力フィールド（JavaScriptで参照用） ***** %>
         <%= form.file_field :images, multiple: true, accept: "image/*", style: "display: none;" %>
@@ -762,96 +449,53 @@ document.addEventListener('DOMContentLoaded', function() {
         <%# ***** accept: "image/*"：画像ファイルのみ選択可能に制限 ***** %>
         <%# ***** style: "display: none;"：ユーザーには表示しない ***** %>
 
-        <div class="form-group mb-3">
-        <%# ***** 「<div>」：タグ選択フォームグループ ***** %>
-        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
-        <%# ***** mb-3：下部マージンを追加 ***** %>
-        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <div class="form-label">タグ</div>
-          <%# ***** 「<div>【内容】</div>」：汎用コンテナ要素 ***** %>
-          <%# ***** form.label：タグ入力フィールドのラベルを表示 ***** %>
-          <%# ***** :tag_list：ラベル対象属性 ***** %>
-          <%# ***** "タグ"：ラベルのテキスト ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <div class="d-flex align-items-center">
-          <%# ***** 「<div>」：タグ選択ボタンと選択状況を並べるセクション ***** %>
-          <%# ***** d-flex：Flexboxレイアウトを有効化 ***** %>
-          <%# ***** align-items-center：要素を垂直中央に揃える ***** %>
-          <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#tagSelectModal">
-            <%# ***** 「<button>」：モーダル開閉ボタン ***** %>
-            <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
-            <%# ***** class: "btn btn-outline-primary"：青枠線のプライマリボタンのスタイル ***** %>
-            <%# ***** data-toggle="modal"：Bootstrapモーダル開閉機能を有効化 ***** %>
-            <%# ***** data-target="#tagSelectModal"：開閉対象のモーダルIDを指定 ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「data-toggle ="【動作種別】"」：JavaScript動作用のデータ属性 ***** %>
-            <%# ***** 「data-target ="【対象セレクタ】"」：JavaScript動作対象を指定するデータ属性 ***** %>
-            <%# ***** 「data-toggle ="【設定値】"」：JavaScript連携に使うカスタムデータ属性 ***** %>
-            <%# ***** 「data-target ="【設定値】"」：JavaScript動作対象を指定するデータ属性 ***** %>
-              タグを選択
-              <%# ***** ボタンの表示テキスト ***** %>
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">
-            <%# ***** 「<button>」：新規タグ作成ボタン ***** %>
-            <%# ***** type="button"：ボタンの種類を指定（フォーム送信ではなく単なるボタン） ***** %>
-            <%# ***** class: "btn btn-outline-secondary ml-2"：グレー枠線のボタンのスタイル + 左マージン ***** %>
-            <%# ***** id="add-tag-button"：JavaScriptで参照するID ***** %>
-            <%# ***** 「type ="【種別】"」：要素や入力値の種類を指定する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-              タグを作成
-              <%# ***** ボタンの表示テキスト ***** %>
-            </button>
-            <%# ***** 「<button>【内容】</button>」：クリックできるボタンを作るHTML要素 ***** %>
-            <span id="selected-tags" class="ml-3 text-muted"></span>
-            <%# ***** 「<span>【内容】</span>」：選択されたタグを表示するセクション ***** %>
-            <%# ***** id="selected-tags"：JavaScriptで参照するID ***** %>
-            <%# ***** class: "ml-3 text-muted"：左マージン + グレー色の文字色 ***** %>
-            <%# ***** 「id ="【ID】"」：要素を一意に識別する属性 ***** %>
-            <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+        <%= form.label :tag_list, 'タグ' %>
+        <div class="form-group" style="border: 2px solid #000; border-radius: 10px; background: #f4f8ff; box-shadow: 0 0 8px #b3d1ff; padding: 16px 12px;">
+          <div class="mt-2 mb-2">
+            <button type="button" id="open-tag-modal" class="btn btn-outline-primary">タグ選択</button>
           </div>
-          <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
+          <span id="selected-tags" class="ml-2">未選択</span>
+        </div>
+        <!-- タグ選択モーダル -->
+        <div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="tagSelectModalLabel">タグ選択</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div id="tag-checkboxes-modal">
+                  <% @available_tags.each do |tag| %>
+                    <div class="custom-control custom-checkbox mr-3 mb-2">
+                      <input type="checkbox" value="<%= tag.name %>" id="tag_modal_<%= tag.id %>" class="custom-control-input tag-modal-checkbox">
+                      <label class="custom-control-label" for="tag_modal_<%= tag.id %>"><%= tag.name %></label>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-success mr-auto" id="add-tag-in-modal">タグ追加</button>
+                <button type="button" class="btn btn-primary" id="apply-tag-selection">決定</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+              </div>
+            </div>
+          </div>
         </div>
         <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
-        <div class="form-group mb-3">
-        <%# ***** 「<div>」：公開状態選択フォームグループ ***** %>
-        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
-        <%# ***** mb-3：下部マージンを追加 ***** %>
-        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <%= form.label :status %>
-          <%# ***** 「form.label :status」：画面へ値を出力する式 ***** %>
-          <%# ***** form.label：公開状態選択フィールドのラベルを表示 ***** %>
-          <%# ***** :status：ラベル対象属性 ***** %>
+        <!-- ステータス選択をタグの下に移動 -->
+        <%= form.label :status, 'ステータス' %>
+        <div class="form-group mb-3" style="border: 2px solid #000; border-radius: 10px; background: #f4f8ff; box-shadow: 0 0 8px #b3d1ff; padding: 16px 12px;">
           <%= form.select :status, { "下書き": :draft, "公開": :published }, {}, class: "form-control" %>
-          <%# ***** 「form.select :status, { "下書き": :draft, "公開": :published }, {}, class: "form-control"」：画面へ値を出力する式 ***** %>
-          <%# ***** form.select：ドロップダウン選択フィールド ***** %>
-          <%# ***** :status：公開状態属性を対象 ***** %>
-          <%# ***** { "下書き": :draft, "公開": :published }：選択肢を指定 ***** %>
-          <%# ***** {}：HTMLオプション（プレースホルダーなど） ***** %>
-          <%# ***** class: "form-control"：Bootstrapのフォームコントロールスタイル ***** %>
         </div>
-        <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
-
-        <div class="form-group">
-        <%# ***** 「<div>」：送信・キャンセルボタングループ ***** %>
-        <%# ***** form-group：Bootstrapのフォームグループスタイル ***** %>
-        <%# ***** 送信ボタンセクション ***** %>
-        <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
-          <%= form.submit "更新", class: "btn btn-primary" %>
-          <%# ***** 「form.submit "更新", class: "btn btn-primary"」：画面へ値を出力する式 ***** %>
-          <%# ***** form.submit：フォーム送信ボタン ***** %>
-          <%# ***** "更新"：ボタンのテキスト ***** %>
-          <%# ***** class: "btn btn-primary"：青色のプライマリボタンのスタイル ***** %>
-          <%= link_to "キャンセル", @post, class: "btn btn-outline-secondary" %>
-          <%# ***** 「link_to "キャンセル", @post, class: "btn btn-outline-secondary"」：画面へ値を出力する式 ***** %>
-          <%# ***** link_to：キャンセルリンク ***** %>
-          <%# ***** "キャンセル"：リンクの表示テキスト ***** %>
-          <%# ***** @post：表示対象の投稿詳細ページへのパス ***** %>
-          <%# ***** class: "btn btn-outline-secondary"：グレー枠線のボタンスタイル ***** %>
+        <!-- 罫線はステータスの下、更新・キャンセルボタンの上に配置 -->
+        <hr class="my-4" style="border: 1px solid #000; opacity: 1;">
+        <div class="form-group d-flex align-items-center">
+          <%= form.submit '更新', class: 'btn btn-primary mr-2' %>
+          <%= link_to 'キャンセル', @post, class: 'btn btn-secondary' %>
         </div>
         <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
