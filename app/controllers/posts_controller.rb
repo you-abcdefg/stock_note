@@ -49,7 +49,7 @@ class PostsController < ApplicationController
   def create
     # current_user（ログイン中のユーザー）に紐づけて投稿を作成
     @post = current_user.posts.build(post_params)
-    
+
     if @post.save # 保存成功
       redirect_to @post, notice: '投稿を作成しました。'
     else # 保存失敗（バリデーションエラーなど）
@@ -102,14 +102,14 @@ class PostsController < ApplicationController
   def tagged
     # URLから渡されたタグ名でタグを検索
     @tag = ActsAsTaggableOn::Tag.find_by(name: params[:tag])
-    
+
     if @tag
       # タグが存在する場合、Ransackで検索条件を作成
       @q = Post.tagged_with(@tag.name).ransack(params[:q])
-      
+
       # ソート順が指定されていない場合は新しい順をデフォルトに
       @q.sorts = 'created_at desc' if @q.sorts.empty?
-      
+
       # 検索結果を取得（公開済みのみ）
       @posts = @q.result.published_only.includes(:user, :tags)
     else
@@ -163,11 +163,11 @@ class PostsController < ApplicationController
   def image_url
     # filename パラメータから画像を取得
     filename = params[:filename]
-    
+
     # 全投稿から該当する画像を検索
     # find_by_filename を使用してファイル名から ActiveStorage の Blob を取得
     blob = ActiveStorage::Blob.find_by(filename: filename)
-    
+
     if blob.present?
       # 画像が存在する場合、URLを返す
       begin

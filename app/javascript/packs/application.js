@@ -7,7 +7,7 @@ import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
-import "../posts_editor"
+import "../posts_editor_main"
 
 Rails.start()
 // 「Rails.start(【引数】);」: Rails.startを呼び出して必要な処理を実行する

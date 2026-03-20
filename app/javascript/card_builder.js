@@ -1,0 +1,27 @@
+// buildMediaCard: 画像カード生成
+export function buildMediaCard(url) {
+	const card = document.createElement('div');
+	card.className = 'media-card';
+	card.contentEditable = 'false';
+	card.innerHTML = `<img src="${url}" alt="image" style="max-width:100%;max-height:100%;display:block;">`;
+	return card;
+}
+
+// buildFormulaCard: 数式カード生成
+export function buildFormulaCard(formula) {
+	const card = document.createElement('div');
+	card.className = 'formula-card';
+	card.contentEditable = 'false';
+	// プレビュー用: そのままテキスト表示（本番はKaTeX/MathJax等で描画）
+	card.innerHTML = `<div class="formula-card-body">${formula}</div>`;
+	return card;
+}
+// 各種カード（テキスト/コード/数式/画像/URL）の生成・編集・削除ロジック
+// 必要に応じてcard_utils.js, card_modal.jsをimport
+
+// 例: import { escapeHtml, encodeBase64Utf8, decodeBase64Utf8, decodeSerializedPayload } from './card_utils';
+// 例: import { ensureTextModal, ensureCodeModal, ensureFormulaModal } from './card_modal';
+
+// 各build関数（buildTextCard, buildCodeCard, buildFormulaCard, buildUrlCard, buildMediaCard など）をここに移植
+
+// ...（本体は後で移植）...

@@ -155,24 +155,26 @@
 }
 
 // ========== カードスタイル ==========
+
 .media-card,
 .code-card,
-.formula-card {
-	--editor-card-height: 50px;
-	position: relative;
-	margin: 0 !important;
-	margin-top: 0 !important;
-	padding: 0;
-	background: #f8f9fa;
-	border: 1px solid #dee2e6;
-	border-radius: 6px;
-	display: block;
-	max-width: 100%;
-	height: var(--editor-card-height) !important;
-	min-height: var(--editor-card-height);
-	max-height: var(--editor-card-height);
-	overflow: hidden;
-	box-sizing: border-box;
+.formula-card,
+.text-card {
+  --editor-card-height: 50px;
+  position: relative;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  padding: 0;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  display: block;
+  max-width: 100%;
+  height: var(--editor-card-height) !important;
+  min-height: var(--editor-card-height);
+  max-height: var(--editor-card-height);
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .formula-card {
@@ -199,6 +201,7 @@
 	margin: 0 !important;
 }
 
+
 .code-card-body {
 	background: #0f172a;
 	color: #e2e8f0;
@@ -215,6 +218,23 @@
 	box-sizing: border-box;
 	display: block !important;
 	line-height: 1.2 !important;
+}
+
+.text-card-body {
+	padding: 3px 4px 0 4px !important;
+	margin: 0 !important;
+	background: #fff;
+	border-radius: 4px;
+	font-family: "Yu Gothic", "Meiryo", sans-serif;
+	font-size: 14px;
+	line-height: 1.5 !important;
+	word-break: break-word;
+	height: 100%;
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	box-sizing: border-box;
+	display: block !important;
 }
 
 .formula-card-body {

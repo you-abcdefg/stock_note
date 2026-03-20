@@ -138,7 +138,8 @@
     // 初期描画
     renderCards();
     // --- 既存フォーム初期化 ---
-    const initPostForm = () => {
+    if (!window.initPostForm) {
+      window.initPostForm = function() {
       const bodyEditor = document.getElementById('body-editor');
       const bodyHidden = document.getElementById('body-hidden');
       if (bodyEditor && bodyEditor.dataset.insertBindings === 'true') return;
@@ -281,8 +282,9 @@
         });
       }
     };
-    // turbolinks:loadで初期化
-    document.addEventListener('turbolinks:load', initPostForm);
+      };
+      document.addEventListener('turbolinks:load', window.initPostForm);
+    }
   })();
 </script>
 <%# ***** posts/edit のビュー ***** %>
@@ -643,10 +645,7 @@
         </div>
         <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
       <%# ***** スクリプトセクション ***** %>
-        <script>
-        <%# ***** 「<script>」：タグ選択・作成のJavaScriptロジック ***** %>
-          const initPostForm = () => {
-          <%# ***** initPostForm()：投稿フォーム用の初期化処理 ***** %>
+        <!-- 重複定義を削除（上記でwindow.initPostFormとして定義済み） -->
             const bodyEditor = document.getElementById('body-editor');
             <%# ***** bodyEditor：本文contenteditable領域を取得 ***** %>
             const bodyHidden = document.getElementById('body-hidden');

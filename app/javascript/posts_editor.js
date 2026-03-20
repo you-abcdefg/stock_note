@@ -8,6 +8,7 @@ document.addEventListener('turbolinks:load', initContentEditableEditor);
 
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
+  const addCardButton = document.getElementById('add-card-button');
   // 「const bodyEditor = document.getElementById('body-editor');」: bodyEditorを保持する変数
   const bodyHidden = document.getElementById('body-hidden');
   // 「const bodyHidden = document.getElementById('body-hidden');」: bodyHiddenを保持する変数
@@ -16,9 +17,70 @@ function initContentEditableEditor() {
   const isPreviewOnly = bodyEditor?.dataset.previewOnly === 'true';
   // 「const isPreviewOnly = bodyEditor?.dataset.previewOnly === 'true';」: isPreviewOnlyを保持する変数
   
+
   if (!bodyEditor || bodyEditor.dataset.initialized === 'true') return;
-  // 「if (【条件】)」: 【条件】を判定する条件分岐
   bodyEditor.dataset.initialized = 'true';
+
+  // カード追加ボタンのクリックでカード追加モーダルを開く
+  if (addCardButton) {
+    addCardButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      // ここでカード追加用モーダルを開く（例: テキストカード追加）
+      const modal = ensureTextModal();
+      modal.textarea.value = '';
+      modal.overlay.style.display = 'flex';
+      modal.overlay.classList.add('is-open');
+      modal.textarea.focus();
+      // 保存時にカードを本文エディタに追加
+      const onSave = () => {
+        const text = modal.textarea.value;
+        if (text.trim()) {
+          const card = buildTextCard(serializeTextCard(text));
+          bodyEditor.appendChild(card);
+          setCardMoveHandlers(card);
+          syncHiddenField();
+        }
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+      const onCancel = () => {
+        modal.overlay.classList.remove('is-open');
+        modal.overlay.style.display = 'none';
+        modal.saveBtn.removeEventListener('click', onSave);
+        modal.cancelBtn.removeEventListener('click', onCancel);
+      };
+      modal.saveBtn.addEventListener('click', onSave);
+      modal.cancelBtn.addEventListener('click', onCancel);
+    });
+  }
+
+  // --- テキスト入力を禁止する ---
+  // 入力・貼り付け・キー操作でテキストノードやtext-lineが入ったら即削除
+  const removeTextNodes = () => {
+    Array.from(bodyEditor.childNodes).forEach((node) => {
+      if (node.nodeType === 3) {
+        node.remove();
+      } else if (node.nodeType === 1 && node.classList.contains('text-line')) {
+        node.remove();
+      }
+    });
+  };
+  // 入力・貼り付け・キー操作を全て禁止
+  bodyEditor.addEventListener('beforeinput', (e) => {
+    // カード追加以外の入力は全て禁止
+    e.preventDefault();
+  });
+  bodyEditor.addEventListener('paste', (e) => {
+    e.preventDefault();
+  });
+  bodyEditor.addEventListener('keydown', (e) => {
+    // カード以外の入力を防ぐ
+    if (!e.ctrlKey && !e.metaKey && !['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
+      e.preventDefault();
+    }
+  });
   // 「bodyEditor.dataset.initialized = 'true';」: bodyEditor.dataset.initializedの値を設定・更新する代入先
 
   const insertImageButton = document.getElementById('insert-image-button');
@@ -1684,6 +1746,12 @@ function initContentEditableEditor() {
   // ========== イベントリスナー登録 ==========
   // Enter キーで改行を挿入
   bodyEditor.addEventListener('keydown', (e) => {
+    // テキスト入力を禁止
+    if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1) {
+      e.preventDefault();
+      removeTextNodes();
+      return;
+    }
     if (isPreviewOnly) {
     // 「if (【条件】)」: 【条件】を判定する条件分岐
       e.preventDefault();
@@ -1784,6 +1852,7 @@ function initContentEditableEditor() {
   });
 
   bodyEditor.addEventListener('input', () => {
+    removeTextNodes();
     if (isPreviewOnly) return;
     // 「if (【条件】)」: 【条件】を判定する条件分岐
     processEditorContent();
@@ -1803,6 +1872,12 @@ function initContentEditableEditor() {
   }
 
   bodyEditor.addEventListener('paste', (e) => {
+    // テキスト貼り付け禁止
+    if (e.clipboardData && e.clipboardData.types.includes('text/plain')) {
+      e.preventDefault();
+      removeTextNodes();
+      return;
+    }
     if (isPreviewOnly) {
     // 「if (【条件】)」: 【条件】を判定する条件分岐
       e.preventDefault();
