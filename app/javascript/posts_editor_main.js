@@ -46,8 +46,9 @@ function showCardTypeSelectModal(onSelect) {
 function insertAddCardButtons(bodyEditor) {
   // 既存の追加ボタンを全て削除
   bodyEditor.querySelectorAll('.card-add-btn-row').forEach(row => row.remove());
-  // カードリスト取得
+  // カードリスト取得（最新状態で取得）
   const cards = Array.from(bodyEditor.querySelectorAll('.text-card, .code-card, .formula-card, .media-card, .url-card'));
+  // カードと追加ボタンを交互に配置
   for (let i = 0; i <= cards.length; i++) {
     const addBtnRow = document.createElement('div');
     addBtnRow.className = 'card-add-btn-row';
@@ -65,7 +66,7 @@ function insertAddCardButtons(bodyEditor) {
           card = document.createElement('div');
           card.className = 'text-card';
           card.contentEditable = 'false';
-          card.innerHTML = `<div class=\"text-card-body\"></div>` + cardActionButtonsHTML();
+          card.innerHTML = `<div class="text-card-body"></div>` + cardActionButtonsHTML();
         } else if (type === 'image') {
           card = buildMediaCard('');
           card.innerHTML += cardActionButtonsHTML();
@@ -76,12 +77,13 @@ function insertAddCardButtons(bodyEditor) {
           card = document.createElement('div');
           card.className = 'code-card';
           card.contentEditable = 'false';
-          card.innerHTML = `<pre class=\"code-card-body\"></pre>` + cardActionButtonsHTML();
+          card.innerHTML = `<pre class="code-card-body"></pre>` + cardActionButtonsHTML();
         } else if (type === 'formula') {
           card = buildFormulaCard('');
           card.innerHTML += cardActionButtonsHTML();
         }
         if (card) {
+          // i番目のカードの直前に追加（i==cards.lengthなら末尾）
           if (i < cards.length) {
             bodyEditor.insertBefore(card, cards[i]);
           } else {
@@ -92,6 +94,7 @@ function insertAddCardButtons(bodyEditor) {
       });
     });
     addBtnRow.appendChild(addBtn);
+    // i番目のカードの直前に追加ボタンを挿入（i==cards.lengthなら末尾）
     if (i < cards.length) {
       bodyEditor.insertBefore(addBtnRow, cards[i]);
     } else {
@@ -103,33 +106,60 @@ function insertAddCardButtons(bodyEditor) {
 // カード共通の編集・削除・上下ボタンHTML
 function cardActionButtonsHTML() {
   return `
-    <button class=\"card-move-up-btn\" type=\"button\" contenteditable=\"false\" style=\"position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;\">↑</button>
-    <button class=\"card-move-down-btn\" type=\"button\" contenteditable=\"false\" style=\"position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;\">↓</button>
-    <button class=\"card-edit-btn\" type=\"button\" contenteditable=\"false\" style=\"position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;\">編集</button>
-    <button class=\"card-delete-btn\" type=\"button\" contenteditable=\"false\" style=\"position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;\">削除</button>
+    <button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">↑</button>
+    <button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">↓</button>
+    <button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button>
+    <button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">削除</button>
   `;
 }
 
-// 初期化
-
+// カードエディタ初期化
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
   if (!bodyEditor) return;
   insertAddCardButtons(bodyEditor);
 
-  // 編集・削除ボタンのイベント委譲
+  // 編集・削除・上下移動ボタンのイベント委譲
   bodyEditor.addEventListener('click', function(e) {
     const card = e.target.closest('.text-card, .code-card, .formula-card, .media-card, .url-card');
     if (!card) return;
 
-    // 削除ボタン
+    // 上下移動
+    if (e.target.classList.contains('card-move-up-btn')) {
+      // 直上のカードを探す（追加ボタンはスキップ）
+      let prev = card.previousElementSibling;
+      while (prev && prev.classList.contains('card-add-btn-row')) {
+        prev = prev.previousElementSibling;
+      }
+      if (prev && prev.matches('.text-card, .code-card, .formula-card, .media-card, .url-card')) {
+        // swap: prevの前にcardを移動（=入れ替え）
+        card.parentNode.insertBefore(card, prev);
+        insertAddCardButtons(bodyEditor); // ボタン再配置
+      }
+      return;
+    }
+    if (e.target.classList.contains('card-move-down-btn')) {
+      // 直下のカードを探す（追加ボタンはスキップ）
+      let next = card.nextElementSibling;
+      while (next && next.classList.contains('card-add-btn-row')) {
+        next = next.nextElementSibling;
+      }
+      if (next && next.matches('.text-card, .code-card, .formula-card, .media-card, .url-card')) {
+        // swap: nextの次にcardを移動（=入れ替え）
+        card.parentNode.insertBefore(next, card);
+        insertAddCardButtons(bodyEditor); // ボタン再配置
+      }
+      return;
+    }
+
+    // 削除
     if (e.target.classList.contains('card-delete-btn')) {
       card.remove();
       insertAddCardButtons(bodyEditor);
       return;
     }
 
-    // 編集ボタン
+    // 編集
     if (e.target.classList.contains('card-edit-btn')) {
       if (card.classList.contains('text-card')) {
         const { overlay, textarea, saveBtn, cancelBtn } = ensureTextModal();
@@ -142,7 +172,6 @@ function initContentEditableEditor() {
           overlay.style.display = 'none';
         };
         cancelBtn.onclick = () => {
-          overlay.classList.remove('is-open');
           overlay.style.display = 'none';
         };
       } else if (card.classList.contains('code-card')) {
@@ -176,7 +205,6 @@ function initContentEditableEditor() {
       } else if (card.classList.contains('media-card')) {
         const { overlay, fileInput, preview, saveBtn, cancelBtn } = ensureMediaModal();
         const img = card.querySelector('img');
-        // プレビュー初期化
         preview.src = img ? img.src : '';
         preview.style.display = img && img.src ? 'block' : 'none';
         fileInput.value = '';
@@ -193,7 +221,6 @@ function initContentEditableEditor() {
         };
       } else if (card.classList.contains('url-card')) {
         const { overlay, textarea, saveBtn, cancelBtn } = ensureTextModal();
-        // URLカードはテキストエリアでURLを編集
         const urlBody = card.querySelector('.url-card-body');
         const a = urlBody.querySelector('a');
         textarea.value = a ? a.href : '';
@@ -214,5 +241,5 @@ function initContentEditableEditor() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', initContentEditableEditor);
-document.addEventListener('turbolinks:load', initContentEditableEditor);
+// ページ読み込み時にカードエディタを初期化
+window.addEventListener('DOMContentLoaded', initContentEditableEditor);
