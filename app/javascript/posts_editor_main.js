@@ -46,10 +46,21 @@ function showCardTypeSelectModal(onSelect) {
 function insertAddCardButtons(bodyEditor) {
   // 既存の追加ボタンを全て削除
   bodyEditor.querySelectorAll('.card-add-btn-row').forEach(row => row.remove());
+  // 既存のカードラベルも全て削除
+  bodyEditor.querySelectorAll('.card-label').forEach(label => label.remove());
   // カードリスト取得（最新状態で取得）
   const cards = Array.from(bodyEditor.querySelectorAll('.text-card, .code-card, .formula-card, .media-card, .url-card'));
   // カードと追加ボタンを交互に配置
+  // カード種別ごとのカウント用オブジェクト
+  const cardTypeCounters = {
+    'text-card': 0,
+    'code-card': 0,
+    'formula-card': 0,
+    'media-card': 0,
+    'url-card': 0
+  };
   for (let i = 0; i <= cards.length; i++) {
+    // まず追加ボタンを挿入
     const addBtnRow = document.createElement('div');
     addBtnRow.className = 'card-add-btn-row';
     addBtnRow.style.textAlign = 'center';
@@ -94,11 +105,34 @@ function insertAddCardButtons(bodyEditor) {
       });
     });
     addBtnRow.appendChild(addBtn);
-    // i番目のカードの直前に追加ボタンを挿入（i==cards.lengthなら末尾）
     if (i < cards.length) {
       bodyEditor.insertBefore(addBtnRow, cards[i]);
     } else {
       bodyEditor.appendChild(addBtnRow);
+    }
+
+    // 次にラベルを挿入
+    if (i < cards.length) {
+      const card = cards[i];
+      const label = document.createElement('div');
+      label.className = 'card-label';
+      label.style.position = 'relative';
+      label.style.display = 'block';
+      label.style.margin = '0 0 0 0';
+      label.style.fontSize = '12px';
+      label.style.fontWeight = 'bold';
+      label.style.color = '#555';
+      // カード種別名取得とカウント
+      let cardName = '';
+      let typeKey = '';
+      if (card.classList.contains('text-card')) { cardName = 'テキストカード'; typeKey = 'text-card'; }
+      else if (card.classList.contains('code-card')) { cardName = 'コードカード'; typeKey = 'code-card'; }
+      else if (card.classList.contains('formula-card')) { cardName = '数式カード'; typeKey = 'formula-card'; }
+      else if (card.classList.contains('media-card')) { cardName = '画像カード'; typeKey = 'media-card'; }
+      else if (card.classList.contains('url-card')) { cardName = 'URLカード'; typeKey = 'url-card'; }
+      if (typeKey) cardTypeCounters[typeKey]++;
+      label.textContent = `${cardName}-${String(cardTypeCounters[typeKey]).padStart(2, '0')}`;
+      bodyEditor.insertBefore(label, card);
     }
   }
 }
@@ -126,27 +160,58 @@ function initContentEditableEditor() {
 
     // 上下移動
     if (e.target.classList.contains('card-move-up-btn')) {
-      // 直上のカードを探す（追加ボタンはスキップ）
-      let prev = card.previousElementSibling;
-      while (prev && prev.classList.contains('card-add-btn-row')) {
-        prev = prev.previousElementSibling;
+      // 直上のカード＋ラベルペアを探す
+      let prevCard = card.previousElementSibling;
+      // 直前がラベルならさらにその前がカード
+      let prevLabel = null;
+      if (prevCard && prevCard.classList.contains('card-label')) {
+        prevLabel = prevCard;
+        prevCard = prevLabel.previousElementSibling;
       }
-      if (prev && prev.matches('.text-card, .code-card, .formula-card, .media-card, .url-card')) {
-        // swap: prevの前にcardを移動（=入れ替え）
-        card.parentNode.insertBefore(card, prev);
+      // 追加ボタンはスキップ
+      while (prevCard && prevCard.classList.contains('card-add-btn-row')) {
+        prevCard = prevCard.previousElementSibling;
+        if (prevCard && prevCard.classList.contains('card-label')) {
+          prevLabel = prevCard;
+          prevCard = prevLabel.previousElementSibling;
+        }
+      }
+      if (prevCard && prevCard.matches('.text-card, .code-card, .formula-card, .media-card, .url-card')) {
+        // prevCardの直前に「cardの直前のラベル（あれば）」＋cardをまとめて移動
+        const currLabel = card.previousElementSibling && card.previousElementSibling.classList.contains('card-label') ? card.previousElementSibling : null;
+        if (currLabel) {
+          bodyEditor.insertBefore(currLabel, prevCard);
+        }
+        bodyEditor.insertBefore(card, prevCard);
         insertAddCardButtons(bodyEditor); // ボタン再配置
       }
       return;
     }
     if (e.target.classList.contains('card-move-down-btn')) {
-      // 直下のカードを探す（追加ボタンはスキップ）
-      let next = card.nextElementSibling;
-      while (next && next.classList.contains('card-add-btn-row')) {
-        next = next.nextElementSibling;
+      // 直下のカード＋ラベルペアを探す
+      let nextCard = card.nextElementSibling;
+      let nextLabel = null;
+      // 直後がラベルならそれをスキップ
+      if (nextCard && nextCard.classList.contains('card-label')) {
+        nextLabel = nextCard;
+        nextCard = nextLabel.nextElementSibling;
       }
-      if (next && next.matches('.text-card, .code-card, .formula-card, .media-card, .url-card')) {
-        // swap: nextの次にcardを移動（=入れ替え）
-        card.parentNode.insertBefore(next, card);
+      // 追加ボタンはスキップ
+      while (nextCard && nextCard.classList.contains('card-add-btn-row')) {
+        nextCard = nextCard.nextElementSibling;
+        if (nextCard && nextCard.classList.contains('card-label')) {
+          nextLabel = nextCard;
+          nextCard = nextLabel.nextElementSibling;
+        }
+      }
+      if (nextCard && nextCard.matches('.text-card, .code-card, .formula-card, .media-card, .url-card')) {
+        // nextCardの直後に「cardの直前のラベル（あれば）」＋cardをまとめて移動
+        const currLabel = card.previousElementSibling && card.previousElementSibling.classList.contains('card-label') ? card.previousElementSibling : null;
+        const afterNext = nextCard.nextElementSibling;
+        if (currLabel) {
+          bodyEditor.insertBefore(currLabel, afterNext);
+        }
+        bodyEditor.insertBefore(card, afterNext);
         insertAddCardButtons(bodyEditor); // ボタン再配置
       }
       return;

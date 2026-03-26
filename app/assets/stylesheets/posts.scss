@@ -440,3 +440,17 @@
 	bottom: -0.52em;
 }
 
+.card-label {
+  display: block;
+  margin: 0 0 0 0 !important; /* カード枠と接触 */
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+  position: relative;
+  left: 0;
+  top: 0;
+  padding: 0 2px 0 2px;
+  background: transparent;
+  z-index: 1;
+}
+
