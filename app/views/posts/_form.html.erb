@@ -11,4 +11,8 @@
     <%= render 'card_modal' %>
   </div>
   <%= render 'tag_modal' %>
+  <div class="form-group d-flex justify-content-start mt-4" style="gap: 16px;">
+    <%= form.submit '投稿', class: 'btn btn-primary px-4' %>
+    <%= link_to 'キャンセル', posts_path, class: 'btn btn-secondary px-4' %>
+  </div>
 <% end %>

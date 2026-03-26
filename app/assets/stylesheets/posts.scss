@@ -156,10 +156,12 @@
 
 // ========== カードスタイル ==========
 
+// カード共通スタイル
 .media-card,
 .code-card,
 .formula-card,
-.text-card {
+.text-card,
+.url-card {
   --editor-card-height: 50px;
   position: relative;
   margin: 0 !important;
@@ -175,6 +177,23 @@
   max-height: var(--editor-card-height);
   overflow: hidden;
   box-sizing: border-box;
+}
+
+// URLカード本文
+.url-card-body {
+	padding: 3px 4px 0 4px !important;
+	margin: 0 !important;
+	background: #fff;
+	border-radius: 4px;
+	font-size: 14px;
+	line-height: 1.5 !important;
+	word-break: break-all;
+	height: 100%;
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	box-sizing: border-box;
+	display: block !important;
 }
 
 .formula-card {

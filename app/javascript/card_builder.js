@@ -22,6 +22,12 @@ export function buildFormulaCard(formula) {
 // 例: import { escapeHtml, encodeBase64Utf8, decodeBase64Utf8, decodeSerializedPayload } from './card_utils';
 // 例: import { ensureTextModal, ensureCodeModal, ensureFormulaModal } from './card_modal';
 
-// 各build関数（buildTextCard, buildCodeCard, buildFormulaCard, buildUrlCard, buildMediaCard など）をここに移植
 
-// ...（本体は後で移植）...
+// buildUrlCard: URLカード生成
+export function buildUrlCard(url) {
+	const card = document.createElement('div');
+	card.className = 'url-card';
+	card.contentEditable = 'false';
+	card.innerHTML = `<div class="url-card-body">${url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : ''}</div>`;
+	return card;
+}
