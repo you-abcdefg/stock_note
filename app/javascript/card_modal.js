@@ -3,7 +3,7 @@ export function ensureMediaModal() {
   if (document.getElementById('media-editor-overlay')) {
     return {
       overlay: document.getElementById('media-editor-overlay'),
-      urlInput: document.getElementById('media-editor-url'),
+      fileInput: document.getElementById('media-editor-file'),
       preview: document.getElementById('media-editor-preview'),
       saveBtn: document.getElementById('media-editor-save'),
       cancelBtn: document.getElementById('media-editor-cancel')
@@ -15,9 +15,9 @@ export function ensureMediaModal() {
   overlay.innerHTML = `
     <div class="media-editor-modal">
       <div class="media-editor-header">
-        <span>画像URLを入力</span>
+        <span>画像ファイルを選択</span>
       </div>
-      <input id="media-editor-url" class="form-control" type="text" placeholder="画像URLを入力してください">
+      <input id="media-editor-file" class="form-control" type="file" accept="image/*">
       <div style="margin:8px 0; text-align:center;">
         <img id="media-editor-preview" src="" alt="プレビュー" style="max-width:100%; max-height:200px; display:none; border:1px solid #ccc; border-radius:4px;" />
       </div>
@@ -28,13 +28,17 @@ export function ensureMediaModal() {
     </div>
   `;
   document.body.appendChild(overlay);
-  const urlInput = overlay.querySelector('#media-editor-url');
+  const fileInput = overlay.querySelector('#media-editor-file');
   const preview = overlay.querySelector('#media-editor-preview');
-  urlInput.addEventListener('input', () => {
-    const url = urlInput.value.trim();
-    if (url) {
-      preview.src = url;
-      preview.style.display = 'block';
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
     } else {
       preview.src = '';
       preview.style.display = 'none';
@@ -48,7 +52,7 @@ export function ensureMediaModal() {
   });
   return {
     overlay,
-    urlInput,
+    fileInput,
     preview,
     saveBtn: overlay.querySelector('#media-editor-save'),
     cancelBtn: overlay.querySelector('#media-editor-cancel')

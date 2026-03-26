@@ -111,10 +111,107 @@ function cardActionButtonsHTML() {
 }
 
 // 初期化
+
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
   if (!bodyEditor) return;
   insertAddCardButtons(bodyEditor);
+
+  // 編集・削除ボタンのイベント委譲
+  bodyEditor.addEventListener('click', function(e) {
+    const card = e.target.closest('.text-card, .code-card, .formula-card, .media-card, .url-card');
+    if (!card) return;
+
+    // 削除ボタン
+    if (e.target.classList.contains('card-delete-btn')) {
+      card.remove();
+      insertAddCardButtons(bodyEditor);
+      return;
+    }
+
+    // 編集ボタン
+    if (e.target.classList.contains('card-edit-btn')) {
+      if (card.classList.contains('text-card')) {
+        const { overlay, textarea, saveBtn, cancelBtn } = ensureTextModal();
+        textarea.value = card.querySelector('.text-card-body').innerText;
+        overlay.classList.add('is-open');
+        overlay.style.display = 'flex';
+        saveBtn.onclick = () => {
+          card.querySelector('.text-card-body').innerText = textarea.value;
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+        cancelBtn.onclick = () => {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+      } else if (card.classList.contains('code-card')) {
+        const { overlay, textarea, saveBtn, cancelBtn } = ensureCodeModal();
+        textarea.value = card.querySelector('.code-card-body').innerText;
+        overlay.classList.add('is-open');
+        overlay.style.display = 'flex';
+        saveBtn.onclick = () => {
+          card.querySelector('.code-card-body').innerText = textarea.value;
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+        cancelBtn.onclick = () => {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+      } else if (card.classList.contains('formula-card')) {
+        const { overlay, textarea, saveBtn, cancelBtn } = ensureFormulaModal();
+        textarea.value = card.querySelector('.formula-card-body').innerText;
+        overlay.classList.add('is-open');
+        overlay.style.display = 'flex';
+        saveBtn.onclick = () => {
+          card.querySelector('.formula-card-body').innerText = textarea.value;
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+        cancelBtn.onclick = () => {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+      } else if (card.classList.contains('media-card')) {
+        const { overlay, fileInput, preview, saveBtn, cancelBtn } = ensureMediaModal();
+        const img = card.querySelector('img');
+        // プレビュー初期化
+        preview.src = img ? img.src : '';
+        preview.style.display = img && img.src ? 'block' : 'none';
+        fileInput.value = '';
+        overlay.classList.add('is-open');
+        overlay.style.display = 'flex';
+        saveBtn.onclick = () => {
+          if (img && preview.src) img.src = preview.src;
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+        cancelBtn.onclick = () => {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+      } else if (card.classList.contains('url-card')) {
+        const { overlay, textarea, saveBtn, cancelBtn } = ensureTextModal();
+        // URLカードはテキストエリアでURLを編集
+        const urlBody = card.querySelector('.url-card-body');
+        const a = urlBody.querySelector('a');
+        textarea.value = a ? a.href : '';
+        overlay.classList.add('is-open');
+        overlay.style.display = 'flex';
+        saveBtn.onclick = () => {
+          const url = textarea.value.trim();
+          urlBody.innerHTML = url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : '';
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+        cancelBtn.onclick = () => {
+          overlay.classList.remove('is-open');
+          overlay.style.display = 'none';
+        };
+      }
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', initContentEditableEditor);
