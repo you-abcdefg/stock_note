@@ -3,7 +3,9 @@ export function buildMediaCard(url) {
 	const card = document.createElement('div');
 	card.className = 'media-card';
 	card.contentEditable = 'false';
-	card.innerHTML = `<img src="${url}" alt="image" style="max-width:100%;max-height:100%;display:block;">`;
+	// 画像URLが空の場合はno_image.pngを表示
+	const imageUrl = url && url.trim() !== '' ? url : '/images/no_image.png';
+	card.innerHTML = `<img src="${imageUrl}" alt="image" style="max-width:100%;max-height:100%;display:block;">`;
 	return card;
 }
 
