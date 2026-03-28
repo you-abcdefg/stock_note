@@ -1,3 +1,63 @@
+// ========== タグ選択・作成UIの初期化 ========== 
+document.addEventListener('DOMContentLoaded', initTagSelector);
+document.addEventListener('turbolinks:load', initTagSelector);
+
+function initTagSelector() {
+  // 選択済みタグ名を表示するspan
+  const selectedTagsSpan = document.getElementById('selected-tags');
+  // タグチェックボックス（モーダル内）
+  const tagCheckboxes = document.querySelectorAll('#tag-checkboxes-modal input[type="checkbox"]');
+  // タグ作成ボタン
+  const addTagButton = document.getElementById('add-tag-button');
+
+  // 選択済みタグ名を表示
+  function updateSelectedTags() {
+    const checked = Array.from(document.querySelectorAll('#tag-checkboxes-modal input[type="checkbox"]:checked'));
+    const names = checked.map(cb => {
+      const label = document.querySelector('label[for="' + cb.id + '"]');
+      return label ? label.textContent : cb.value;
+    });
+    if (selectedTagsSpan) {
+      selectedTagsSpan.textContent = names.length ? names.join(', ') : '未選択';
+    }
+  }
+  tagCheckboxes.forEach(cb => {
+    cb.addEventListener('change', updateSelectedTags);
+  });
+  updateSelectedTags();
+
+  // タグ作成ボタンのクリックで新規タグ名をpromptで入力し、仮でチェックボックスを追加（本来はAjaxでサーバー登録）
+  if (addTagButton) {
+    addTagButton.addEventListener('click', function() {
+      const tagName = window.prompt('新しいタグ名を入力してください');
+      if (tagName && tagName.trim()) {
+        // 仮実装: チェックボックスをその場で追加
+        const tagId = 'tag_modal_new_' + Date.now();
+        const div = document.createElement('div');
+        div.className = 'custom-control custom-checkbox mr-3 mb-2';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'custom-control-input';
+        input.id = tagId;
+        input.name = 'post[tag_list][]';
+        input.value = tagName;
+        input.checked = true;
+        const label = document.createElement('label');
+        label.className = 'custom-control-label';
+        label.htmlFor = tagId;
+        label.textContent = tagName;
+        div.appendChild(input);
+        div.appendChild(label);
+        const container = document.getElementById('tag-checkboxes-modal');
+        if (container) {
+          container.appendChild(div);
+        }
+        input.addEventListener('change', updateSelectedTags);
+        updateSelectedTags();
+      }
+    });
+  }
+}
 // ========== contenteditable 本文エディタの初期化 ==========
 
 // 本文エディタのカード化・同期・ボタン操作をまとめて初期化する

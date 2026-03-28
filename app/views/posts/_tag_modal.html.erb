@@ -9,8 +9,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- タグ選択用のチェックボックス等をここに配置 -->
-        <div id="tag-checkboxes-modal"></div>
+        <div class="d-flex flex-wrap" id="tag-checkboxes-modal">
+          <% if @available_tags.any? %>
+            <% @available_tags.each do |tag| %>
+              <div class="custom-control custom-checkbox mr-3 mb-2">
+                <%= form.check_box :tag_list, { multiple: true, class: "custom-control-input", id: "tag_modal_#{tag.id}" }, tag.name, nil %>
+                <%= form.label :tag_list, tag.name, class: "custom-control-label", for: "tag_modal_#{tag.id}" %>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-muted">登録済みのタグがありません。</p>
+          <% end %>
+        </div>
         <button id="apply-tag-selection" class="btn btn-primary mt-2">選択を適用</button>
       </div>
     </div>

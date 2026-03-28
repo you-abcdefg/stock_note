@@ -10,7 +10,17 @@
     <%= form.hidden_field :body, id: 'body-hidden' %>
     <%= render 'card_modal' %>
   </div>
-  <%= render 'tag_modal' %>
+  <!-- タグ選択UI（mainブランチ準拠） -->
+  <div class="form-group mb-3">
+    <label>タグ</label>
+    <div class="d-flex align-items-center">
+      <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#tagSelectModal">タグを選択</button>
+      <button type="button" class="btn btn-outline-secondary ml-2" id="add-tag-button">タグを作成</button>
+      <span id="selected-tags" class="ml-3 text-muted"></span>
+    </div>
+  </div>
+  <!-- タグ選択モーダルは部分テンプレートで描画 -->
+  <%= render 'tag_modal', form: form %>
   <div class="form-group d-flex justify-content-start mt-4" style="gap: 16px;">
     <%= form.submit '投稿', class: 'btn btn-primary px-4' %>
     <%= link_to 'キャンセル', posts_path, class: 'btn btn-secondary px-4' %>
