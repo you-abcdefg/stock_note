@@ -1,3 +1,24 @@
+// タグ選択モーダルを閉じる直前に、元のボタンにフォーカスを戻す（アクセシビリティ警告対策）
+document.addEventListener('DOMContentLoaded', function() {
+  const tagSelectModal = document.getElementById('tagSelectModal');
+  const openTagModalBtn = document.querySelector('[data-target="#tagSelectModal"]');
+  if (tagSelectModal && openTagModalBtn && window.jQuery && typeof $(tagSelectModal).on === 'function') {
+    // モーダルが閉じる直前にフォーカスを外へ
+    $(tagSelectModal).on('hide.bs.modal', function() {
+      // モーダル内の要素がフォーカスされていたら外す
+      if (tagSelectModal.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
+    });
+    // .closeボタンのクリック時にもフォーカスを外へ
+    const closeBtn = tagSelectModal.querySelector('.close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        openTagModalBtn.focus();
+      });
+    }
+  }
+});
 // ========== タグ選択・作成UIの初期化 ========== 
 document.addEventListener('DOMContentLoaded', initTagSelector);
 document.addEventListener('turbolinks:load', initTagSelector);
@@ -26,8 +47,8 @@ function initTagSelector() {
   });
   updateSelectedTags();
 
-  // タグ作成ボタンのクリックで新規タグ名をpromptで入力し、仮でチェックボックスを追加（本来はAjaxでサーバー登録）
-  if (addTagButton) {
+  // // タグ作成ボタンのクリックで新規タグ名をpromptで入力し、仮でチェックボックスを追加（本来はAjaxでサーバー登録）
+  if (addTagButton && !addTagButton.dataset.listenerAdded) {
     addTagButton.addEventListener('click', function() {
       const tagName = window.prompt('新しいタグ名を入力してください');
       if (tagName && tagName.trim()) {
@@ -55,6 +76,23 @@ function initTagSelector() {
         input.addEventListener('change', updateSelectedTags);
         updateSelectedTags();
       }
+    });
+    addTagButton.dataset.listenerAdded = 'true';
+  }
+
+  // 「選択を適用」ボタンで投稿が送信されないようにする
+  const applyBtn = document.getElementById('apply-tag-selection');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', function(e) {
+      e.preventDefault(); // フォーム送信を防ぐ
+      // モーダルを閉じる（Bootstrap利用時）
+      const modal = document.getElementById('tagSelectModal');
+      if (modal && window.jQuery && typeof $(modal).modal === 'function') {
+        $(modal).modal('hide');
+      } else if (modal) {
+        modal.style.display = 'none';
+      }
+      // ここでフォーム送信はしない
     });
   }
 }
