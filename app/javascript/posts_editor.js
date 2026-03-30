@@ -59,16 +59,40 @@ function initTagSelector() {
   }
 }
 // ========== contenteditable 本文エディタの初期化 ==========
+// ページキャッシュ復元時に初期化フラグをリセット（Turbolinks/Turbo対応）
+document.addEventListener('turbolinks:before-cache', function() {
+  const bodyEditor = document.getElementById('body-editor');
+  if (bodyEditor) bodyEditor.dataset.initialized = 'false';
+});
+document.addEventListener('turbo:before-cache', function() {
+  const bodyEditor = document.getElementById('body-editor');
+  if (bodyEditor) bodyEditor.dataset.initialized = 'false';
+});
 
 // 本文エディタのカード化・同期・ボタン操作をまとめて初期化する
 document.addEventListener('DOMContentLoaded', initContentEditableEditor);
-// 「document.addEventListener('DOMContentLoaded', initContentEditableEditor);」: document.addEventListenerを呼び出して必要な処理を実行する
 document.addEventListener('turbolinks:load', initContentEditableEditor);
-// 「document.addEventListener('turbolinks:load', initContentEditableEditor);」: document.addEventListenerを呼び出して必要な処理を実行する
+document.addEventListener('turbo:load', initContentEditableEditor); // Turbo対応
 
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
-  const addCardButton = document.getElementById('add-card-button');
+  let addCardButton = null;
+  // --- 既存add-card-buttonを全て削除 ---
+
+  if (bodyEditor) {
+    Array.from(bodyEditor.querySelectorAll('#add-card-button')).forEach(btn => btn.remove());
+    Array.from(bodyEditor.childNodes).forEach((node) => {
+      if (node.nodeType === 3) node.remove();
+    });
+    // ボタンを1つだけ新規挿入
+    addCardButton = document.createElement('button');
+    addCardButton.type = 'button';
+    addCardButton.className = 'btn btn-outline-success mb-2';
+    addCardButton.id = 'add-card-button';
+    addCardButton.textContent = 'カード追加';
+    bodyEditor.insertAdjacentElement('afterbegin', addCardButton);
+  }
+
   // 「const bodyEditor = document.getElementById('body-editor');」: bodyEditorを保持する変数
   const bodyHidden = document.getElementById('body-hidden');
   // 「const bodyHidden = document.getElementById('body-hidden');」: bodyHiddenを保持する変数

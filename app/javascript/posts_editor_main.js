@@ -1,3 +1,4 @@
+import './posts_editor';
 import { ensureTextModal, ensureCodeModal, ensureFormulaModal, ensureMediaModal, ensureFormulaModalWithPreview } from './card_modal';
 import { buildMediaCard, buildFormulaCard, buildUrlCard } from './card_builder';
 
@@ -308,3 +309,6 @@ function initContentEditableEditor() {
 
 // ページ読み込み時にカードエディタを初期化
 window.addEventListener('DOMContentLoaded', initContentEditableEditor);
+// Turbo（またはTurbolinks）ページ遷移時にも初期化
+// document.addEventListener('turbo:load', initContentEditableEditor); // Turboの場合
+document.addEventListener('turbolinks:load', initContentEditableEditor); // Turbolinksの場合
