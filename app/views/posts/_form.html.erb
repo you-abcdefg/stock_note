@@ -11,6 +11,9 @@
   </div>
   <!-- タグ選択UI（mainブランチ準拠） -->
   <div class="form-group mb-3">
+    <%= form.label :status, 'ステータス' %>
+    <%= form.select :status, Post.statuses.keys.map { |k| [k == 'draft' ? '下書き' : '公開', k] }, {}, class: 'form-control', style: 'max-width: 200px;' %>
+  </div>
     <label>タグ</label>
     <div class="d-flex align-items-center">
       <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#tagSelectModal">タグを選択</button>
