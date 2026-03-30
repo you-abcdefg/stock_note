@@ -20,8 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 // ========== タグ選択・作成UIの初期化 ========== 
-document.addEventListener('DOMContentLoaded', initTagSelector);
-document.addEventListener('turbolinks:load', initTagSelector);
+// タグ選択モーダル初期化フラグ
+let tagSelectorInitialized = false;
+function safeInitTagSelector() {
+  if (tagSelectorInitialized) return;
+  tagSelectorInitialized = true;
+  initTagSelector();
+}
+document.addEventListener('DOMContentLoaded', safeInitTagSelector);
+document.addEventListener('turbolinks:load', safeInitTagSelector);
+document.addEventListener('turbo:load', safeInitTagSelector); // Turbo対応
 
 function initTagSelector() {
   // 選択済みタグ名を表示するspan
@@ -83,15 +91,24 @@ function initTagSelector() {
   // 「選択を適用」ボタンで投稿が送信されないようにする
   const applyBtn = document.getElementById('apply-tag-selection');
   if (applyBtn) {
-    applyBtn.addEventListener('click', function(e) {
-      e.preventDefault(); // フォーム送信を防ぐ
-      // モーダルを閉じる（Bootstrap利用時）
+    // 既存のイベントリスナーを一度解除してから再バインド（多重バインド防止）
+    const newApplyBtn = applyBtn.cloneNode(true);
+    applyBtn.parentNode.replaceChild(newApplyBtn, applyBtn);
+    newApplyBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      newApplyBtn.blur();
       const modal = document.getElementById('tagSelectModal');
+      // Bootstrapが使える場合は必ずそれを優先
       if (modal && window.jQuery && typeof $(modal).modal === 'function') {
         $(modal).modal('hide');
       } else if (modal) {
         modal.style.display = 'none';
+        modal.classList.remove('show');
       }
+      // --- 追加: どんな場合も強制的に背景・body状態をリセット ---
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.querySelectorAll('.modal-backdrop').forEach(bd => bd.remove());
       // ここでフォーム送信はしない
     });
   }
@@ -99,10 +116,12 @@ function initTagSelector() {
 // ========== contenteditable 本文エディタの初期化 ==========
 // ページキャッシュ復元時に初期化フラグをリセット（Turbolinks/Turbo対応）
 document.addEventListener('turbolinks:before-cache', function() {
+  tagSelectorInitialized = false;
   const bodyEditor = document.getElementById('body-editor');
   if (bodyEditor) bodyEditor.dataset.initialized = 'false';
 });
 document.addEventListener('turbo:before-cache', function() {
+  tagSelectorInitialized = false;
   const bodyEditor = document.getElementById('body-editor');
   if (bodyEditor) bodyEditor.dataset.initialized = 'false';
 });
@@ -981,87 +1000,48 @@ function initContentEditableEditor() {
 
   const buildTextCard = (rawText) => {
   // 「const buildTextCard = (rawText) =>;」: buildTextCardを保持する変数
-    const card = document.createElement('div');
-    // 「const card = document.createElement('div');」: cardを保持する変数
-    card.className = 'text-card';
-    // 「card.className = 'text-card';」: card.classNameの値を設定・更新する代入先
-    card.contentEditable = 'false';
-    // 「card.contentEditable = 'false';」: card.contentEditableの値を設定・更新する代入先
     const content = parseTextContent(rawText);
-    // 「const content = parseTextContent(rawText);」: contentを保持する変数
+    if (!content || !content.trim()) return null; // 空文字はカード化しない
+    const card = document.createElement('div');
+    card.className = 'text-card';
+    card.contentEditable = 'false';
     card.dataset.text = content;
-    // 「card.dataset.text = content;」: card.dataset.textの値を設定・更新する代入先
     card.innerHTML = `<div class="text-card-body">${escapeHtml(content).replace(/\n/g, '<br>')}</div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
-    // 「card.innerHTML = `<div class="text-card-body">${escapeHtml(content).replace(/\n/g, '<br>')}</div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;」: card.innerHTMLの値を設定・更新する代入先
-
     card.querySelector('.card-edit-btn').addEventListener('click', (e) => {
       e.preventDefault();
-      // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
       e.stopPropagation();
-      // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
       const modal = ensureTextModal();
-      // 「const modal = ensureTextModal();」: modalを保持する変数
       modal.textarea.value = card.dataset.text || '';
-      // 「modal.textarea.value = card.dataset.text || '';」: modal.textarea.valueの値を設定・更新する代入先
       modal.overlay.style.display = 'flex';
-      // 「modal.overlay.style.display = 'flex';」: modal.overlay.style.displayの値を設定・更新する代入先
       modal.overlay.classList.add('is-open');
-      // 「modal.overlay.classList.add('is-open');」: modal.overlay.classList.addを呼び出して必要な処理を実行する
       modal.textarea.focus();
-      // 「modal.textarea.focus(【引数】);」: modal.textarea.focusを呼び出して必要な処理を実行する
-
       const onSave = () => {
-      // 「const onSave = () =>;」: onSaveを保持する変数
         card.dataset.text = modal.textarea.value;
-        // 「card.dataset.text = modal.textarea.value;」: card.dataset.textの値を設定・更新する代入先
         const body = card.querySelector('.text-card-body');
-        // 「const body = card.querySelector('.text-card-body');」: bodyを保持する変数
         if (body) body.innerHTML = escapeHtml(modal.textarea.value).replace(/\n/g, '<br>');
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
         modal.overlay.classList.remove('is-open');
-        // 「modal.overlay.classList.remove('is-open');」: modal.overlay.classList.removeを呼び出して必要な処理を実行する
         modal.overlay.style.display = 'none';
-        // 「modal.overlay.style.display = 'none';」: modal.overlay.style.displayの値を設定・更新する代入先
         modal.saveBtn.removeEventListener('click', onSave);
-        // 「modal.saveBtn.removeEventListener('click', onSave);」: modal.saveBtn.removeEventListenerを呼び出して必要な処理を実行する
         modal.cancelBtn.removeEventListener('click', onCancel);
-        // 「modal.cancelBtn.removeEventListener('click', onCancel);」: modal.cancelBtn.removeEventListenerを呼び出して必要な処理を実行する
         syncHiddenField();
-        // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
       };
       const onCancel = () => {
-      // 「const onCancel = () =>;」: onCancelを保持する変数
         modal.overlay.classList.remove('is-open');
-        // 「modal.overlay.classList.remove('is-open');」: modal.overlay.classList.removeを呼び出して必要な処理を実行する
         modal.overlay.style.display = 'none';
-        // 「modal.overlay.style.display = 'none';」: modal.overlay.style.displayの値を設定・更新する代入先
         modal.saveBtn.removeEventListener('click', onSave);
-        // 「modal.saveBtn.removeEventListener('click', onSave);」: modal.saveBtn.removeEventListenerを呼び出して必要な処理を実行する
         modal.cancelBtn.removeEventListener('click', onCancel);
-        // 「modal.cancelBtn.removeEventListener('click', onCancel);」: modal.cancelBtn.removeEventListenerを呼び出して必要な処理を実行する
       };
-
       modal.saveBtn.addEventListener('click', onSave);
-      // 「modal.saveBtn.addEventListener('click', onSave);」: modal.saveBtn.addEventListenerを呼び出して必要な処理を実行する
       modal.cancelBtn.addEventListener('click', onCancel);
-      // 「modal.cancelBtn.addEventListener('click', onCancel);」: modal.cancelBtn.addEventListenerを呼び出して必要な処理を実行する
     });
-
     card.querySelector('.card-delete-btn').addEventListener('click', (e) => {
       e.preventDefault();
-      // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
       e.stopPropagation();
-      // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
       card.remove();
-      // 「card.remove(【引数】);」: card.removeを呼び出して必要な処理を実行する
       syncHiddenField();
-      // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
     });
-
     setCardMoveHandlers(card);
-    // 「setCardMoveHandlers(card);」: setCardMoveHandlersを呼び出して必要な処理を実行する
     return card;
-    // 「return card;」: 呼び出し元へcardの値を返して処理を終了する
   };
 
   const buildUrlCard = (rawUrl) => {
@@ -1490,39 +1470,33 @@ function initContentEditableEditor() {
       while ((match = combinedRegex.exec(bufferText))) {
       // 「while (【条件】)」: 【条件】が真の間だけ繰り返すループ
         if (match.index > lastIndex) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
           const plainText = bufferText.substring(lastIndex, match.index).trim();
-          // 「const plainText = bufferText.substring(lastIndex, match.index).trim();」: plainTextを保持する変数
           if (plainText) {
-          // 「if (【条件】)」: 【条件】を判定する条件分岐
-            fragment.appendChild(document.createTextNode('\u200b'));
-            // 「fragment.appendChild(document.createTextNode('\u200b'));」: fragment.appendChildを呼び出して必要な処理を実行する
-            fragment.appendChild(buildTextCard(serializeTextCard(plainText)));
-            // 「fragment.appendChild(buildTextCard(serializeTextCard(plainText)));」: fragment.appendChildを呼び出して必要な処理を実行する
-            fragment.appendChild(document.createTextNode('\u200b'));
-            // 「fragment.appendChild(document.createTextNode('\u200b'));」: fragment.appendChildを呼び出して必要な処理を実行する
+            const textCard = buildTextCard(serializeTextCard(plainText));
+            if (textCard) {
+              fragment.appendChild(document.createTextNode('\u200b'));
+              fragment.appendChild(textCard);
+              fragment.appendChild(document.createTextNode('\u200b'));
+            }
           }
         }
 
         if (match[1]) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
           const alt = match[2];
-          // 「const alt = match[2];」: altを保持する変数
           const filename = match[3];
-          // 「const filename = match[3];」: filenameを保持する変数
+          // filenameが空または未設定の場合はカード化しない
+          if (!filename || !filename.trim()) {
+            // 何も出力せずスキップ
+            lastIndex = combinedRegex.lastIndex;
+            continue;
+          }
           const spacer = document.createElement('span');
-          // 「const spacer = document.createElement('span');」: spacerを保持する変数
           spacer.className = 'card-spacer';
-          // 「spacer.className = 'card-spacer';」: spacer.classNameの値を設定・更新する代入先
           spacer.contentEditable = 'false';
-          // 「spacer.contentEditable = 'false';」: spacer.contentEditableの値を設定・更新する代入先
 
           const card = document.createElement('div');
-          // 「const card = document.createElement('div');」: cardを保持する変数
           card.className = 'media-card';
-          // 「card.className = 'media-card';」: card.classNameの値を設定・更新する代入先
           card.contentEditable = 'false';
-          // 「card.contentEditable = 'false';」: card.contentEditableの値を設定・更新する代入先
           card.innerHTML = `
             <img src="/images/placeholder.png" alt="${alt || '画像'}" data-filename="${filename}" loading="lazy">
             <div class="filename">${filename}</div>
@@ -1532,44 +1506,31 @@ function initContentEditableEditor() {
           `;
 
           const img = card.querySelector('img');
-          // 「const img = card.querySelector('img');」: imgを保持する変数
           if (localImageUrlMap.has(filename)) {
-          // 「if (【条件】)」: 【条件】を判定する条件分岐
             img.src = localImageUrlMap.get(filename);
-            // 「img.src = localImageUrlMap.get(filename);」: img.srcの値を設定・更新する代入先
           } else if (window.imageUrlMap && window.imageUrlMap[filename]) {
-          // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
             img.src = window.imageUrlMap[filename];
-            // 「img.src = window.imageUrlMap[filename];」: img.srcの値を設定・更新する代入先
           } else {
-          // 「else」: 上記条件に当てはまらない場合の分岐
             fetch(`/posts/image_url?filename=${encodeURIComponent(filename)}`)
               .then((response) => response.json())
               .then((data) => {
                 if (data.url) img.src = data.url;
-                // 「if (【条件】)」: 【条件】を判定する条件分岐
               })
               .catch(() => {});
           }
 
           card.querySelector('.card-delete-btn').addEventListener('click', (e) => {
             e.preventDefault();
-            // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
             e.stopPropagation();
-            // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
             card.remove();
-            // 「card.remove(【引数】);」: card.removeを呼び出して必要な処理を実行する
             syncHiddenField();
-            // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
           });
 
           setCardMoveHandlers(card);
-          // 「setCardMoveHandlers(card);」: setCardMoveHandlersを呼び出して必要な処理を実行する
 
           fragment.appendChild(spacer);
-          // 「fragment.appendChild(spacer);」: fragment.appendChildを呼び出して必要な処理を実行する
           fragment.appendChild(card);
-          // 「fragment.appendChild(card);」: fragment.appendChildを呼び出して必要な処理を実行する
+          // ...existing code...
         } else if (match[4] || match[6]) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
           const codeContent = match[4] || match[6];
@@ -1595,13 +1556,12 @@ function initContentEditableEditor() {
           fragment.appendChild(document.createTextNode('\u200b'));
           // 「fragment.appendChild(document.createTextNode('\u200b'));」: fragment.appendChildを呼び出して必要な処理を実行する
         } else if (match[8]) {
-        // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
-          fragment.appendChild(document.createTextNode('\u200b'));
-          // 「fragment.appendChild(document.createTextNode('\u200b'));」: fragment.appendChildを呼び出して必要な処理を実行する
-          fragment.appendChild(buildTextCard(match[8]));
-          // 「fragment.appendChild(buildTextCard(match[8]));」: fragment.appendChildを呼び出して必要な処理を実行する
-          fragment.appendChild(document.createTextNode('\u200b'));
-          // 「fragment.appendChild(document.createTextNode('\u200b'));」: fragment.appendChildを呼び出して必要な処理を実行する
+          const textCard = buildTextCard(match[8]);
+          if (textCard) {
+            fragment.appendChild(document.createTextNode('\u200b'));
+            fragment.appendChild(textCard);
+            fragment.appendChild(document.createTextNode('\u200b'));
+          }
         } else if (match[9]) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
           fragment.appendChild(document.createTextNode('\u200b'));
@@ -1708,13 +1668,15 @@ function initContentEditableEditor() {
         if (node.classList?.contains('card-spacer')) {
           // card-spacer はスキップ
           return;
-          // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
         } else if (node.classList?.contains('media-card')) {
-        // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
+          // media-cardは必ず![説明](image:ファイル名)形式でのみ保存する
           const filename = node.querySelector('.filename')?.textContent || '';
-          // 「const filename = node.querySelector('.filename')?.textContent || '';」: filenameを保持する変数
+          if (filename && !/[^\s]/.test(filename)) return; // 空白や未設定はスキップ
           appendBlock(`![説明](image:${filename})`);
-          // 「appendBlock(`![説明](image:${filename})`);」: appendBlockを呼び出して必要な処理を実行する
+          return;
+        } else if (node.tagName === 'IMG') {
+          // imgタグが直接bodyに現れた場合は無視（旧データや誤挿入対策）
+          return;
         } else if (node.classList?.contains('text-card')) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
           const textCardText = node.dataset?.text || '';
