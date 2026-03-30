@@ -122,13 +122,7 @@ function initContentEditableEditor() {
     Array.from(bodyEditor.childNodes).forEach((node) => {
       if (node.nodeType === 3) node.remove();
     });
-    // ボタンを1つだけ新規挿入
-    addCardButton = document.createElement('button');
-    addCardButton.type = 'button';
-    addCardButton.className = 'btn btn-outline-success mb-2';
-    addCardButton.id = 'add-card-button';
-    addCardButton.textContent = 'カード追加';
-    bodyEditor.insertAdjacentElement('afterbegin', addCardButton);
+    // 初期カード追加ボタンの生成・挿入を行わない
   }
 
   // 「const bodyEditor = document.getElementById('body-editor');」: bodyEditorを保持する変数
