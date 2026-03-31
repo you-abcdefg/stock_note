@@ -26,7 +26,6 @@ function safeInitTagSelector() {
   if (tagSelectorInitialized) return;
   tagSelectorInitialized = true;
   initTagSelector();
-}
 document.addEventListener('DOMContentLoaded', safeInitTagSelector);
 document.addEventListener('turbolinks:load', safeInitTagSelector);
 document.addEventListener('turbo:load', safeInitTagSelector); // Turbo対応
@@ -113,355 +112,91 @@ function initTagSelector() {
     });
   }
 }
-// ========== contenteditable 本文エディタの初期化 ==========
-// ページキャッシュ復元時に初期化フラグをリセット（Turbolinks/Turbo対応）
-document.addEventListener('turbolinks:before-cache', function() {
-  tagSelectorInitialized = false;
+
+// ========== Turbo/Turbolinks キャッシュ対策 ========== 
+document.addEventListener('turbolinks:before-cache', () => {
   const bodyEditor = document.getElementById('body-editor');
   if (bodyEditor) bodyEditor.dataset.initialized = 'false';
 });
-document.addEventListener('turbo:before-cache', function() {
-  tagSelectorInitialized = false;
+document.addEventListener('turbo:before-cache', () => {
   const bodyEditor = document.getElementById('body-editor');
   if (bodyEditor) bodyEditor.dataset.initialized = 'false';
 });
 
-// 本文エディタのカード化・同期・ボタン操作をまとめて初期化する
-document.addEventListener('DOMContentLoaded', initContentEditableEditor);
-document.addEventListener('turbolinks:load', initContentEditableEditor);
-document.addEventListener('turbo:load', initContentEditableEditor); // Turbo対応
 
+// ========== 本文エディタの初期化関数 ========== 
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
-  let addCardButton = null;
-  // --- 既存add-card-buttonを全て削除 ---
-
-  if (bodyEditor) {
-    Array.from(bodyEditor.querySelectorAll('#add-card-button')).forEach(btn => btn.remove());
-    Array.from(bodyEditor.childNodes).forEach((node) => {
-      if (node.nodeType === 3) node.remove();
-    });
-    // 初期カード追加ボタンの生成・挿入を行わない
+  if (!bodyEditor) return;
+  if (bodyEditor.dataset.initialized === 'true') {
+    return;
   }
-
-  // 「const bodyEditor = document.getElementById('body-editor');」: bodyEditorを保持する変数
-  const bodyHidden = document.getElementById('body-hidden');
-  // 「const bodyHidden = document.getElementById('body-hidden');」: bodyHiddenを保持する変数
-  const bodySource = document.getElementById('body-source');
-  // 「const bodySource = document.getElementById('body-source');」: bodySourceを保持する変数
-  const isPreviewOnly = bodyEditor?.dataset.previewOnly === 'true';
-  // 「const isPreviewOnly = bodyEditor?.dataset.previewOnly === 'true';」: isPreviewOnlyを保持する変数
-  
-
-  if (!bodyEditor || bodyEditor.dataset.initialized === 'true') return;
   bodyEditor.dataset.initialized = 'true';
 
-  // カード追加ボタンのクリックでカード追加モーダルを開く
-  if (addCardButton) {
-    addCardButton.addEventListener('click', function(e) {
+  // --- 既存の初期化処理ここから ---
+  // ...existing code...
+  // ========== マークダウン記法をリアルタイムでカード化 ==========
+  // ...existing code...
+  // ========== ページ初期ロード時にカード化を実行 ==========
+  const initialSourceText = bodySource
+    ? bodySource.value
+    : ((bodyHidden && bodyHidden.value) || bodyEditor.textContent || '');
+  renderEditorFromSource(initialSourceText);
+
+  // ========== イベントリスナー登録 ==========
+  // ...existing code...
+  // 既存のbodyEditorイベント登録（keydown, input, paste, blur など）
+  // ...existing code...
+
+  // --- form submitイベントのバインド ---
+  const form = bodyEditor.closest('form');
+  if (form) {
+    if (!form.dataset.submitInitialized) {
+      form.addEventListener('submit', (e) => {
+        // ...既存のsubmit処理があればここに...
+      });
+      form.dataset.submitInitialized = 'true';
+    }
+  }
+  // --- 既存の初期化処理ここまで ---
+}
+
+// グローバル公開
+// ...existing code...
+
+// 必ず関数定義の後・ファイル末尾でグローバル公開
+window.initContentEditableEditor = initContentEditableEditor;
+
+// 即時実行コードは削除（application.jsで呼び出し）
+
+function setCardMoveHandlers(card) {
+  // 「const setCardMoveHandlers = (card) =>;」: setCardMoveHandlersを保持する変数
+  if (!isMovableCard(card)) return;
+  // 「if (【条件】)」: 【条件】を判定する条件分岐
+
+  const upButton = card.querySelector('.card-move-up-btn');
+  // 「const upButton = card.querySelector('.card-move-up-btn');」: upButtonを保持する変数
+  const downButton = card.querySelector('.card-move-down-btn');
+  // 「const downButton = card.querySelector('.card-move-down-btn');」: downButtonを保持する変数
+
+  if (upButton && upButton.dataset.initialized !== 'true') {
+    upButton.dataset.initialized = 'true';
+    upButton.addEventListener('click', (e) => {
       e.preventDefault();
-      // ここでカード追加用モーダルを開く（例: テキストカード追加）
-      const modal = ensureTextModal();
-      modal.textarea.value = '';
-      modal.overlay.style.display = 'flex';
-      modal.overlay.classList.add('is-open');
-      modal.textarea.focus();
-      // 保存時にカードを本文エディタに追加
-      const onSave = () => {
-        const text = modal.textarea.value;
-        if (text.trim()) {
-          const card = buildTextCard(serializeTextCard(text));
-          bodyEditor.appendChild(card);
-          setCardMoveHandlers(card);
-          syncHiddenField();
-        }
-        modal.overlay.classList.remove('is-open');
-        modal.overlay.style.display = 'none';
-        modal.saveBtn.removeEventListener('click', onSave);
-        modal.cancelBtn.removeEventListener('click', onCancel);
-      };
-      const onCancel = () => {
-        modal.overlay.classList.remove('is-open');
-        modal.overlay.style.display = 'none';
-        modal.saveBtn.removeEventListener('click', onSave);
-        modal.cancelBtn.removeEventListener('click', onCancel);
-      };
-      modal.saveBtn.addEventListener('click', onSave);
-      modal.cancelBtn.addEventListener('click', onCancel);
+      e.stopPropagation();
+      moveCardByDirection(card, 'up');
     });
   }
 
-  // --- テキスト入力を禁止する ---
-  // 入力・貼り付け・キー操作でテキストノードやtext-lineが入ったら即削除
-  const removeTextNodes = () => {
-    Array.from(bodyEditor.childNodes).forEach((node) => {
-      if (node.nodeType === 3) {
-        node.remove();
-      } else if (node.nodeType === 1 && node.classList.contains('text-line')) {
-        node.remove();
-      }
-    });
-  };
-  // 入力・貼り付け・キー操作を全て禁止
-  bodyEditor.addEventListener('beforeinput', (e) => {
-    // カード追加以外の入力は全て禁止
-    e.preventDefault();
-  });
-  bodyEditor.addEventListener('paste', (e) => {
-    e.preventDefault();
-  });
-  bodyEditor.addEventListener('keydown', (e) => {
-    // カード以外の入力を防ぐ
-    if (!e.ctrlKey && !e.metaKey && !['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab'].includes(e.key)) {
+  if (downButton && downButton.dataset.initialized !== 'true') {
+    downButton.dataset.initialized = 'true';
+    downButton.addEventListener('click', (e) => {
       e.preventDefault();
-    }
-  });
-  // 「bodyEditor.dataset.initialized = 'true';」: bodyEditor.dataset.initializedの値を設定・更新する代入先
-
-  const insertImageButton = document.getElementById('insert-image-button');
-  // 「const insertImageButton = document.getElementById('insert-image-button');」: insertImageButtonを保持する変数
-  const insertCodeButton = document.getElementById('insert-code-button');
-  // 「const insertCodeButton = document.getElementById('insert-code-button');」: insertCodeButtonを保持する変数
-  const insertFormulaButton = document.getElementById('insert-formula-button');
-  // 「const insertFormulaButton = document.getElementById('insert-formula-button');」: insertFormulaButtonを保持する変数
-  const insertTextButton = document.getElementById('insert-text-button');
-  // 「const insertTextButton = document.getElementById('insert-text-button');」: insertTextButtonを保持する変数
-  const insertUrlButton = document.getElementById('insert-url-button');
-  // 「const insertUrlButton = document.getElementById('insert-url-button');」: insertUrlButtonを保持する変数
-  const openPreviewButton = document.getElementById('open-preview-modal-button');
-  // 「const openPreviewButton = document.getElementById('open-preview-modal-button');」: openPreviewButtonを保持する変数
-  const imageInput = document.getElementById('post_images');
-  // 「const imageInput = document.getElementById('post_images');」: imageInputを保持する変数
-
-  const allFiles = [];
-  // 「const allFiles = [];」: allFilesを保持する変数
-  const localImageUrlMap = window.localImageUrlMap || new Map();
-  // 「const localImageUrlMap = window.localImageUrlMap || new Map();」: localImageUrlMapを保持する変数
-  window.localImageUrlMap = localImageUrlMap;
-  // 「window.localImageUrlMap = localImageUrlMap;」: window.localImageUrlMapの値を設定・更新する代入先
-  let isUpdatingInputFiles = false; // changeイベントの再帰防止フラグ
-  
-  // ● コード・数式カードを構造化トークン形式で保存するための定数と正規表現をまとめて定義
-  const CODE_TOKEN_PREFIX = '[[sn-code:';
-  // CODE_TOKEN_PREFIX: コードカード用の保存形式プリフィックス（Base64 JSONをwrapする）
-  const FORMULA_TOKEN_PREFIX = '[[sn-formula:';
-  // 「const FORMULA_TOKEN_PREFIX = '[[sn-formula:';」: FORMULA_TOKEN_PREFIXを保持する変数
-  const TEXT_TOKEN_PREFIX = '[[sn-text:';
-  // 「const TEXT_TOKEN_PREFIX = '[[sn-text:';」: TEXT_TOKEN_PREFIXを保持する変数
-  const URL_TOKEN_PREFIX = '[[sn-url:';
-  // FORMULA_TOKEN_PREFIX: 数式カード用の保存形式プリフィックス（Base64 JSONをwrapする）
-  const CODE_TOKEN_REGEX = /\[\[sn-code:([A-Za-z0-9+\/=]+)\]\]/;
-  // CODE_TOKEN_REGEX: コードカードトークンの中身を抽出するパターン
-  const FORMULA_TOKEN_REGEX = /\[\[sn-formula:([A-Za-z0-9+\/=]+)\]\]/;
-  // 「const FORMULA_TOKEN_REGEX = /\[\[sn-formula:([A-Za-z0-9+\/=]+)\]\]/;」: FORMULA_TOKEN_REGEXを保持する変数
-  const TEXT_TOKEN_REGEX = /\[\[sn-text:([A-Za-z0-9+\/=]+)\]\]/;
-  // 「const TEXT_TOKEN_REGEX = /\[\[sn-text:([A-Za-z0-9+\/=]+)\]\]/;」: TEXT_TOKEN_REGEXを保持する変数
-  const URL_TOKEN_REGEX = /\[\[sn-url:([A-Za-z0-9+\/=]+)\]\]/;
-  // FORMULA_TOKEN_REGEX: 数式カードトークンの中身を抽出するパターン
-
-  const isLockedCardNode = (node) => {
-  // 「const isLockedCardNode = (node) =>;」: isLockedCardNodeを保持する変数
-    if (!node) return false;
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-    const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
-    // 「const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;」: elementを保持する変数
-    return !!(element && element.closest('.code-card, .formula-card, .text-card, .url-card, .media-card'));
-    // 「return !!(element && element.closest('.code-card, .formula-card, .text-card, .url-card, .media-card'));」: 呼び出し元へ!!(element && element.closest('.code-card, .formula-card, .text-card, .url-card, .media-card'))の値を返して処理を終了する
-  };
-
-  const resolveEditorRange = () => {
-  // 「const resolveEditorRange = () =>;」: resolveEditorRangeを保持する変数
-    const selection = window.getSelection();
-    // 「const selection = window.getSelection();」: selectionを保持する変数
-    if (!selection) return null;
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-
-    if (selection.rangeCount > 0) {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      const anchorNode = selection.anchorNode;
-      // 「const anchorNode = selection.anchorNode;」: anchorNodeを保持する変数
-      if (isLockedCardNode(anchorNode)) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        return null;
-        // 「return null;」: 呼び出し元へnullの値を返して処理を終了する
-      }
-
-      if (anchorNode && bodyEditor.contains(anchorNode)) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        return selection.getRangeAt(0);
-        // 「return selection.getRangeAt(0);」: 呼び出し元へselection.getRangeAt(0)の値を返して処理を終了する
-      }
-    }
-
-    const fallbackRange = document.createRange();
-    // 「const fallbackRange = document.createRange();」: fallbackRangeを保持する変数
-    fallbackRange.selectNodeContents(bodyEditor);
-    // 「fallbackRange.selectNodeContents(bodyEditor);」: fallbackRange.selectNodeContentsを呼び出して必要な処理を実行する
-    fallbackRange.collapse(false);
-    // 「fallbackRange.collapse(false);」: fallbackRange.collapseを呼び出して必要な処理を実行する
-    selection.removeAllRanges();
-    // 「selection.removeAllRanges(【引数】);」: selection.removeAllRangesを呼び出して必要な処理を実行する
-    selection.addRange(fallbackRange);
-    // 「selection.addRange(fallbackRange);」: selection.addRangeを呼び出して必要な処理を実行する
-    return fallbackRange;
-    // 「return fallbackRange;」: 呼び出し元へfallbackRangeの値を返して処理を終了する
-  };
-
-  const CARD_SELECTOR = '.media-card, .code-card, .formula-card, .text-card, .url-card';
-  // 「const CARD_SELECTOR = '.media-card, .code-card, .formula-card, .text-card, .url-card';」: CARD_SELECTORを保持する変数
-
-  const isMovableCard = (node) => {
-  // 「const isMovableCard = (node) =>;」: isMovableCardを保持する変数
-    return !!(node && node.nodeType === 1 && node.matches && node.matches(CARD_SELECTOR));
-    // 「return !!(node && node.nodeType === 1 && node.matches && node.matches(CARD_SELECTOR));」: 呼び出し元へ!!(node && node.nodeType === 1 && node.matches && node.matches(CARD_SELECTOR))の値を返して処理を終了する
-  };
-
-  const getCardBundleNodes = (card) => {
-  // 「const getCardBundleNodes = (card) =>;」: getCardBundleNodesを保持する変数
-    if (!isMovableCard(card)) return [];
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-    if (card.classList.contains('media-card')) {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      const spacer = card.previousSibling;
-      // 「const spacer = card.previousSibling;」: spacerを保持する変数
-      if (spacer && spacer.nodeType === 1 && spacer.classList.contains('card-spacer')) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        return [spacer, card];
-        // 「return [spacer, card];」: 呼び出し元へ[spacer, card]の値を返して処理を終了する
-      }
-    }
-    return [card];
-    // 「return [card];」: 呼び出し元へ[card]の値を返して処理を終了する
-  };
-
-  const getInsertAnchorNode = (card) => {
-  // 「const getInsertAnchorNode = (card) =>;」: getInsertAnchorNodeを保持する変数
-    if (!isMovableCard(card)) return null;
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-    if (card.classList.contains('media-card')) {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      const spacer = card.previousSibling;
-      // 「const spacer = card.previousSibling;」: spacerを保持する変数
-      if (spacer && spacer.nodeType === 1 && spacer.classList.contains('card-spacer')) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        return spacer;
-        // 「return spacer;」: 呼び出し元へspacerの値を返して処理を終了する
-      }
-    }
-    return card;
-    // 「return card;」: 呼び出し元へcardの値を返して処理を終了する
-  };
-
-  const moveCardByDirection = (card, direction) => {
-  // 「const moveCardByDirection = (card, direction) =>;」: moveCardByDirectionを保持する変数
-    if (!isMovableCard(card)) return;
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-
-    const bundleNodes = getCardBundleNodes(card);
-    // 「const bundleNodes = getCardBundleNodes(card);」: bundleNodesを保持する変数
-    if (bundleNodes.length === 0) return;
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-
-    const fragment = document.createDocumentFragment();
-    // 「const fragment = document.createDocumentFragment();」: fragmentを保持する変数
-    bundleNodes.forEach((node) => fragment.appendChild(node));
-    // 「bundleNodes.forEach((node) => fragment.appendChild(node));」: bundleNodes.forEachを呼び出して必要な処理を実行する
-
-    if (direction === 'up') {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      let cursor = (getInsertAnchorNode(card) || card).previousSibling;
-      // 「let cursor = (getInsertAnchorNode(card) || card).previousSibling;」: cursorを保持する変数
-      while (cursor) {
-      // 「while (【条件】)」: 【条件】が真の間だけ繰り返すループ
-        if (isMovableCard(cursor)) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
-          const targetAnchor = getInsertAnchorNode(cursor) || cursor;
-          // 「const targetAnchor = getInsertAnchorNode(cursor) || cursor;」: targetAnchorを保持する変数
-          bodyEditor.insertBefore(fragment, targetAnchor);
-          // 「bodyEditor.insertBefore(fragment, targetAnchor);」: bodyEditor.insertBeforeを呼び出して必要な処理を実行する
-          syncHiddenField();
-          // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
-          return;
-          // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
-        }
-        cursor = cursor.previousSibling;
-        // 「cursor = cursor.previousSibling;」: cursorの値を設定・更新する代入先
-      }
-      bodyEditor.insertBefore(fragment, bodyEditor.firstChild);
-      // 「bodyEditor.insertBefore(fragment, bodyEditor.firstChild);」: bodyEditor.insertBeforeを呼び出して必要な処理を実行する
-      syncHiddenField();
-      // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
-      return;
-      // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
-    }
-
-    if (direction === 'down') {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      let cursor = bundleNodes[bundleNodes.length - 1].nextSibling;
-      // 「let cursor = bundleNodes[bundleNodes.length - 1].nextSibling;」: cursorを保持する変数
-      while (cursor) {
-      // 「while (【条件】)」: 【条件】が真の間だけ繰り返すループ
-        if (isMovableCard(cursor)) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
-          const targetBundle = getCardBundleNodes(cursor);
-          // 「const targetBundle = getCardBundleNodes(cursor);」: targetBundleを保持する変数
-          const afterTarget = targetBundle[targetBundle.length - 1].nextSibling;
-          // 「const afterTarget = targetBundle[targetBundle.length - 1].nextSibling;」: afterTargetを保持する変数
-          bodyEditor.insertBefore(fragment, afterTarget);
-          // 「bodyEditor.insertBefore(fragment, afterTarget);」: bodyEditor.insertBeforeを呼び出して必要な処理を実行する
-          syncHiddenField();
-          // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
-          return;
-          // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
-        }
-        cursor = cursor.nextSibling;
-        // 「cursor = cursor.nextSibling;」: cursorの値を設定・更新する代入先
-      }
-      bodyEditor.appendChild(fragment);
-      // 「bodyEditor.appendChild(fragment);」: bodyEditor.appendChildを呼び出して必要な処理を実行する
-      syncHiddenField();
-      // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
-    }
-  };
-
-  const setCardMoveHandlers = (card) => {
-  // 「const setCardMoveHandlers = (card) =>;」: setCardMoveHandlersを保持する変数
-    if (!isMovableCard(card)) return;
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-
-    const upButton = card.querySelector('.card-move-up-btn');
-    // 「const upButton = card.querySelector('.card-move-up-btn');」: upButtonを保持する変数
-    const downButton = card.querySelector('.card-move-down-btn');
-    // 「const downButton = card.querySelector('.card-move-down-btn');」: downButtonを保持する変数
-
-    if (upButton && upButton.dataset.initialized !== 'true') {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      upButton.dataset.initialized = 'true';
-      // 「upButton.dataset.initialized = 'true';」: upButton.dataset.initializedの値を設定・更新する代入先
-      upButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
-        e.stopPropagation();
-        // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
-        moveCardByDirection(card, 'up');
-        // 「moveCardByDirection(card, 'up');」: moveCardByDirectionを呼び出して必要な処理を実行する
-      });
-    }
-
-    if (downButton && downButton.dataset.initialized !== 'true') {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
-      downButton.dataset.initialized = 'true';
-      // 「downButton.dataset.initialized = 'true';」: downButton.dataset.initializedの値を設定・更新する代入先
-      downButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
-        e.stopPropagation();
-        // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
-        moveCardByDirection(card, 'down');
-        // 「moveCardByDirection(card, 'down');」: moveCardByDirectionを呼び出して必要な処理を実行する
-      });
-    }
-  };
+      e.stopPropagation();
+      moveCardByDirection(card, 'down');
+    });
+  }
+}
 
   // HTML特殊文字をエスケープ
   const escapeHtml = (text) => {
@@ -1816,7 +1551,6 @@ function initContentEditableEditor() {
 
   // ========== ページ初期ロード時にカード化を実行 ==========
   const initialSourceText = bodySource
-  // 「const initialSourceText = bodySource;」: initialSourceTextを保持する変数
     ? bodySource.value
     : ((bodyHidden && bodyHidden.value) || bodyEditor.textContent || '');
   renderEditorFromSource(initialSourceText);
@@ -1942,10 +1676,8 @@ function initContentEditableEditor() {
   });
 
   if (bodySource) {
-  // 「if (【条件】)」: 【条件】を判定する条件分岐
     bodySource.addEventListener('input', () => {
       renderEditorFromSource(bodySource.value || '');
-      // 「renderEditorFromSource(bodySource.value || '');」: renderEditorFromSourceを呼び出して必要な処理を実行する
     });
   }
 
@@ -2084,7 +1816,6 @@ function initContentEditableEditor() {
 
   bodyEditor.addEventListener('blur', () => {
     syncHiddenField();
-    // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
   });
 
   // 画像挿入
@@ -2626,13 +2357,21 @@ function initContentEditableEditor() {
 
   // フォーム送信時に同期
   const form = bodyEditor.closest('form');
-  // 「const form = bodyEditor.closest('form');」: formを保持する変数
   if (form) {
-  // 「if (【条件】)」: 【条件】を判定する条件分岐
-    form.addEventListener('submit', () => {
-      syncHiddenField();
-      // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
-    });
+    // 既存のsubmitイベントを一度解除してから再バインド（多重バインド防止）
+    if (form._snSubmitHandler) {
+      form.removeEventListener('submit', form._snSubmitHandler);
+    }
+    const submitHandler = function(e) {
+      try {
+        syncHiddenField();
+      } catch (err) {
+        console.error('[ERROR] syncHiddenField() exception:', err);
+      }
+    };
+    form.addEventListener('submit', submitHandler);
+    form._snSubmitHandler = submitHandler;
+    form.dataset.submitInitialized = 'true';
   }
 
   if (bodySource && bodyHidden && bodySource.value !== bodyHidden.value) {

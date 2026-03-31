@@ -14,6 +14,7 @@
     <%= form.label :status, 'ステータス' %>
     <%= form.select :status, Post.statuses.keys.map { |k| [k == 'draft' ? '下書き' : '公開', k] }, {}, class: 'form-control', style: 'max-width: 200px;' %>
   </div>
+  <div class="form-group mb-3">
     <label>タグ</label>
     <div class="d-flex align-items-center">
       <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#tagSelectModal">タグを選択</button>
@@ -23,7 +24,7 @@
   <!-- タグ選択モーダルは部分テンプレートで描画 -->
   <%= render 'tag_modal', form: form %>
   <div class="form-group d-flex justify-content-start mt-4" style="gap: 16px;">
-    <%= form.submit '投稿', class: 'btn btn-primary px-4' %>
+    <%= form.submit '投稿', class: 'btn btn-primary px-4', data: { disable_with: false } %>
     <%= link_to 'キャンセル', posts_path, class: 'btn btn-secondary px-4' %>
   </div>
 <% end %>
