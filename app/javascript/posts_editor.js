@@ -978,7 +978,7 @@ function setCardMoveHandlers(card) {
     card.dataset.formula = formulaText;
     // 「card.dataset.formula = formulaText;」: card.dataset.formulaの値を設定・更新する代入先
     
-    card.innerHTML = `<div class="formula-card-body">${escapeHtml(formulaText)}</div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer; z-index: 10;">削除</button>`;
+    card.innerHTML = `<div class="formula-card-body">${escapeHtml(formulaText)}</div><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer; z-index: 10;">削除</button>`;
     // 「card.innerHTML = `<div class="formula-card-body">${escapeHtml(formulaText)}</div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer; z-index: 10;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer; z-index: 10;">削除</button>`;」: card.innerHTMLの値を設定・更新する代入先
 
     const editBtn = card.querySelector('.card-edit-btn');
@@ -1058,9 +1058,6 @@ function setCardMoveHandlers(card) {
       syncHiddenField();
       // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
     });
-
-    setCardMoveHandlers(card);
-    // 「setCardMoveHandlers(card);」: setCardMoveHandlersを呼び出して必要な処理を実行する
 
     return card;
     // 「return card;」: 呼び出し元へcardの値を返して処理を終了する
@@ -1549,11 +1546,7 @@ function setCardMoveHandlers(card) {
           // 「appendBlock(serializeCodeCard(lang, codeText));」: appendBlockを呼び出して必要な処理を実行する
         } else if (node.classList?.contains('formula-card')) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
-          const formulaText =
-            node.dataset?.formula ||
-            node.querySelector('.formula-card-body')?.innerText ||
-            '';
-          if (!formulaText.trim()) return;
+          const formulaText = node.dataset?.formula || '';
           // 「const formulaText = node.dataset?.formula || '';」: formulaTextを保持する変数
           appendBlock(serializeFormulaCard(formulaText));
           // 「appendBlock(serializeFormulaCard(formulaText));」: appendBlockを呼び出して必要な処理を実行する
@@ -2349,21 +2342,6 @@ function setCardMoveHandlers(card) {
         const formulaMarkdown = `\n\`\`formula\ntext:${formulaText}\n\`\`\n`;
         // 「const formulaMarkdown = `\n\`\`formula\ntext:${formulaText}\n\`\`\n`;」: formulaMarkdownを保持する変数
 
-        if (isPreviewOnly && bodySource) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
-          insertTextIntoSource(formulaMarkdown);
-          // 「insertTextIntoSource(formulaMarkdown);」: insertTextIntoSourceを呼び出して必要な処理を実行する
-          if (newModal.overlay) {
-          // 「if (【条件】)」: 【条件】を判定する条件分岐
-            newModal.overlay.classList.remove('is-open');
-            // 「newModal.overlay.classList.remove('is-open');」: newModal.overlay.classList.removeを呼び出して必要な処理を実行する
-            newModal.overlay.style.display = 'none';
-            // 「newModal.overlay.style.display = 'none';」: newModal.overlay.style.displayの値を設定・更新する代入先
-          }
-          return;
-          // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
-        }
-        
         // カーソル位置に挿入
         bodyEditor.focus();
         // 「bodyEditor.focus(【引数】);」: bodyEditor.focusを呼び出して必要な処理を実行する

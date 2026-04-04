@@ -221,22 +221,87 @@ export function ensureFormulaModal() {
       cancelBtn: document.getElementById('formula-cancel')
     };
   }
-  // モーダルがなければ生成
   const overlay = document.createElement('div');
   overlay.id = 'formula-editor-overlay';
   overlay.className = 'formula-editor-overlay';
   overlay.innerHTML = `
     <div class="formula-editor-modal">
-      <div class="formula-editor-header">
-        <span>数式を編集</span>
-      </div>
-      <textarea id="formula-editor-textarea" class="formula-editor-textarea"></textarea>
-      <div class="formula-editor-actions">
-        <button type="button" id="formula-cancel" class="btn btn-sm btn-outline-secondary">キャンセル</button>
-        <button type="button" id="formula-save" class="btn btn-sm btn-primary">保存</button>
+      <div class="formula-editor-content">
+        <div class="formula-editor-topbar" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+          <div class="formula-editor-header" style="font-weight: 500;">
+            <span>数式を挿入</span>
+          </div>
+          <div class="formula-editor-actions" style="display: flex; gap: 8px;">
+            <button type="button" id="formula-cancel" class="btn btn-sm btn-outline-secondary">キャンセル</button>
+            <button type="button" id="formula-save" class="btn btn-sm btn-primary">保存</button>
+          </div>
+        </div>
+        <textarea id="formula-editor-textarea" class="formula-editor-textarea" placeholder="例: a^2 + b^2 = c^2"></textarea>
+        <div style="font-size: 12px; color: #666; margin-top: 12px; line-height: 1.6;">
+          <strong>上付き・下付き文字の入力方法：</strong><br>
+          • 右上付き文字: ^ を使用（表示: x² / 入力: x^2）<br>
+          • 右下付き文字: _ を使用（表示: a₁ / 入力: a_1）<br>
+          • 左添え字: [左上,左下]->基準文字（例: [1,0]->n → ¹₀n）<br>
+          • 右添え字: 基準文字<-[右上,右下]（例: x<-[2,i] → x²ᵢ）<br>
+          • 中央配置: 基準文字@[上,下]（例: Σ@[n,i=1] → Σⁿᵢ₌₁）<br>
+          <br>
+          <strong>入力例：</strong><br>
+          • 核分裂反応式（左添え字）<br>
+            表示: ²³⁵₉₂U + ¹₀n → ¹⁴¹₅₆Ba + ⁹²₃₆Kr + 3¹₀n　　入力: [235,92]->U + [1,0]->n → [141,56]->Ba + [92,36]->Kr + 3[1,0]->n<br>
+          • カイ二乗統計量（中央配置）<br>
+            表示: χ²ᵥ = Σⁿᵢ₌₁ Zᵢ²　/　入力: χ<-[2,ν] = Σ@[n,i=1] Z<-[2,i]<br>
+          • 三平方の定理（基本例）<br>
+            表示: a² + b² = c²　/　入力: a^2 + b^2 = c^2<br>
+          <br>
+          • <strong>終了規則：数字・文字の後ろに半角スペースまたは記号で終了</strong>
+        </div>
       </div>
     </div>
   `;
+  if (!document.querySelector('style[data-formula-modal]')) {
+    const style = document.createElement('style');
+    style.setAttribute('data-formula-modal', 'true');
+    style.textContent = `
+      .formula-editor-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      .formula-editor-overlay.is-open {
+        display: flex !important;
+      }
+      .formula-editor-modal {
+        background: #fff;
+        width: 90%;
+        max-width: 1200px;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
+      }
+      .formula-editor-textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 12px;
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", "Courier New", monospace;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+      }
+      .formula-editor-textarea:focus {
+        outline: none;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+      }
+    `;
+    document.head.appendChild(style);
+  }
   document.body.appendChild(overlay);
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) {
