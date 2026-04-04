@@ -2,6 +2,28 @@ import './posts_editor';
 import { ensureTextModal, ensureCodeModal, ensureFormulaModal, ensureMediaModal, ensureFormulaModalWithPreview } from './card_modal';
 import { buildMediaCard, buildFormulaCard, buildUrlCard } from './card_builder';
 
+function notifyHiddenSync() {
+  if (typeof window.syncHiddenField === 'function') {
+    window.syncHiddenField();
+  }
+}
+
+function attachFileToPostImagesInput(file) {
+  const imageInput = document.getElementById('post_images');
+  if (!imageInput || !file) return;
+
+  const dt = new DataTransfer();
+  const existing = Array.from(imageInput.files || []);
+  existing.forEach((f) => dt.items.add(f));
+
+  const alreadyAdded = existing.some((f) => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified);
+  if (!alreadyAdded) {
+    dt.items.add(file);
+  }
+
+  imageInput.files = dt.files;
+}
+
 // カードタイプ選択モーダル
 function showCardTypeSelectModal(onSelect) {
   const old = document.getElementById('card-type-select-modal');
@@ -78,20 +100,25 @@ function insertAddCardButtons(bodyEditor) {
           card = document.createElement('div');
           card.className = 'text-card';
           card.contentEditable = 'false';
+          card.dataset.text = '';
           card.innerHTML = `<div class="text-card-body"></div>` + cardActionButtonsHTML();
         } else if (type === 'image') {
           card = buildMediaCard('');
           card.innerHTML += cardActionButtonsHTML();
         } else if (type === 'url') {
           card = buildUrlCard('');
+          card.dataset.url = '';
           card.innerHTML += cardActionButtonsHTML();
         } else if (type === 'code') {
           card = document.createElement('div');
           card.className = 'code-card';
           card.contentEditable = 'false';
+          card.dataset.code = '';
+          card.dataset.lang = '';
           card.innerHTML = `<pre class="code-card-body"></pre>` + cardActionButtonsHTML();
         } else if (type === 'formula') {
           card = buildFormulaCard('');
+          card.dataset.formula = '';
           card.innerHTML += cardActionButtonsHTML();
         }
         if (card) {
@@ -102,6 +129,7 @@ function insertAddCardButtons(bodyEditor) {
             bodyEditor.appendChild(card);
           }
           insertAddCardButtons(bodyEditor);
+          notifyHiddenSync();
         }
       });
     });
@@ -191,6 +219,7 @@ function initContentEditableEditor() {
         }
         bodyEditor.insertBefore(card, prevCard);
         insertAddCardButtons(bodyEditor); // ボタン再配置
+        notifyHiddenSync();
       }
       return;
     }
@@ -220,6 +249,7 @@ function initContentEditableEditor() {
         }
         bodyEditor.insertBefore(card, afterNext);
         insertAddCardButtons(bodyEditor); // ボタン再配置
+        notifyHiddenSync();
       }
       return;
     }
@@ -228,6 +258,7 @@ function initContentEditableEditor() {
     if (e.target.classList.contains('card-delete-btn')) {
       card.remove();
       insertAddCardButtons(bodyEditor);
+      notifyHiddenSync();
       return;
     }
 
@@ -240,8 +271,10 @@ function initContentEditableEditor() {
         overlay.style.display = 'flex';
         saveBtn.onclick = () => {
           card.querySelector('.text-card-body').innerText = textarea.value;
+          card.dataset.text = textarea.value;
           overlay.classList.remove('is-open');
           overlay.style.display = 'none';
+          notifyHiddenSync();
         };
         cancelBtn.onclick = () => {
           overlay.style.display = 'none';
@@ -253,8 +286,10 @@ function initContentEditableEditor() {
         overlay.style.display = 'flex';
         saveBtn.onclick = () => {
           card.querySelector('.code-card-body').innerText = textarea.value;
+          card.dataset.code = textarea.value;
           overlay.classList.remove('is-open');
           overlay.style.display = 'none';
+          notifyHiddenSync();
         };
         cancelBtn.onclick = () => {
           overlay.classList.remove('is-open');
@@ -267,8 +302,10 @@ function initContentEditableEditor() {
         overlay.style.display = 'flex';
         saveBtn.onclick = () => {
           card.querySelector('.formula-card-body').innerText = textarea.value;
+          card.dataset.formula = textarea.value;
           overlay.classList.remove('is-open');
           overlay.style.display = 'none';
+          notifyHiddenSync();
         };
         cancelBtn.onclick = () => {
           overlay.classList.remove('is-open');
@@ -283,9 +320,23 @@ function initContentEditableEditor() {
         overlay.classList.add('is-open');
         overlay.style.display = 'flex';
         saveBtn.onclick = () => {
+          const selectedFile = fileInput.files && fileInput.files[0];
           if (img && preview.src) img.src = preview.src;
+          if (img && selectedFile) {
+            img.dataset.filename = selectedFile.name;
+            attachFileToPostImagesInput(selectedFile);
+            let filenameNode = card.querySelector('.filename');
+            if (!filenameNode) {
+              filenameNode = document.createElement('div');
+              filenameNode.className = 'filename';
+              filenameNode.style.display = 'none';
+              card.appendChild(filenameNode);
+            }
+            filenameNode.textContent = selectedFile.name;
+          }
           overlay.classList.remove('is-open');
           overlay.style.display = 'none';
+          notifyHiddenSync();
         };
         cancelBtn.onclick = () => {
           overlay.classList.remove('is-open');
@@ -301,8 +352,10 @@ function initContentEditableEditor() {
         saveBtn.onclick = () => {
           const url = textarea.value.trim();
           urlBody.innerHTML = url ? `<a href="${url}" target="_blank" rel="noopener">${url}</a>` : '';
+          card.dataset.url = url;
           overlay.classList.remove('is-open');
           overlay.style.display = 'none';
+          notifyHiddenSync();
         };
         cancelBtn.onclick = () => {
           overlay.classList.remove('is-open');

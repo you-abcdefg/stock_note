@@ -1426,22 +1426,38 @@ function setCardMoveHandlers(card) {
           return;
         } else if (node.classList?.contains('media-card')) {
           // media-cardは必ず![説明](image:ファイル名)形式でのみ保存する
-          const filename = node.querySelector('.filename')?.textContent || '';
-          if (filename && !/[^\s]/.test(filename)) return; // 空白や未設定はスキップ
-          appendBlock(`![説明](image:${filename})`);
+          const filename =
+            (node.querySelector('.filename')?.textContent || '').trim() ||
+            (node.querySelector('img')?.dataset?.filename || '').trim();
+          if (filename) {
+            appendBlock(`![説明](image:${filename})`);
+            return;
+          }
+          const imageSrc = (node.querySelector('img')?.getAttribute('src') || '').trim();
+          if (imageSrc && !imageSrc.startsWith('blob:') && !imageSrc.startsWith('data:') && !/\/images\/no_image\.png$/.test(imageSrc)) {
+            appendBlock(`![説明](${imageSrc})`);
+          }
           return;
         } else if (node.tagName === 'IMG') {
           // imgタグが直接bodyに現れた場合は無視（旧データや誤挿入対策）
           return;
         } else if (node.classList?.contains('text-card')) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
-          const textCardText = node.dataset?.text || '';
+          const textCardText =
+            node.dataset?.text ||
+            node.querySelector('.text-card-body')?.innerText ||
+            '';
+          if (!textCardText.trim()) return;
           // 「const textCardText = node.dataset?.text || '';」: textCardTextを保持する変数
           appendBlock(serializeTextCard(textCardText));
           // 「appendBlock(serializeTextCard(textCardText));」: appendBlockを呼び出して必要な処理を実行する
         } else if (node.classList?.contains('url-card')) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
-          const url = node.dataset?.url || '';
+          const url =
+            (node.dataset?.url || '').trim() ||
+            (node.querySelector('.url-card-body a')?.getAttribute('href') || '').trim() ||
+            (node.querySelector('.url-card-body')?.innerText || '').trim();
+          if (!url) return;
           // 「const url = node.dataset?.url || '';」: urlを保持する変数
           appendBlock(serializeUrlCard(url));
           // 「appendBlock(serializeUrlCard(url));」: appendBlockを呼び出して必要な処理を実行する
@@ -1457,7 +1473,11 @@ function setCardMoveHandlers(card) {
           // 「appendBlock(serializeCodeCard(lang, codeText));」: appendBlockを呼び出して必要な処理を実行する
         } else if (node.classList?.contains('formula-card')) {
         // 「else if (【条件】)」: 前条件が偽の場合に【条件】を追加判定する分岐
-          const formulaText = node.dataset?.formula || '';
+          const formulaText =
+            node.dataset?.formula ||
+            node.querySelector('.formula-card-body')?.innerText ||
+            '';
+          if (!formulaText.trim()) return;
           // 「const formulaText = node.dataset?.formula || '';」: formulaTextを保持する変数
           appendBlock(serializeFormulaCard(formulaText));
           // 「appendBlock(serializeFormulaCard(formulaText));」: appendBlockを呼び出して必要な処理を実行する

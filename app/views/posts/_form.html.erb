@@ -7,6 +7,7 @@
     <%= form.label :body, '本文' %>
     <div id="body-editor" contenteditable="true" class="mb-2" style="height: 400px; min-height: 400px; max-height: 400px; overflow-y: auto; border: 2px solid #007bff; border-radius: 10px; background: #f4f8ff; box-shadow: 0 0 8px #b3d1ff; padding: 12px;"></div>
     <%= form.hidden_field :body, id: 'body-hidden' %>
+    <%= form.file_field :images, id: 'post_images', multiple: true, accept: 'image/*', style: 'display: none;' %>
     <%= render 'card_modal' %>
   </div>
   <!-- タグ選択UI（mainブランチ準拠） -->
