@@ -1239,9 +1239,11 @@ function setCardMoveHandlers(card) {
 
         if (match[1]) {
           const alt = match[2];
-          const filename = match[3];
+          const filename = (match[3] || '')
+            .replace(/[\u200B-\u200D\uFEFF]/g, '')
+            .trim();
           // filenameが空または未設定の場合はカード化しない
-          if (!filename || !filename.trim()) {
+          if (!filename) {
             // 何も出力せずスキップ
             lastIndex = combinedRegex.lastIndex;
             continue;
@@ -1254,7 +1256,7 @@ function setCardMoveHandlers(card) {
           card.className = 'media-card';
           card.contentEditable = 'false';
           card.innerHTML = `
-            <img src="/images/placeholder.png" alt="${alt || '画像'}" data-filename="${filename}" loading="lazy">
+            <img src="/images/no_image.png" alt="${alt || '画像'}" data-filename="${filename}" loading="lazy">
             <div class="filename">${filename}</div>
             <button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button>
             <button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button>

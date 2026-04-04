@@ -157,12 +157,16 @@ class PostsController < ApplicationController
     posts.visible_to(current_user)
   end
 
+  public
+
   # =====================================
   # 画像URL取得API（JavaScript用）
   # =====================================
   def image_url
     # filename パラメータから画像を取得
-    filename = params[:filename]
+    filename = params[:filename].to_s
+      .gsub(/[\u200B-\u200D\uFEFF]/, '')
+      .strip
 
     # 全投稿から該当する画像を検索
     # find_by_filename を使用してファイル名から ActiveStorage の Blob を取得
@@ -181,6 +185,8 @@ class PostsController < ApplicationController
       render json: { url: nil, error: 'Image not found' }, status: :not_found
     end
   end
+
+  private
 
   # 権限チェック：自分の投稿または管理者のみ
   def ensure_correct_user
