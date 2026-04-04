@@ -180,6 +180,85 @@ function initContentEditableEditor() {
     }
   };
 
+  const removeCardWithUiArtifacts = (card) => {
+    if (!card || !card.parentNode) return;
+
+    const prev = card.previousElementSibling;
+    const next = card.nextElementSibling;
+
+    if (prev && prev.classList?.contains('card-label')) {
+      prev.remove();
+    }
+    if (prev && prev.classList?.contains('card-spacer')) {
+      prev.remove();
+    }
+    if (next && next.classList?.contains('card-spacer')) {
+      next.remove();
+    }
+
+    card.remove();
+
+    if (typeof window.stockNoteInsertAddCardButtons === 'function') {
+      window.stockNoteInsertAddCardButtons();
+    }
+  };
+
+  const renderUrlCardPreview = (card, rawUrl) => {
+    if (!card) return;
+
+    const body = card.querySelector('.url-card-body');
+    if (!body) return;
+
+    const url = (rawUrl || '').trim();
+    card.dataset.url = url;
+
+    if (!url) {
+      body.innerHTML = '';
+      return;
+    }
+
+    const safeUrl = escapeHtml(url);
+    body.innerHTML = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a>`;
+
+    fetch(`/posts/ogp_preview?url=${encodeURIComponent(url)}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'same-origin'
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!data) return;
+
+        const ogpUrl = (data.url || url).trim();
+        const title = (data.title || '').trim();
+        const description = (data.description || '').trim();
+        const siteName = (data.site_name || '').trim();
+        const image = (data.image || '').trim();
+
+        if (!title && !description && !siteName && !image) {
+          return;
+        }
+
+        const safeOgpUrl = escapeHtml(ogpUrl);
+        const safeTitle = escapeHtml(title || ogpUrl);
+        const safeDescription = escapeHtml(description);
+        const safeSiteName = escapeHtml(siteName);
+        const safeImage = escapeHtml(image);
+
+        body.innerHTML = `
+          <a class="url-ogp-preview" href="${safeOgpUrl}" target="_blank" rel="noopener noreferrer">
+            ${safeImage ? `<img class="url-ogp-thumb" src="${safeImage}" alt="OGP image" loading="lazy">` : ''}
+            <span class="url-ogp-text">
+              <span class="url-ogp-title">${safeTitle}</span>
+              ${safeDescription ? `<span class="url-ogp-description">${safeDescription}</span>` : ''}
+              ${safeSiteName ? `<span class="url-ogp-site">${safeSiteName}</span>` : ''}
+            </span>
+          </a>
+        `;
+      })
+      .catch(() => {});
+  };
+
 function setCardMoveHandlers(card) {
   // 「const setCardMoveHandlers = (card) =>;」: setCardMoveHandlersを保持する変数
   if (!isMovableCard(card)) return;
@@ -793,7 +872,7 @@ function setCardMoveHandlers(card) {
     card.querySelector('.card-delete-btn').addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      card.remove();
+      removeCardWithUiArtifacts(card);
       syncHiddenField();
     });
     setCardMoveHandlers(card);
@@ -812,8 +891,9 @@ function setCardMoveHandlers(card) {
     // 「const url = parseUrlContent(rawUrl);」: urlを保持する変数
     card.dataset.url = url;
     // 「card.dataset.url = url;」: card.dataset.urlの値を設定・更新する代入先
-    card.innerHTML = `<pre class="url-card-body">${escapeHtml(url)}</pre><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
+    card.innerHTML = `<div class="url-card-body"></div><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;
     // 「card.innerHTML = `<pre class="url-card-body">${escapeHtml(url)}</pre><button class="card-move-up-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 110px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">上へ</button><button class="card-move-down-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 74px; background: #6c757d; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">下へ</button><button class="card-edit-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 38px; background: #0d6efd; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 10px; cursor: pointer;">編集</button><button class="card-delete-btn" type="button" contenteditable="false" style="position: absolute; top: 0; right: 2px; background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 2px; font-size: 9px; cursor: pointer;">削除</button>`;」: card.innerHTMLの値を設定・更新する代入先
+    renderUrlCardPreview(card, url);
 
     card.querySelector('.card-edit-btn').addEventListener('click', (e) => {
       e.preventDefault();
@@ -837,13 +917,7 @@ function setCardMoveHandlers(card) {
         // 「const nextUrl = modal.textarea.value.trim();」: nextUrlを保持する変数
         card.dataset.url = nextUrl;
         // 「card.dataset.url = nextUrl;」: card.dataset.urlの値を設定・更新する代入先
-        const body = card.querySelector('.url-card-body');
-        // 「const body = card.querySelector('.url-card-body');」: bodyを保持する変数
-        if (body) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
-          body.textContent = nextUrl;
-          // 「body.textContent = nextUrl;」: body.textContentの値を設定・更新する代入先
-        }
+        renderUrlCardPreview(card, nextUrl);
         modal.overlay.classList.remove('is-open');
         // 「modal.overlay.classList.remove('is-open');」: modal.overlay.classList.removeを呼び出して必要な処理を実行する
         modal.overlay.style.display = 'none';
@@ -878,7 +952,7 @@ function setCardMoveHandlers(card) {
       // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
       e.stopPropagation();
       // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
-      card.remove();
+      removeCardWithUiArtifacts(card);
       // 「card.remove(【引数】);」: card.removeを呼び出して必要な処理を実行する
       syncHiddenField();
       // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
@@ -979,7 +1053,7 @@ function setCardMoveHandlers(card) {
       // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
       e.stopPropagation();
       // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
-      card.remove();
+      removeCardWithUiArtifacts(card);
       // 「card.remove(【引数】);」: card.removeを呼び出して必要な処理を実行する
       syncHiddenField();
       // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
@@ -1082,7 +1156,7 @@ function setCardMoveHandlers(card) {
       // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
       e.stopPropagation();
       // 「e.stopPropagation(【引数】);」: e.stopPropagationを呼び出して必要な処理を実行する
-      card.remove();
+      removeCardWithUiArtifacts(card);
       // 「card.remove(【引数】);」: card.removeを呼び出して必要な処理を実行する
       syncHiddenField();
       // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
@@ -1280,7 +1354,7 @@ function setCardMoveHandlers(card) {
           card.querySelector('.card-delete-btn').addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            card.remove();
+            removeCardWithUiArtifacts(card);
             syncHiddenField();
           });
 

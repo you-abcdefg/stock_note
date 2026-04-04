@@ -221,6 +221,144 @@
 	display: block !important;
 }
 
+.url-card-body .url-ogp-preview {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	text-decoration: none;
+	color: #111827;
+}
+
+.url-card-body .url-ogp-thumb {
+	width: 36px;
+	height: 36px;
+	object-fit: cover;
+	border-radius: 4px;
+	background: #f3f4f6;
+	flex-shrink: 0;
+}
+
+.url-card-body .url-ogp-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.url-card-body .url-ogp-title {
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.25;
+	color: #111827;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.url-card-body .url-ogp-description,
+.url-card-body .url-ogp-site {
+	font-size: 11px;
+	line-height: 1.2;
+	color: #6b7280;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// 投稿詳細のOGPカード
+.post-body .ogp-card {
+	display: flex;
+	gap: 6px;
+	align-items: stretch;
+	text-decoration: none;
+	color: inherit;
+	background: #ffffff;
+	border: 1px solid #d8dee4;
+	border-radius: 6px;
+	overflow: hidden;
+	margin: 6px 0;
+	max-width: 100%;
+	height: 82px;
+}
+
+.post-body .ogp-card:hover {
+	background: #fafbfc;
+}
+
+.post-body .ogp-card-image {
+	width: 118px;
+	min-width: 118px;
+	height: 100%;
+	object-fit: cover;
+	background: #f1f3f5;
+}
+
+.post-body .ogp-card-content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 2px;
+	padding: 4px 8px;
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 100%;
+	overflow: hidden;
+	color: #111827;
+}
+
+.post-body .ogp-card-title {
+	display: block;
+	font-weight: 700;
+	font-size: 12px;
+	line-height: 1.15;
+	color: #111827;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-height: 1.15em;
+	min-width: 0;
+}
+
+.post-body .ogp-card-description {
+	display: block;
+	font-size: 12px;
+	line-height: 1.15;
+	color: #4b5563;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-height: 1.15em;
+	min-width: 0;
+}
+
+.post-body .ogp-card-site,
+.post-body .ogp-card-url {
+	display: block;
+	font-size: 11px;
+	line-height: 1.15;
+	color: #6b7280;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-height: 1.15em;
+	min-width: 0;
+}
+
+.post-body .ogp-card-url {
+	display: none;
+}
+
+@media (max-width: 576px) {
+	.post-body .ogp-card {
+		height: 72px;
+	}
+
+	.post-body .ogp-card-image {
+		width: 96px;
+		min-width: 96px;
+		height: 100%;
+	}
+}
+
 .formula-card {
 	width: 100%;
 	display: block;
@@ -453,4 +591,3 @@
   background: transparent;
   z-index: 1;
 }
-
