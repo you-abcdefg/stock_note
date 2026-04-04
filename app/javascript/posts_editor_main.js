@@ -138,6 +138,12 @@ function insertAddCardButtons(bodyEditor) {
   }
 }
 
+window.stockNoteInsertAddCardButtons = function stockNoteInsertAddCardButtons() {
+  const bodyEditor = document.getElementById('body-editor');
+  if (!bodyEditor) return;
+  insertAddCardButtons(bodyEditor);
+};
+
 // カード共通の編集・削除・上下ボタンHTML
 function cardActionButtonsHTML() {
   return `
@@ -152,7 +158,7 @@ function cardActionButtonsHTML() {
 function initContentEditableEditor() {
   const bodyEditor = document.getElementById('body-editor');
   if (!bodyEditor) return;
-  insertAddCardButtons(bodyEditor);
+  window.stockNoteInsertAddCardButtons();
 
   // 編集・削除・上下移動ボタンのイベント委譲
   bodyEditor.addEventListener('click', function(e) {

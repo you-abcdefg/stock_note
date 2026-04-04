@@ -41,6 +41,7 @@ module PostsHelper
     else
       post.body.to_s
     end.gsub(/\r\n?/, "\n")
+    body = strip_editor_control_lines(body)
     # body：本文を処理用に複製して代入する変数
     # post.body：投稿の本文内容を取得
     # dup：文字列を複製して元データを保護（操作時の影響を防ぐ）
@@ -292,6 +293,20 @@ module PostsHelper
       # 除外されるもの：onclick, onload, onchange 等のイベントハンドラ（自動除去）
     )
     # return: サニタイズ済み安全HTMLを返す（Rails 7.x では .html_safe 扱いで出力可能）
+  end
+
+  def strip_editor_control_lines(body)
+    control_line_patterns = [
+      /\Aカード追加\z/,
+      /\A(?:テキスト|画像|URL|数式|コード)カード-\d+\z/,
+      /\A(?:上へ|下へ|編集|削除|↑|↓)\z/
+    ]
+
+    body
+      .to_s
+      .split("\n")
+      .reject { |line| control_line_patterns.any? { |pattern| pattern.match?(line.strip) } }
+      .join("\n")
   end
 
   def card_document_to_legacy_body(document)

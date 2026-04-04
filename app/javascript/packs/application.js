@@ -36,6 +36,79 @@ const restoreDisabledSubmitButtons = () => {
 	});
 };
 
+const bindPostBodyFallbackSync = () => {
+	const bodyEditor = document.getElementById('body-editor');
+	const bodyHidden = document.getElementById('body-hidden');
+	if (!bodyEditor || !bodyHidden) return;
+
+	const form = bodyEditor.closest('form');
+	if (!form || form.dataset.bodyFallbackBound === 'true') return;
+
+	const encodePayload = (payload) => {
+		const utf8 = encodeURIComponent(JSON.stringify(payload)).replace(/%([0-9A-F]{2})/g, (_match, hex) =>
+			String.fromCharCode(parseInt(hex, 16))
+		);
+		return btoa(utf8);
+	};
+
+	const serializeEditorCards = () => {
+		const blocks = [];
+		const cards = bodyEditor.querySelectorAll('.text-card, .url-card, .code-card, .formula-card, .media-card');
+
+		cards.forEach((card) => {
+			if (card.classList.contains('text-card')) {
+				const text = card.dataset.text || card.querySelector('.text-card-body')?.innerText || '';
+				if (text.trim()) blocks.push(`[[sn-text:${encodePayload({ text })}]]`);
+				return;
+			}
+
+			if (card.classList.contains('url-card')) {
+				const url = (card.dataset.url || card.querySelector('.url-card-body a')?.getAttribute('href') || card.querySelector('.url-card-body')?.innerText || '').trim();
+				if (url) blocks.push(`[[sn-url:${encodePayload({ url })}]]`);
+				return;
+			}
+
+			if (card.classList.contains('code-card')) {
+				const code = card.dataset.code ?? card.querySelector('.code-card-body')?.innerText ?? '';
+				const lang = card.dataset.lang || '';
+				if (String(code).trim()) blocks.push(`[[sn-code:${encodePayload({ lang, code })}]]`);
+				return;
+			}
+
+			if (card.classList.contains('formula-card')) {
+				const formula = card.dataset.formula || card.querySelector('.formula-card-body')?.innerText || '';
+				if (formula.trim()) blocks.push(`[[sn-formula:${encodePayload({ formula })}]]`);
+				return;
+			}
+
+			if (card.classList.contains('media-card')) {
+				const filename = (card.querySelector('.filename')?.textContent || card.querySelector('img')?.dataset?.filename || '').trim();
+				if (filename) blocks.push(`![説明](image:${filename})`);
+			}
+		});
+
+		return blocks.join('\n\n');
+	};
+
+	form.addEventListener('submit', () => {
+		try {
+			if (typeof window.syncHiddenField === 'function') {
+				window.syncHiddenField();
+				if ((bodyHidden.value || '').trim().length > 0) return;
+			}
+		} catch (_error) {
+			// fallback serializer below
+		}
+
+		bodyHidden.value = serializeEditorCards();
+	});
+
+	form.dataset.bodyFallbackBound = 'true';
+};
+
 document.addEventListener('turbolinks:load', restoreDisabledSubmitButtons);
 document.addEventListener('turbo:load', restoreDisabledSubmitButtons);
 window.addEventListener('pageshow', restoreDisabledSubmitButtons);
+document.addEventListener('turbolinks:load', bindPostBodyFallbackSync);
+document.addEventListener('turbo:load', bindPostBodyFallbackSync);
+window.addEventListener('pageshow', bindPostBodyFallbackSync);

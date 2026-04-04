@@ -444,7 +444,8 @@
   <script>
   <%# ***** 「<script>」：スクリプト要素 ***** %>
   <%# ***** コードブロックにコピー機能を付与するJavaScript ***** %>
-    const initCodeCopyButtons = () => {
+    (() => {
+      const initCodeCopyButtons = () => {
     <%# ***** initCodeCopyButtons()：投稿詳細のコードコピー初期化 ***** %>
       const body = document.querySelector('.post-body');
       <%# ***** post-body：投稿本文のコンテナを取得 ***** %>
@@ -519,13 +520,14 @@
         wrapper.appendChild(block);
         <%# ***** appendChild()：コードブロックをラッパー内へ移動 ***** %>
       });
-    };
+      };
     <%# ***** initCodeCopyButtons()：初期化関数を定義 ***** %>
 
-    document.addEventListener('DOMContentLoaded', initCodeCopyButtons);
+      document.addEventListener('DOMContentLoaded', initCodeCopyButtons);
     <%# ***** DOMContentLoaded：通常のページ読み込み時に初期化 ***** %>
-    document.addEventListener('turbolinks:load', initCodeCopyButtons);
+      document.addEventListener('turbolinks:load', initCodeCopyButtons);
     <%# ***** turbolinks:load：Turbolinks遷移時に初期化 ***** %>
+    })();
   </script>
   <%# ***** 「<script>【内容】</script>」：スクリプト要素 ***** %>
 

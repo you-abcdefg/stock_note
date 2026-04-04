@@ -26,6 +26,7 @@ function safeInitTagSelector() {
   if (tagSelectorInitialized) return;
   tagSelectorInitialized = true;
   initTagSelector();
+}
 document.addEventListener('DOMContentLoaded', safeInitTagSelector);
 document.addEventListener('turbolinks:load', safeInitTagSelector);
 document.addEventListener('turbo:load', safeInitTagSelector); // Turbo対応
@@ -133,41 +134,51 @@ function initContentEditableEditor() {
   }
   bodyEditor.dataset.initialized = 'true';
 
-  // --- 既存の初期化処理ここから ---
-  // ...existing code...
-  // ========== マークダウン記法をリアルタイムでカード化 ==========
-  // ...existing code...
-  // ========== ページ初期ロード時にカード化を実行 ==========
-  const initialSourceText = bodySource
-    ? bodySource.value
-    : ((bodyHidden && bodyHidden.value) || bodyEditor.textContent || '');
-  renderEditorFromSource(initialSourceText);
+  const bodyHidden = document.getElementById('body-hidden');
+  const bodySource = document.getElementById('body-source');
+  const isPreviewOnly = bodyEditor?.dataset.previewOnly === 'true';
+  const insertImageButton = document.getElementById('insert-image-button');
+  const insertCodeButton = document.getElementById('insert-code-button');
+  const insertFormulaButton = document.getElementById('insert-formula-button');
+  const insertTextButton = document.getElementById('insert-text-button');
+  const insertUrlButton = document.getElementById('insert-url-button');
+  const openPreviewButton = document.getElementById('open-preview-modal-button');
+  const imageInput = document.getElementById('post_images');
+  const CARD_SELECTOR = '.text-card, .code-card, .formula-card, .media-card, .url-card';
+  const allFiles = [];
+  const localImageUrlMap = window.localImageUrlMap || new Map();
+  window.localImageUrlMap = localImageUrlMap;
 
-  // ========== イベントリスナー登録 ==========
-  // ...existing code...
-  // 既存のbodyEditorイベント登録（keydown, input, paste, blur など）
-  // ...existing code...
+  const isMovableCard = (card) => {
+    return !!(card && card.matches && card.matches(CARD_SELECTOR));
+  };
 
-  // --- form submitイベントのバインド ---
-  const form = bodyEditor.closest('form');
-  if (form) {
-    if (!form.dataset.submitInitialized) {
-      form.addEventListener('submit', (e) => {
-        // ...既存のsubmit処理があればここに...
-      });
-      form.dataset.submitInitialized = 'true';
+  const moveCardByDirection = (card, direction) => {
+    if (!isMovableCard(card)) return;
+
+    if (direction === 'up') {
+      let prev = card.previousElementSibling;
+      while (prev && !prev.matches(CARD_SELECTOR)) {
+        prev = prev.previousElementSibling;
+      }
+      if (prev) {
+        card.parentNode.insertBefore(card, prev);
+      }
+      return;
     }
-  }
-  // --- 既存の初期化処理ここまで ---
-}
 
-// グローバル公開
-// ...existing code...
-
-// 必ず関数定義の後・ファイル末尾でグローバル公開
-window.initContentEditableEditor = initContentEditableEditor;
-
-// 即時実行コードは削除（application.jsで呼び出し）
+    if (direction === 'down') {
+      let next = card.nextElementSibling;
+      while (next && !next.matches(CARD_SELECTOR)) {
+        next = next.nextElementSibling;
+      }
+      if (next && next.nextSibling) {
+        card.parentNode.insertBefore(card, next.nextSibling);
+      } else if (next) {
+        card.parentNode.appendChild(card);
+      }
+    }
+  };
 
 function setCardMoveHandlers(card) {
   // 「const setCardMoveHandlers = (card) =>;」: setCardMoveHandlersを保持する変数
@@ -239,6 +250,16 @@ function setCardMoveHandlers(card) {
       return decodeURIComponent(escaped);
       // decodeURIComponent: %XX形式を元の文字列（日本語対応）に戻す
     };
+
+    // ● カード保存形式のトークン定義（新形式）
+    const CODE_TOKEN_PREFIX = '[[sn-code:';
+    const FORMULA_TOKEN_PREFIX = '[[sn-formula:';
+    const TEXT_TOKEN_PREFIX = '[[sn-text:';
+    const URL_TOKEN_PREFIX = '[[sn-url:';
+    const CODE_TOKEN_REGEX = /\[\[sn-code:([A-Za-z0-9+\/=]+)\]\]/;
+    const FORMULA_TOKEN_REGEX = /\[\[sn-formula:([A-Za-z0-9+\/=]+)\]\]/;
+    const TEXT_TOKEN_REGEX = /\[\[sn-text:([A-Za-z0-9+\/=]+)\]\]/;
+    const URL_TOKEN_REGEX = /\[\[sn-url:([A-Za-z0-9+\/=]+)\]\]/;
 
     // ● トークン内に埋め込まれたJSON文字列を抽出してパース
     const decodeSerializedPayload = (tokenRegex, rawText) => {
@@ -1477,6 +1498,7 @@ function setCardMoveHandlers(card) {
       // 「bodySource.value = text;」: bodySource.valueの値を設定・更新する代入先
     }
   };
+  window.syncHiddenField = syncHiddenField;
 
   const renderEditorFromSource = (sourceText) => {
   // 「const renderEditorFromSource = (sourceText) =>;」: renderEditorFromSourceを保持する変数
@@ -1552,114 +1574,76 @@ function setCardMoveHandlers(card) {
   // ========== ページ初期ロード時にカード化を実行 ==========
   const initialSourceText = bodySource
     ? bodySource.value
-    : ((bodyHidden && bodyHidden.value) || bodyEditor.textContent || '');
+    : ((bodyHidden && bodyHidden.value) || '');
   renderEditorFromSource(initialSourceText);
+  if (typeof window.stockNoteInsertAddCardButtons === 'function') {
+    window.stockNoteInsertAddCardButtons();
+  }
+
+  const removeTextNodes = () => {
+    Array.from(bodyEditor.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        node.remove();
+        return;
+      }
+
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+      const element = node;
+      if (
+        element.classList?.contains('text-line') ||
+        (!element.matches(CARD_SELECTOR) &&
+          !element.classList?.contains('card-spacer') &&
+          !element.classList?.contains('card-add-btn-row') &&
+          !element.classList?.contains('card-label'))
+      ) {
+        element.remove();
+      }
+    });
+  };
 
   // ========== イベントリスナー登録 ==========
-  // Enter キーで改行を挿入
-  bodyEditor.addEventListener('keydown', (e) => {
-    // テキスト入力を禁止
-    if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1) {
-      e.preventDefault();
-      removeTextNodes();
-      return;
-    }
+  bodyEditor.addEventListener('beforeinput', (e) => {
+    const fromCardControl = e.target?.closest?.('.card-add-btn-row, .card-label, .card-move-up-btn, .card-move-down-btn, .card-edit-btn, .card-delete-btn');
+    if (fromCardControl) return;
+
     if (isPreviewOnly) {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
       e.preventDefault();
-      // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
       return;
-      // 「return 【値】;」: 呼び出し元へ【値】の値を返して処理を終了する
     }
 
-    if (e.key === 'Enter') {
-    // 「if (【条件】)」: 【条件】を判定する条件分岐
+    const blockedInputTypes = new Set([
+      'insertText',
+      'insertCompositionText',
+      'insertLineBreak',
+      'insertParagraph',
+      'insertFromPaste',
+      'insertFromDrop',
+      'deleteContentBackward',
+      'deleteContentForward',
+      'deleteByCut'
+    ]);
+
+    if (blockedInputTypes.has(e.inputType)) {
       e.preventDefault();
-      // 「e.preventDefault(【引数】);」: e.preventDefaultを呼び出して必要な処理を実行する
-      const sel = window.getSelection();
-      // 「const sel = window.getSelection();」: selを保持する変数
-      if (sel.rangeCount === 0) return;
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-      
-      const range = sel.getRangeAt(0);
-      
-      // 新しい<div class="text-line">を作成
-      const newLine = document.createElement('div');
-      // 「const newLine = document.createElement('div');」: newLineを保持する変数
-      newLine.className = 'text-line';
-      // 「newLine.className = 'text-line';」: newLine.classNameの値を設定・更新する代入先
-      newLine.contentEditable = 'true';
-      
-      // 現在のカーソル位置の後のコンテンツを新しい行に移動
-      const tempContainer = document.createElement('div');
-      // 「const tempContainer = document.createElement('div');」: tempContainerを保持する変数
-      const endRange = range.cloneRange();
-      // 「const endRange = range.cloneRange();」: endRangeを保持する変数
-      endRange.collapse(false);
-      // 「endRange.collapse(false);」: endRange.collapseを呼び出して必要な処理を実行する
-      const fragment = endRange.extractContents();
-      // 「const fragment = endRange.extractContents();」: fragmentを保持する変数
-      if (fragment.childNodes.length > 0) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        newLine.appendChild(fragment);
-        // 「newLine.appendChild(fragment);」: newLine.appendChildを呼び出して必要な処理を実行する
-      } else {
-      // 「else」: 上記条件に当てはまらない場合の分岐
-        const emptyMarker = document.createTextNode('\u200b');
-        // 「const emptyMarker = document.createTextNode('\u200b');」: emptyMarkerを保持する変数
-        newLine.appendChild(emptyMarker);
-        // 「newLine.appendChild(emptyMarker);」: newLine.appendChildを呼び出して必要な処理を実行する
-      }
-      
-      // 新しい行をカーソル位置の後に挿入
-      const insertAfter = (element, referenceNode) => {
-      // 「const insertAfter = (element, referenceNode) =>;」: insertAfterを保持する変数
-        if (referenceNode.nextSibling) {
-        // 「if (【条件】)」: 【条件】を判定する条件分岐
-          referenceNode.parentNode.insertBefore(element, referenceNode.nextSibling);
-          // 「referenceNode.parentNode.insertBefore(element, referenceNode.nextSibling);」: referenceNode.parentNode.insertBeforeを呼び出して必要な処理を実行する
-        } else {
-        // 「else」: 上記条件に当てはまらない場合の分岐
-          referenceNode.parentNode.appendChild(element);
-          // 「referenceNode.parentNode.appendChild(element);」: referenceNode.parentNode.appendChildを呼び出して必要な処理を実行する
-        }
-      };
-      
-      let currentNode = range.startContainer;
-      // 「let currentNode = range.startContainer;」: currentNodeを保持する変数
-      let parentLine = currentNode.nodeType === Node.TEXT_NODE ? currentNode.parentElement : currentNode;
-      // 「let parentLine = currentNode.nodeType === Node.TEXT_NODE ? currentNode.parentElement : currentNode;」: parentLineを保持する変数
-      if (!parentLine.classList?.contains('text-line')) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        parentLine = parentLine.closest('.text-line') || bodyEditor;
-        // 「parentLine = parentLine.closest('.text-line') || bodyEditor;」: parentLineの値を設定・更新する代入先
-      }
-      
-      insertAfter(newLine, parentLine);
-      
-      // カーソルを新しい行の最初に設定
-      const firstNodeInNew = newLine.firstChild || newLine;
-      // 「const firstNodeInNew = newLine.firstChild || newLine;」: firstNodeInNewを保持する変数
-      const newRange = document.createRange();
-      // 「const newRange = document.createRange();」: newRangeを保持する変数
-      if (firstNodeInNew.nodeType === Node.TEXT_NODE) {
-      // 「if (【条件】)」: 【条件】を判定する条件分岐
-        newRange.setStart(firstNodeInNew, 0);
-        // 「newRange.setStart(firstNodeInNew, 0);」: newRange.setStartを呼び出して必要な処理を実行する
-      } else {
-      // 「else」: 上記条件に当てはまらない場合の分岐
-        newRange.selectNodeContents(firstNodeInNew);
-        // 「newRange.selectNodeContents(firstNodeInNew);」: newRange.selectNodeContentsを呼び出して必要な処理を実行する
-        newRange.collapse(true);
-        // 「newRange.collapse(true);」: newRange.collapseを呼び出して必要な処理を実行する
-      }
-      sel.removeAllRanges();
-      // 「sel.removeAllRanges(【引数】);」: sel.removeAllRangesを呼び出して必要な処理を実行する
-      sel.addRange(newRange);
-      // 「sel.addRange(newRange);」: sel.addRangeを呼び出して必要な処理を実行する
-      
-      syncHiddenField();
-      // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
+      removeTextNodes();
+    }
+  });
+
+  bodyEditor.addEventListener('keydown', (e) => {
+    const fromCardControl = e.target?.closest?.('.card-add-btn-row, .card-label, .card-move-up-btn, .card-move-down-btn, .card-edit-btn, .card-delete-btn');
+    if (fromCardControl) return;
+
+    if (isPreviewOnly) {
+      e.preventDefault();
+      return;
+    }
+
+    const isPrintableKey = !e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1;
+    const blockedKeys = new Set(['Enter', 'Backspace', 'Delete']);
+    if (isPrintableKey || blockedKeys.has(e.key)) {
+      e.preventDefault();
+      removeTextNodes();
     }
   });
 
@@ -1673,6 +1657,9 @@ function setCardMoveHandlers(card) {
     // 「bodyEditor.querySelectorAll(CARD_SELECTOR).forEach((card) => setCardMoveHandlers(card));」: bodyEditor.querySelectorAllを呼び出して必要な処理を実行する
     syncHiddenField();
     // 「syncHiddenField(【引数】);」: syncHiddenFieldを呼び出して必要な処理を実行する
+    if (typeof window.stockNoteInsertAddCardButtons === 'function') {
+      window.stockNoteInsertAddCardButtons();
+    }
   });
 
   if (bodySource) {
@@ -2380,3 +2367,5 @@ function setCardMoveHandlers(card) {
     // 「bodySource.value = bodyHidden.value;」: bodySource.valueの値を設定・更新する代入先
   }
 }
+
+window.initContentEditableEditor = initContentEditableEditor;
