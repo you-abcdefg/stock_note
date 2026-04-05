@@ -1,53 +1,54 @@
 require 'rails_helper'
 
 RSpec.describe "Groups", type: :request do
-  describe "GET /index" do
+  let!(:group) { Group.create!(name: 'Sample Group', description: 'desc') }
+
+  describe "GET /groups" do
     it "returns http success" do
-      get "/groups/index"
+      get groups_path
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /show" do
+  describe "GET /groups/:id" do
     it "returns http success" do
-      get "/groups/show"
+      get group_path(group)
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /new" do
-    it "returns http success" do
-      get "/groups/new"
-      expect(response).to have_http_status(:success)
+  describe "GET /groups/new" do
+    it "redirects to sign in" do
+      get new_group_path
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /create" do
-    it "returns http success" do
-      get "/groups/create"
-      expect(response).to have_http_status(:success)
+  describe "POST /groups" do
+    it "redirects to sign in" do
+      post groups_path, params: { group: { name: 'New Group', description: 'desc' } }
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /edit" do
-    it "returns http success" do
-      get "/groups/edit"
-      expect(response).to have_http_status(:success)
+  describe "GET /groups/:id/edit" do
+    it "redirects to sign in" do
+      get edit_group_path(group)
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /update" do
-    it "returns http success" do
-      get "/groups/update"
-      expect(response).to have_http_status(:success)
+  describe "PATCH /groups/:id" do
+    it "redirects to sign in" do
+      patch group_path(group), params: { group: { name: 'Updated Group' } }
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /destroy" do
-    it "returns http success" do
-      get "/groups/destroy"
-      expect(response).to have_http_status(:success)
+  describe "DELETE /groups/:id" do
+    it "redirects to sign in" do
+      delete group_path(group)
+      expect(response).to have_http_status(:found)
     end
   end
-
 end

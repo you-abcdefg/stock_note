@@ -4,6 +4,13 @@
 StockNoteは技術記事やメモを投稿・共有できる高機能コミュニティサイトです。
 数式・コードブロック・画像を含む投稿が可能で、Markdown記法に対応しています。
 
+## 開発ルール（要約）
+- 投稿の公開可視性は `Post` モデルのスコープ（`published_only`, `visible_to`）を優先して利用する
+- 似た検索処理はコントローラーで重複実装せず、共通メソッド化して管理する
+- テストは「実際に意味があるもの」を優先し、雛形のままの `pending` spec は残さない
+- `Post` の JSON 本文は、URL形式や必須項目欠落などの境界ケースを model spec で担保する
+- 変更後は `bundle exec rspec` を実行し、0 failures を維持する
+
 ## 主な特徴
 - 📝 Markdown対応の投稿エディタ
 - 🔢 数式カード（上付き・下付き・左添え字対応）
@@ -219,3 +226,19 @@ app/
 ## その他
 
 ポートフォリオ用プロジェクトとして継続的に機能追加・改善中です。
+
+## 最近のリファクタリングとテスト方針（2026-03）
+
+### 変更概要
+- 投稿の公開可視性ロジックを `Post` モデルのスコープ（`published_only`, `visible_to`）へ集約
+- コントローラー内の重複検索処理を整理し、可読性と保守性を向上
+- 旧ルーティング前提の request spec を現行ルーティングへ更新
+
+### テスト整備方針
+- 雛形のまま `pending` だった低価値の helper/view spec は削除
+- 重要な model spec（`Post`, `User`, `Like`, `Group`, `Comment`, `PostGroup`, `GroupMembership`）は実装
+- `Post` の JSON バリデーションについて、実運用で起きやすい境界ケース（不正URL、必須項目欠落）を追加
+
+### 現在のテスト状態
+- `bundle exec rspec`
+- `50 examples, 0 failures`

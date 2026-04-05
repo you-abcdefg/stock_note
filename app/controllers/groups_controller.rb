@@ -26,7 +26,7 @@ class GroupsController < ApplicationController
   # =====================================
   def show
     # このグループに紐づく公開済み投稿を新しい順で取得
-    @posts = @group.posts.where(status: :published).order(created_at: :desc)
+    @posts = @group.posts.published_only.order(created_at: :desc)
   end
 
   # =====================================

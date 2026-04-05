@@ -29,6 +29,7 @@ Rails.application.routes.draw do # ルーティング設定をここから開始
     # 画像URL取得API（JavaScript用）
     collection do
       get 'image_url' # /posts/image_url?filename=... で画像URLを取得
+      get 'ogp_preview' # /posts/ogp_preview?url=... でOGP情報を取得
     end
     
     member do

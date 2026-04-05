@@ -10,6 +10,12 @@ require "rouge/plugins/redcarpet"
 
 require "base64"
 require "json"
+require "digest"
+require "net/http"
+require "uri"
+require "resolv"
+require "ipaddr"
+require "cgi"
 # require：Rubyのライブラリを読み込む
 # "rouge/plugins/redcarpet"：Redcarpet向けのRouge拡張モジュール
 
@@ -36,7 +42,12 @@ module PostsHelper
     # if：条件文
     # post.body.blank?：投稿の本文が空または空白のみかを判定
 
-    body = post.body.to_s.gsub(/\r\n?/, "\n")
+    body = if post.respond_to?(:body_document?) && post.body_document?
+      card_document_to_legacy_body(post.body_document)
+    else
+      post.body.to_s
+    end.gsub(/\r\n?/, "\n")
+    body = strip_editor_control_lines(body)
     # body：本文を処理用に複製して代入する変数
     # post.body：投稿の本文内容を取得
     # dup：文字列を複製して元データを保護（操作時の影響を防ぐ）
@@ -190,6 +201,20 @@ module PostsHelper
       # return: formula値を数式→HTMLラムダで処理して最終HTMLで返す（Markdownパーサをバイパス）
     end
 
+    body = body.gsub(/\[\[sn-text:([A-Za-z0-9+\/=]+)\]\]/) do
+      payload = decode_card_payload.call($1)
+      next "" unless payload.is_a?(Hash)
+
+      payload['text'].to_s
+    end
+
+    body = body.gsub(/\[\[sn-url:([A-Za-z0-9+\/=]+)\]\]/) do
+      payload = decode_card_payload.call($1)
+      next "" unless payload.is_a?(Hash)
+
+      render_ogp_card(payload['url'].to_s)
+    end
+
     # ● 旧形式 ``formula...`` 記法も後方互換で対応
     body = body.gsub(/``formula\s*\ntext:([\s\S]*?)\n``/) do
       # gsub: グローバル置換で ``formula\\ntext:...\\n`` パターンを処理
@@ -268,12 +293,250 @@ module PostsHelper
       # tags: 許可する要素タグのホワイトリスト
       # 含まれるもの：段落・改行・リスト・テーブル・強調・上下付き・画像リンク等のセマンティック要素
       # 除外されるもの：script, style, iframe, object, embed, form, input, button 等の危険な要素
-      attributes: %w[href src alt class style loading]
+      attributes: %w[href src alt class style loading target rel]
       # attributes: 許可する属性のホワイトリスト
       # 含まれるもの：href(リンク先), src(画像元), alt(説明), class(CSS), style(インライン), loading(遅延読み込み)
       # 除外されるもの：onclick, onload, onchange 等のイベントハンドラ（自動除去）
     )
     # return: サニタイズ済み安全HTMLを返す（Rails 7.x では .html_safe 扱いで出力可能）
+  end
+
+  def strip_editor_control_lines(body)
+    control_line_patterns = [
+      /\Aカード追加\z/,
+      /\A(?:テキスト|画像|URL|数式|コード)カード-\d+\z/,
+      /\A(?:上へ|下へ|編集|削除|↑|↓)\z/
+    ]
+
+    body
+      .to_s
+      .split("\n")
+      .reject { |line| control_line_patterns.any? { |pattern| pattern.match?(line.strip) } }
+      .join("\n")
+  end
+
+  def card_document_to_legacy_body(document)
+    cards = Array(document['cards'])
+
+    blocks = cards.filter_map do |card|
+      next unless card.is_a?(Hash)
+
+      case card['type'].to_s
+      when 'text'
+        card['content'].to_s
+      when 'formula'
+        payload = Base64.strict_encode64({ formula: card['content'].to_s }.to_json)
+        "[[sn-formula:#{payload}]]"
+      when 'code'
+        payload = Base64.strict_encode64({ lang: card['lang'].to_s, code: card['content'].to_s }.to_json)
+        "[[sn-code:#{payload}]]"
+      when 'url'
+        url = card['url'].to_s.strip
+        next if url.blank?
+
+        payload = Base64.strict_encode64({ url: url }.to_json)
+        "[[sn-url:#{payload}]]"
+      when 'image'
+        filename = card['filename'].to_s.strip
+        next if filename.blank?
+
+        "![説明](image:#{filename})"
+      end
+    end
+
+    blocks.join("\n\n")
+  end
+
+  def render_ogp_card(url)
+    normalized_url = normalize_url(url)
+    return "" if normalized_url.blank?
+
+    metadata = fetch_ogp_metadata(normalized_url)
+    return build_plain_link_html(normalized_url) if metadata.blank?
+
+    title = ERB::Util.html_escape(ensure_utf8(metadata[:title].presence || normalized_url))
+    description = ERB::Util.html_escape(ensure_utf8(metadata[:description].to_s))
+    site_name = ERB::Util.html_escape(ensure_utf8(metadata[:site_name].to_s))
+    href = ERB::Util.html_escape(ensure_utf8(metadata[:url].presence || normalized_url))
+    image = metadata[:image].presence
+    image_html = if image.present?
+      "<img class=\"ogp-card-image\" src=\"#{ERB::Util.html_escape(ensure_utf8(image))}\" alt=\"OGP image\" loading=\"lazy\">"
+    else
+      ""
+    end
+
+    html = "<a class=\"ogp-card\" href=\"#{href}\" target=\"_blank\" rel=\"noopener noreferrer\">#{image_html}<span class=\"ogp-card-content\"><span class=\"ogp-card-title\">#{title}</span>#{description.present? ? "<span class=\"ogp-card-description\">#{description}</span>" : ""}#{site_name.present? ? "<span class=\"ogp-card-site\">#{site_name}</span>" : ""}</span></a>"
+    ensure_utf8(html)
+  rescue StandardError
+    build_plain_link_html(normalized_url)
+  end
+
+  def build_plain_link_html(url)
+    safe_url = ERB::Util.html_escape(ensure_utf8(url.to_s))
+    ensure_utf8("<a href=\"#{safe_url}\" target=\"_blank\" rel=\"noopener noreferrer\">#{safe_url}</a>")
+  end
+
+  def normalize_url(url)
+    value = url.to_s.strip
+    return "" if value.blank?
+
+    begin
+      uri = URI.parse(value)
+      if uri.scheme.blank?
+        uri = URI.parse("https://#{value}")
+      end
+      return "" unless %w[http https].include?(uri.scheme)
+      return "" if uri.host.blank?
+
+      uri.to_s
+    rescue URI::InvalidURIError
+      ""
+    end
+  end
+
+  def fetch_ogp_metadata(url)
+    key = "ogp:v1:#{Digest::SHA256.hexdigest(url)}"
+    Rails.cache.fetch(key, expires_in: 12.hours) do
+      fetch_ogp_metadata_uncached(url)
+    end
+  end
+
+  def fetch_ogp_metadata_uncached(url)
+    return nil unless safe_remote_url?(url)
+
+    final_url, html = http_get_with_redirect(url)
+    return nil if html.blank?
+
+    og = parse_ogp_html(html, final_url)
+    return nil if og[:title].blank? && og[:description].blank? && og[:image].blank?
+
+    og
+  rescue StandardError
+    nil
+  end
+
+  def http_get_with_redirect(url, limit = 3)
+    raise "too many redirects" if limit <= 0
+
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == "https")
+    http.open_timeout = 3
+    http.read_timeout = 5
+    http.write_timeout = 5 if http.respond_to?(:write_timeout=)
+
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request["User-Agent"] = "StockNoteOGPBot/1.0 (+https://127.0.0.1:8080)"
+    request["Accept"] = "text/html,application/xhtml+xml"
+
+    response = http.request(request)
+    case response
+    when Net::HTTPSuccess
+      body = response.body.to_s[0, 400_000]
+      [uri.to_s, body]
+    when Net::HTTPRedirection
+      location = response["location"].to_s
+      raise "missing redirect location" if location.blank?
+
+      redirected = URI.join(uri.to_s, location).to_s
+      return [uri.to_s, nil] unless safe_remote_url?(redirected)
+
+      http_get_with_redirect(redirected, limit - 1)
+    else
+      [uri.to_s, nil]
+    end
+  end
+
+  def parse_ogp_html(html, page_url)
+    title = extract_meta_content(html, "property", "og:title")
+    description = extract_meta_content(html, "property", "og:description")
+    image = extract_meta_content(html, "property", "og:image")
+    site_name = extract_meta_content(html, "property", "og:site_name")
+    canonical = extract_meta_content(html, "property", "og:url")
+
+    title = extract_title_tag(html) if title.blank?
+    description = extract_meta_content(html, "name", "description") if description.blank?
+
+    {
+      title: title.to_s.strip.presence,
+      description: description.to_s.strip.presence,
+      image: resolve_relative_url(page_url, image),
+      site_name: site_name.to_s.strip.presence,
+      url: resolve_relative_url(page_url, canonical)
+    }
+  end
+
+  def extract_title_tag(html)
+    match = html.match(/<title[^>]*>(.*?)<\/title>/im)
+    return nil unless match
+
+    ensure_utf8(CGI.unescapeHTML(match[1].to_s.gsub(/\s+/, " ").strip))
+  end
+
+  def extract_meta_content(html, attr_name, attr_value)
+    pattern = /
+      <meta
+      [^>]*#{Regexp.escape(attr_name)}\s*=\s*["']#{Regexp.escape(attr_value)}["']
+      [^>]*content\s*=\s*["']([^"']*)["']
+      [^>]*>
+    /imx
+    match = html.match(pattern)
+    if match.nil?
+      reverse_pattern = /
+        <meta
+        [^>]*content\s*=\s*["']([^"']*)["']
+        [^>]*#{Regexp.escape(attr_name)}\s*=\s*["']#{Regexp.escape(attr_value)}["']
+        [^>]*>
+      /imx
+      match = html.match(reverse_pattern)
+    end
+    return nil unless match
+
+    ensure_utf8(CGI.unescapeHTML(match[1].to_s.strip))
+  end
+
+  def resolve_relative_url(base_url, candidate)
+    return nil if candidate.to_s.strip.blank?
+
+    URI.join(base_url.to_s, candidate.to_s).to_s
+  rescue URI::InvalidURIError
+    nil
+  end
+
+  def safe_remote_url?(url)
+    uri = URI.parse(url)
+    return false unless %w[http https].include?(uri.scheme)
+
+    host = uri.host.to_s
+    return false if host.blank?
+    return false if %w[localhost 127.0.0.1 ::1].include?(host)
+
+    addrs = Resolv.getaddresses(host)
+    return false if addrs.blank?
+
+    addrs.none? do |addr|
+      ip = IPAddr.new(addr)
+      is_loopback = ip.respond_to?(:loopback?) ? ip.loopback? : false
+      is_private = ip.respond_to?(:private?) ? ip.private? : false
+      is_link_local = ip.respond_to?(:link_local?) ? ip.link_local? : false
+      is_unspecified = if ip.respond_to?(:unspecified?)
+        ip.unspecified?
+      else
+        %w[0.0.0.0 ::].include?(ip.to_s)
+      end
+
+      is_loopback || is_private || is_link_local || is_unspecified
+    rescue IPAddr::InvalidAddressError
+      true
+    end
+  rescue StandardError
+    false
+  end
+
+  def ensure_utf8(value)
+    value
+      .to_s
+      .encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
   end
 
 end

@@ -1,39 +1,38 @@
 require 'rails_helper'
 
 RSpec.describe "Admin::Users", type: :request do
-  describe "GET /index" do
-    it "returns http success" do
-      get "/admin/users/index"
-      expect(response).to have_http_status(:success)
+  describe "GET /admin/users" do
+    it "redirects to sign in" do
+      get admin_users_path
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /show" do
-    it "returns http success" do
-      get "/admin/users/show"
-      expect(response).to have_http_status(:success)
+  describe "GET /admin/users/:id" do
+    it "redirects to sign in" do
+      get admin_user_path(1)
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /edit" do
-    it "returns http success" do
-      get "/admin/users/edit"
-      expect(response).to have_http_status(:success)
+  describe "GET /admin/users/:id/edit" do
+    it "redirects to sign in" do
+      get edit_admin_user_path(1)
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /update" do
-    it "returns http success" do
-      get "/admin/users/update"
-      expect(response).to have_http_status(:success)
+  describe "PATCH /admin/users/:id" do
+    it "redirects to sign in" do
+      patch admin_user_path(1), params: { user: { name: 'Updated' } }
+      expect(response).to have_http_status(:found)
     end
   end
 
-  describe "GET /destroy" do
-    it "returns http success" do
-      get "/admin/users/destroy"
-      expect(response).to have_http_status(:success)
+  describe "DELETE /admin/users/:id" do
+    it "redirects to sign in" do
+      delete admin_user_path(1)
+      expect(response).to have_http_status(:found)
     end
   end
-
 end

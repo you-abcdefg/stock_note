@@ -1,0 +1,31 @@
+<!-- タグ選択モーダル -->
+<div class="modal fade" id="tagSelectModal" tabindex="-1" role="dialog" aria-labelledby="tagSelectModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tagSelectModalLabel">タグ選択</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex flex-wrap" id="tag-checkboxes-modal">
+          <% if @available_tags.any? %>
+            <% @available_tags.each do |tag| %>
+              <div class="custom-control custom-checkbox mr-3 mb-2">
+                <%= form.check_box :tag_list, { multiple: true, class: "custom-control-input", id: "tag_modal_#{tag.id}" }, tag.name, nil %>
+                <%= form.label :tag_list, tag.name, class: "custom-control-label", for: "tag_modal_#{tag.id}" %>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-muted">登録済みのタグがありません。</p>
+          <% end %>
+        </div>
+        <div class="d-flex align-items-center mt-2" style="gap: 8px;">
+          <button type="button" class="btn btn-outline-secondary" id="add-tag-button">タグを作成</button>
+          <button id="apply-tag-selection" class="btn btn-primary">選択を適用</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

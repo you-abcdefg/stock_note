@@ -1,31 +1,75 @@
+<%# ===== groups/new のビュー ===== %>
+<%# ***** 「# ===== groups/new のビュー =====」：出力式/式 ***** %>
 <div class="container mt-4">
+<%# ***** 「<div>」：HTMLタグ ***** %>
+<%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+<%# ***** 「# ***** 「<div>」：汎用コンテナ要素 *****」：出力式/式 ***** %>
+<%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
+<%# ***** 「# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 *****」：出力式/式 ***** %>
   <h1>新規グループ作成</h1>
+  <%# ***** 「<h1>【内容】</h1>」：見出し要素 ***** %>
 
+  <%# ***** 「<h1>【内容】</h1>」：見出し要素 ***** %>
+  <%# ===== 入力フォームセクション ===== %>
   <%= form_with(model: @group, local: true) do |f| %>
+  <%# ***** 「form_with(model: @group, local: true) do |f|」：画面へ値を出力する式 ***** %>
+  <%# ===== エラーメッセージ表示セクション ===== %>
     <% if @group.errors.any? %>
+    <%# ***** 「if 【条件式】」：【条件式】が true の場合、以下の処理を実行する ***** %>
       <div class="alert alert-danger">
+      <%# ***** 「<div>」：汎用コンテナ要素 ***** %>
+      <%# ***** 「class ="【クラス名】"」：要素へスタイルを適用するクラス属性 ***** %>
         <h4><%= pluralize(@group.errors.count, "error") %> prohibited this group from being saved:</h4>
+        <%# ***** 「<h4>【内容】</h4>」：見出し要素 ***** %>
         <ul>
+        <%# ***** 「<ul>」：順序なしリスト要素 ***** %>
+        <%# ***** 一覧ループセクション ***** %>
           <% @group.errors.full_messages.each do |message| %>
+          <%# ***** 「@group.errors.full_messages.each do |message|」：Ruby式を実行する処理 ***** %>
+          <%# ***** 「each do |message|」: コレクションを順番に処理し、|message| で現在要素を受け取る反復構文 ***** %>
+          <%# ***** 「@group.errors.full_messages」：処理対象となるコレクション ***** %>
+          <%# ***** 「|message|」：各反復で取り出した要素を受け取るブロック引数 ***** %>
+          <%# ***** 「each」：コレクションを順に処理するループ ***** %>
             <li><%= message %></li>
+            <%# ***** 「<li>【内容】</li>」：リスト項目要素 ***** %>
           <% end %>
+          <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
         </ul>
+        <%# ***** 「<ul>【内容】</ul>」：順序なしリスト要素 ***** %>
       </div>
+      <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
     <% end %>
+    <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
 
+    <%# ===== グループ名入力欄 ===== %>
     <div class="form-group">
       <%= f.label :name, 'グループ名' %>
+      <%# ***** 「f.label :name, 'グループ名'」：画面へ値を出力する式 ***** %>
+      <%# ***** フォーム入力欄セクション ***** %>
       <%= f.text_field :name, class: 'form-control', placeholder: '例: Ruby on Rails' %>
+      <%# ***** 「f.text_field :name, class: 'form-control', placeholder: '例: Ruby on Rails'」：画面へ値を出力する式 ***** %>
     </div>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
+    <%# ===== 説明入力欄 ===== %>
     <div class="form-group">
       <%= f.label :description, '説明' %>
+      <%# ***** 「f.label :description, '説明'」：画面へ値を出力する式 ***** %>
       <%= f.text_area :description, class: 'form-control', rows: 5, placeholder: 'このグループについて説明してください' %>
+      <%# ***** 「f.text_area :description, class: 'form-control', rows: 5, placeholder: 'このグループについて説明してください'」：画面へ値を出力する式 ***** %>
     </div>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
 
+    <%# ===== ボタンエリア ===== %>
     <div class="actions mt-4">
       <%= f.submit '作成', class: 'btn btn-primary' %>
+      <%# ***** 「f.submit '作成', class: 'btn btn-primary'」：画面へ値を出力する式 ***** %>
       <%= link_to 'キャンセル', groups_path, class: 'btn btn-secondary' %>
+      <%# ***** 「link_to 'キャンセル', groups_path, class: 'btn btn-secondary'」：画面へ値を出力する式 ***** %>
     </div>
+    <%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
   <% end %>
+  <%# ***** 「end」：ブロック処理を終了するキーワード ***** %>
 </div>
+<%# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ ***** %>
+<%# ***** 「# ***** 「<div>【内容】</div>」：要素をまとめるための汎用コンテナ *****」：出力式/式 ***** %>
